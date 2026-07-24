@@ -3,6 +3,9 @@ name: Expand, validate and deploy What 10 Things
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 permissions:
@@ -21,9 +24,10 @@ jobs:
       FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
       FTP_SERVER_DIR: ${{ secrets.FTP_SERVER_DIR }}
     steps:
-      - name: Check out repository
+      - name: Check out main branch
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
       - name: Reassemble and verify site package
