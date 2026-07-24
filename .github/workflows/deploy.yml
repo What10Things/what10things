@@ -72,29 +72,80 @@ jobs:
             README.md
             .editorconfig
 
-      - name: Check deployed GoDaddy virtual host
+      - name: Inspect deployed and public responses
+        id: response_check
         shell: bash
         run: |
-          curl --fail --silent --show-error --location --insecure --max-time 30 \
-            --resolve what10things.co.uk:443:216.69.174.69 \
-            https://what10things.co.uk/ \
-            | grep -Fq "Ten clear things"
+          report="${RUNNER_TEMP}/what10things-http.txt"
+          : >"${report}"
+          vhost_ok=false
+          public_ok=false
 
-      - name: Check public domain
-        id: public_domain
-        continue-on-error: true
+          check_url() {
+            label="$1"
+            shift
+            headers="${RUNNER_TEMP}/${label}.headers"
+            body="${RUNNER_TEMP}/${label}.body"
+            echo "=== ${label} ===" >>"${report}"
+            set +e
+            curl --silent --show-error --location --insecure --max-time 30 \
+              --dump-header "${headers}" --output "${body}" \
+              --write-out 'HTTP_CODE=%{http_code}\nREMOTE_IP=%{remote_ip}\nURL_EFFECTIVE=%{url_effective}\n' \
+              "$@" >>"${report}" 2>&1
+            code=$?
+            set -e
+            echo "CURL_EXIT_CODE=${code}" >>"${report}"
+            sed -n '1,20p' "${headers}" >>"${report}" 2>/dev/null || true
+            echo "--- BODY ---" >>"${report}"
+            head -c 800 "${body}" >>"${report}" 2>/dev/null || true
+            printf '\n\n' >>"${report}"
+          }
+
+          check_url direct_https \
+            --resolve what10things.co.uk:443:216.69.174.69 \
+            https://what10things.co.uk/
+          if grep -Fq "Ten clear things" "${RUNNER_TEMP}/direct_https.body"; then
+            vhost_ok=true
+          fi
+
+          check_url direct_http \
+            --resolve what10things.co.uk:80:216.69.174.69 \
+            http://what10things.co.uk/
+          if grep -Fq "Ten clear things" "${RUNNER_TEMP}/direct_http.body"; then
+            vhost_ok=true
+          fi
+
+          check_url public_https https://what10things.co.uk/
+          if grep -Fq "Ten clear things" "${RUNNER_TEMP}/public_https.body"; then
+            public_ok=true
+          fi
+
+          echo "vhost_ok=${vhost_ok}" >>"${GITHUB_OUTPUT}"
+          echo "public_ok=${public_ok}" >>"${GITHUB_OUTPUT}"
+          cat "${report}"
+
+      - name: Upload HTTP diagnostic
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: what10things-http-diagnostic
+          path: ${{ runner.temp }}/what10things-http.txt
+          if-no-files-found: warn
+          retention-days: 1
+
+      - name: Require deployed GoDaddy virtual host
+        if: steps.response_check.outputs.vhost_ok != 'true'
         shell: bash
         run: |
-          curl --fail --silent --show-error --location --max-time 30 \
-            https://what10things.co.uk/ \
-            | grep -Fq "Ten clear things"
+          echo "GoDaddy accepted the files but the virtual host did not return the rebuilt homepage."
+          exit 1
 
       - name: Record deployment result
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
           JOB_STATUS: ${{ job.status }}
-          PUBLIC_OUTCOME: ${{ steps.public_domain.outcome }}
+          PUBLIC_OK: ${{ steps.response_check.outputs.public_ok }}
         shell: bash
         run: |
           deploy_state="${JOB_STATUS}"
@@ -123,8 +174,8 @@ jobs:
             -d "${deploy_payload}"
 
           public_state="failure"
-          public_description="Public domain is not resolving to the deployed site"
-          if [ "${PUBLIC_OUTCOME}" = "success" ]; then
+          public_description="Public domain is not returning the deployed site"
+          if [ "${PUBLIC_OK}" = "true" ]; then
             public_state="success"
             public_description="Public domain returns the deployed homepage"
           fi
