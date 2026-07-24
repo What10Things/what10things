@@ -59,7 +59,7 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq lftp
 
-      - name: Check GoDaddy FTPS connection and directory
+      - name: Discover reachable GoDaddy FTPS endpoint
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
@@ -68,27 +68,48 @@ jobs:
         shell: bash
         run: |
           log="${RUNNER_TEMP}/godaddy-ftps.log"
-          set +e
-          lftp -c "
-            set cmd:fail-exit yes;
-            set net:max-retries 1;
-            set net:timeout 20;
-            set ftp:ssl-force true;
-            set ftp:ssl-protect-data true;
-            set ssl:verify-certificate no;
-            open -p 21 -u \"${FTP_USERNAME}\",\"${FTP_PASSWORD}\" \"${FTP_SERVER}\";
-            echo CONNECTED;
-            pwd;
-            cd \"${FTP_SERVER_DIR}\";
-            echo DIRECTORY_OK;
-            pwd;
-            cls -1;
-            bye;
-          " >"${log}" 2>&1
-          code=$?
-          printf '\nEXIT_CODE=%s\n' "${code}" >>"${log}"
+          : >"${log}"
+          hosts=(
+            "${FTP_SERVER}"
+            "ftp.mainbuyer.com"
+            "mainbuyer.com"
+            "ftp.exteriorwallcladding.com"
+            "exteriorwallcladding.com"
+            "ftp.myphu.com"
+            "myphu.com"
+          )
+
+          for host in "${hosts[@]}"; do
+            [ -n "${host}" ] || continue
+            echo "=== HOST ${host} ===" >>"${log}"
+            if ! getent ahostsv4 "${host}" | awk '{print $1}' | sort -u >>"${log}" 2>&1; then
+              echo "DNS_FAILED" >>"${log}"
+              continue
+            fi
+
+            set +e
+            lftp -c "
+              set cmd:fail-exit yes;
+              set net:max-retries 1;
+              set net:timeout 15;
+              set ftp:ssl-force true;
+              set ftp:ssl-protect-data true;
+              set ssl:verify-certificate no;
+              open -p 21 -u \"${FTP_USERNAME}\",\"${FTP_PASSWORD}\" \"${host}\";
+              echo AUTHENTICATED;
+              pwd;
+              cls -1;
+              bye;
+            " >>"${log}" 2>&1
+            code=$?
+            set -e
+            echo "HOST_EXIT_CODE=${code}" >>"${log}"
+          done
+
+          echo "=== CONFIGURED_DIRECTORY ===" >>"${log}"
+          printf '%s\n' "${FTP_SERVER_DIR}" >>"${log}"
           cat "${log}"
-          exit "${code}"
+          exit 1
 
       - name: Upload FTPS diagnostic
         if: always()
@@ -98,24 +119,6 @@ jobs:
           path: ${{ runner.temp }}/godaddy-ftps.log
           if-no-files-found: warn
           retention-days: 1
-
-      - name: Deploy to GoDaddy by FTPS
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
-          port: 21
-          local-dir: ./
-          server-dir: ${{ secrets.FTP_SERVER_DIR }}
-          dangerous-clean-slate: false
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/tests/**
-            README.md
-            .editorconfig
 
       - name: Record deployment result
         if: always()
