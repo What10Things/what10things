@@ -1,0 +1,78 @@
+name: Expand, validate and deploy What 10 Things
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: what10things-production
+  cancel-in-progress: true
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    env:
+      FTP_SERVER: ${{ secrets.FTP_SERVER }}
+      FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+      FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+      FTP_SERVER_DIR: ${{ secrets.FTP_SERVER_DIR }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reassemble and verify site package
+        shell: bash
+        run: |
+          cat bootstrap/part-* | base64 --decode > /tmp/what10things-site.zip
+          echo "fadf6ede7c39b30e38ad87453554810413c34c6748da9130e7e3b31c93bcae05  /tmp/what10things-site.zip" | sha256sum --check --strict
+          rm -rf /tmp/what10things-site
+          mkdir -p /tmp/what10things-site
+          unzip -q /tmp/what10things-site.zip -d /tmp/what10things-site
+
+      - name: Expand source into main branch
+        shell: bash
+        run: |
+          rsync -a --delete --exclude='.git/' /tmp/what10things-site/ ./
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Rebuild What 10 Things website [skip ci]"
+          git push origin HEAD:main
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - name: Lint PHP
+        shell: bash
+        run: find . -name '*.php' -not -path './.git/*' -print0 | xargs -0 -n1 php -l
+
+      - name: Validate content and routes
+        run: php tests/validate.php
+
+      - name: Deploy to GoDaddy by FTPS
+        if: ${{ env.FTP_SERVER != '' && env.FTP_USERNAME != '' && env.FTP_PASSWORD != '' && env.FTP_SERVER_DIR != '' }}
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./
+          server-dir: ${{ secrets.FTP_SERVER_DIR }}
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/tests/**
+            README.md
+            .editorconfig
