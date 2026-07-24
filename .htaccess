@@ -1,3 +1,5 @@
+PassengerEnabled off
+
 Options -Indexes
 DirectoryIndex index.php
 ErrorDocument 404 /404.php
