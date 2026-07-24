@@ -1,0 +1,45 @@
+Options -Indexes
+DirectoryIndex index.php
+ErrorDocument 404 /404.php
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+RewriteRule ^guides/?$ guides.php [L,QSA]
+RewriteRule ^guides/([a-z0-9-]+)/?$ guide.php?slug=$1 [L,QSA]
+RewriteRule ^category/([a-z0-9-]+)/?$ category.php?slug=$1 [L,QSA]
+RewriteRule ^travel/?$ travel.php [L,QSA]
+RewriteRule ^travel/([a-z0-9-]+)/?$ destination.php?slug=$1 [L,QSA]
+RewriteRule ^search/?$ search.php [L,QSA]
+RewriteRule ^about/?$ about.php [L,QSA]
+RewriteRule ^methodology/?$ methodology.php [L,QSA]
+RewriteRule ^contact/?$ contact.php [L,QSA]
+RewriteRule ^privacy/?$ privacy.php [L,QSA]
+RewriteRule ^terms/?$ terms.php [L,QSA]
+RewriteRule ^affiliate-disclosure/?$ affiliate-disclosure.php [L,QSA]
+</IfModule>
+
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set Content-Security-Policy "default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; script-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'self'"
+</IfModule>
+
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/javascript application/json application/xml image/svg+xml
+</IfModule>
+
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType text/css "access plus 7 days"
+ExpiresByType application/javascript "access plus 7 days"
+ExpiresByType image/svg+xml "access plus 30 days"
+ExpiresByType application/manifest+json "access plus 1 day"
+</IfModule>

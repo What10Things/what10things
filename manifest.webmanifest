@@ -1,0 +1,11 @@
+{
+  "name": "What 10 Things",
+  "short_name": "What10Things",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fffdf7",
+  "theme_color": "#101c2c",
+  "icons": [
+    {"src": "/assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+  ]
+}

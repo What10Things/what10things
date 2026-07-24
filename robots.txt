@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://what10things.co.uk/sitemap.xml

@@ -1,0 +1,11 @@
+<?php
+
+declare(strict_types=1);
+require_once __DIR__ . '/includes/functions.php';
+$pageTitle = 'Privacy policy';
+$pageDescription = 'Privacy information for visitors to What 10 Things.';
+$canonicalPath = 'privacy';
+require __DIR__ . '/includes/header.php';
+?>
+<section class="legal-page"><div class="shell legal-copy"><p class="eyebrow">Legal</p><h1>Privacy policy</h1><p class="legal-copy__updated">Last updated: 24 July 2026</p><h2>What this site collects</h2><p>The core website can be read without creating an account. Standard server logs may record information such as IP address, browser type, requested page and time for security, fault diagnosis and service operation.</p><h2>Cookies and analytics</h2><p>The current site does not require advertising or analytics cookies for its core operation. If optional measurement or advertising tools are added, this policy and the consent controls will be updated before those tools are used where consent is required.</p><h2>Contact emails</h2><p>When you email us, the information you send is used to respond, investigate corrections and maintain a record of the conversation where reasonably necessary.</p><h2>Sharing and retention</h2><p>Personal information is not sold. It may be processed by service providers that operate hosting, email or security services, subject to appropriate safeguards. Information is retained only for as long as needed for the purpose it was collected.</p><h2>Your rights</h2><p>Depending on the law that applies, you may have rights over access, correction, deletion, restriction or objection. Contact <a href="mailto:privacy@what10things.co.uk">privacy@what10things.co.uk</a> with a clear description of your request.</p><h2>Changes</h2><p>This policy may change when the site adds new features or providers. The update date above will be changed when material revisions are published.</p></div></section>
+<?php require __DIR__ . '/includes/footer.php'; ?>
