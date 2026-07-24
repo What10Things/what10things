@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: write
   contents: read
   statuses: write
 
@@ -20,6 +21,21 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
+      - name: Remove temporary diagnostic artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          for artifact_id in 8612015792 8612056593; do
+            curl --silent --show-error -L \
+              -X DELETE \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "${{ github.api_url }}/repos/${{ github.repository }}/actions/artifacts/${artifact_id}" \
+              || true
+          done
 
       - name: Mark deployment pending
         env:
@@ -53,72 +69,39 @@ jobs:
       - name: Validate content
         run: php tests/validate.php
 
-      - name: Install FTPS diagnostic client
-        shell: bash
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq lftp
-
-      - name: Discover reachable GoDaddy FTPS endpoint
-        env:
-          FTP_SERVER: ${{ secrets.FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          FTP_SERVER_DIR: ${{ secrets.FTP_SERVER_DIR }}
-        shell: bash
-        run: |
-          log="${RUNNER_TEMP}/godaddy-ftps.log"
-          : >"${log}"
-          hosts=(
-            "${FTP_SERVER}"
-            "ftp.mainbuyer.com"
-            "mainbuyer.com"
-            "ftp.exteriorwallcladding.com"
-            "exteriorwallcladding.com"
-            "ftp.myphu.com"
-            "myphu.com"
-          )
-
-          for host in "${hosts[@]}"; do
-            [ -n "${host}" ] || continue
-            echo "=== HOST ${host} ===" >>"${log}"
-            if ! getent ahostsv4 "${host}" | awk '{print $1}' | sort -u >>"${log}" 2>&1; then
-              echo "DNS_FAILED" >>"${log}"
-              continue
-            fi
-
-            set +e
-            lftp -c "
-              set cmd:fail-exit yes;
-              set net:max-retries 1;
-              set net:timeout 15;
-              set ftp:ssl-force true;
-              set ftp:ssl-protect-data true;
-              set ssl:verify-certificate no;
-              open -p 21 -u \"${FTP_USERNAME}\",\"${FTP_PASSWORD}\" \"${host}\";
-              echo AUTHENTICATED;
-              pwd;
-              cls -1;
-              bye;
-            " >>"${log}" 2>&1
-            code=$?
-            set -e
-            echo "HOST_EXIT_CODE=${code}" >>"${log}"
-          done
-
-          echo "=== CONFIGURED_DIRECTORY ===" >>"${log}"
-          printf '%s\n' "${FTP_SERVER_DIR}" >>"${log}"
-          cat "${log}"
-          exit 1
-
-      - name: Upload FTPS diagnostic
-        if: always()
-        uses: actions/upload-artifact@v4
+      - name: Deploy to GoDaddy by FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
-          name: godaddy-ftps-diagnostic
-          path: ${{ runner.temp }}/godaddy-ftps.log
-          if-no-files-found: warn
-          retention-days: 1
+          server: mainbuyer.com
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./
+          server-dir: ./what10things.co.uk/
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.github/**
+            **/tests/**
+            README.md
+            .editorconfig
+
+      - name: Check live website
+        shell: bash
+        run: |
+          for attempt in 1 2 3 4 5 6; do
+            if curl --fail --silent --show-error --location --max-time 20 \
+              https://what10things.co.uk/ \
+              | grep -Fq "Ten clear things"; then
+              echo "Live website check passed."
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "The files deployed, but the live domain did not return the rebuilt homepage."
+          exit 1
 
       - name: Record deployment result
         if: always()
@@ -128,13 +111,13 @@ jobs:
         shell: bash
         run: |
           state="${JOB_STATUS}"
-          description="Validation and GoDaddy deployment succeeded"
+          description="Validation, deployment and live check succeeded"
           if [ "${state}" = "cancelled" ]; then
             state="error"
             description="Deployment run was cancelled"
           elif [ "${state}" != "success" ]; then
             state="failure"
-            description="Validation or GoDaddy deployment failed"
+            description="Validation, deployment or live check failed"
           fi
           payload=$(jq -nc \
             --arg state "${state}" \
