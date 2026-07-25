@@ -1,0 +1,1 @@
+Trigger deployment after aligning PassengerAppRoot with the accessible public_html root.
