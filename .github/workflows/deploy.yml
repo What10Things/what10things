@@ -100,10 +100,67 @@ jobs:
             **/__pycache__/**
             **/*.pyc
 
+      - name: Inspect remote Passenger paths
+        if: always()
+        env:
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lftp
+          report="${RUNNER_TEMP}/what10things-passenger-diagnostic.txt"
+          : > "${report}"
+          lftp -c "
+            set net:max-retries 1;
+            set net:timeout 20;
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate no;
+            open -p 21 -u \"${FTP_USERNAME}\",\"${FTP_PASSWORD}\" mainbuyer.com;
+            echo ROOT_DIRECTORY;
+            pwd;
+            cls -la;
+            echo FLASK_APP_DIRECTORY;
+            cls -la flask_app;
+            echo FLASK_APP_TMP;
+            cls -la flask_app/tmp;
+            echo DOMAIN_DIRECTORY;
+            cls -la what10things.co.uk;
+            echo DOMAIN_TMP;
+            cls -la what10things.co.uk/tmp;
+            bye;
+          " > "${report}" 2>&1 || true
+
+          for remote in \
+            flask_app/passenger_log \
+            what10things.co.uk/passenger_log \
+            passenger_log; do
+            safe_name=$(echo "${remote}" | tr '/' '_')
+            lftp -c "
+              set net:max-retries 1;
+              set net:timeout 20;
+              set ftp:ssl-force true;
+              set ftp:ssl-protect-data true;
+              set ssl:verify-certificate no;
+              open -p 21 -u \"${FTP_USERNAME}\",\"${FTP_PASSWORD}\" mainbuyer.com;
+              get \"${remote}\" -o \"${RUNNER_TEMP}/${safe_name}\";
+              bye;
+            " >/dev/null 2>&1 || true
+            if [ -f "${RUNNER_TEMP}/${safe_name}" ]; then
+              echo "PASSENGER_LOG ${remote}" >> "${report}"
+              tail -n 80 "${RUNNER_TEMP}/${safe_name}" >> "${report}" || true
+            fi
+          done
+          cat "${report}"
+
       - name: Verify live Passenger routes
         id: live_check
         shell: bash
         run: |
+          body="${RUNNER_TEMP}/live-homepage.html"
+          headers="${RUNNER_TEMP}/live-homepage-headers.txt"
+
           check_route() {
             path="$1"
             expected="$2"
@@ -125,8 +182,34 @@ jobs:
             sleep 8
           done
 
-          echo "The upload completed, but the live Passenger routes still return the previous application."
+          set +e
+          curl --silent --show-error --location --max-time 30 \
+            -H 'Cache-Control: no-cache' \
+            -H 'Pragma: no-cache' \
+            --dump-header "${headers}" \
+            --output "${body}" \
+            --write-out 'HTTP_CODE=%{http_code}\nREMOTE_IP=%{remote_ip}\nURL_EFFECTIVE=%{url_effective}\n' \
+            "https://what10things.co.uk/?deploy=${GITHUB_SHA}"
+          set -e
+          echo '--- LIVE RESPONSE HEADERS ---'
+          sed -n '1,40p' "${headers}" || true
+          echo '--- LIVE RESPONSE BODY ---'
+          head -c 2000 "${body}" || true
+          echo
+          echo "The upload completed, but the live Passenger routes still return the previous application or an application error."
           exit 1
+
+      - name: Upload deployment diagnostic
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: what10things-passenger-diagnostic
+          path: |
+            ${{ runner.temp }}/what10things-passenger-diagnostic.txt
+            ${{ runner.temp }}/live-homepage-headers.txt
+            ${{ runner.temp }}/live-homepage.html
+          if-no-files-found: warn
+          retention-days: 1
 
       - name: Record deployment result
         if: always()
