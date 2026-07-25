@@ -1,0 +1,2 @@
+Trigger Passenger deployment after installing the permanent workflow.
+2026-07-25
