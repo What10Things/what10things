@@ -1,0 +1,51 @@
+name: Diagnose What10Things Passenger root
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install FTPS client
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lftp
+
+      - name: Download cPanel Passenger configuration
+        env:
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        shell: bash
+        run: |
+          mkdir -p "${RUNNER_TEMP}/passenger-config"
+          lftp -c "
+            set cmd:fail-exit yes;
+            set net:max-retries 1;
+            set net:timeout 20;
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate no;
+            open -p 21 -u \"${FTP_USERNAME}\",\"${FTP_PASSWORD}\" mainbuyer.com;
+            get .htaccess -o \"${RUNNER_TEMP}/passenger-config/root-htaccess.txt\";
+            get flask_app -o \"${RUNNER_TEMP}/passenger-config/flask_app-file.txt\";
+            cls -la > \"${RUNNER_TEMP}/passenger-config/root-listing.txt\";
+            bye;
+          "
+
+      - name: Upload Passenger configuration
+        uses: actions/upload-artifact@v4
+        with:
+          name: what10things-cpanel-passenger-config
+          path: ${{ runner.temp }}/passenger-config/
+          retention-days: 1
