@@ -36,7 +36,11 @@
         </div>
     </div>
     <div class="shell site-footer__bottom">
-        <p>© <?= date('Y') ?> What 10 Things. Practical information, not personal professional advice.</p>
+        <div>
+            <p>© <?= date('Y') ?> What 10 Things. Practical information, not personal professional advice.</p>
+            <p><strong>What10Things.co.uk is operated by Urban Sky Web Ltd.</strong></p>
+            <p>Urban Sky Web Ltd is registered in England and Wales. Company number: 17421062. Registered office: 14/2E Docklands Business Centre, 10–16 Tiller Road, London, E14 8PX.</p>
+        </div>
         <a href="#main-content">Back to top ↑</a>
     </div>
 </footer>

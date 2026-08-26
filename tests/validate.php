@@ -15,6 +15,19 @@ foreach ($guides as $slug => $guide) {
 foreach ($destinations as $slug => $destination) {
     if ($destination['guide'] !== null && !isset($guides[$destination['guide']])) { $errors[] = "$slug links to a missing guide"; }
 }
+$companyFiles = [
+    __DIR__ . '/../includes/footer.php',
+    __DIR__ . '/../about.php',
+    __DIR__ . '/../privacy.php',
+    __DIR__ . '/../affiliate-disclosure.php',
+    __DIR__ . '/../terms.php',
+];
+foreach ($companyFiles as $companyFile) {
+    $companyContent = file_get_contents($companyFile);
+    if ($companyContent === false || !str_contains($companyContent, 'Urban Sky Web Ltd') || !str_contains($companyContent, '17421062')) {
+        $errors[] = basename($companyFile) . ' is missing the company disclosure';
+    }
+}
 if ($errors) {
     fwrite(STDERR, implode(PHP_EOL, $errors) . PHP_EOL);
     exit(1);
