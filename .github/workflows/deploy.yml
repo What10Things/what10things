@@ -54,7 +54,7 @@ jobs:
         run: |
           mkdir -p deploy
           cat deploy-package/part-* | base64 --decode > "${RUNNER_TEMP}/what10things-flask.zip"
-          echo "328fb9ad85269f5f018f19b2040468f6ac7f4af4d6878d0f4f1a0f6ec2ce142f  ${RUNNER_TEMP}/what10things-flask.zip" | sha256sum --check --strict
+          echo "7887b098134f40f9f5de4edeb05d73b707e93f08c6c64bf88d7976dd07f87c1a  ${RUNNER_TEMP}/what10things-flask.zip" | sha256sum --check --strict
           unzip -q "${RUNNER_TEMP}/what10things-flask.zip" -d deploy
           find deploy -type d -name '__pycache__' -prune -exec rm -rf {} +
           find deploy -type f -name '*.pyc' -delete
@@ -118,6 +118,10 @@ jobs:
 
           for attempt in $(seq 1 20); do
             if check_route "/" "Ten clear things" \
+              && check_route "/" "What10Things.co.uk is operated by Urban Sky Web Ltd." \
+              && check_route "/about" "What10Things.co.uk is operated by Urban Sky Web Ltd." \
+              && check_route "/privacy" "17421062" \
+              && check_route "/affiliate-disclosure" "registered in England and Wales" \
               && check_route "/guides/air-fryer-buying-guide" "Start with usable capacity" \
               && check_route "/travel/rome" "Rome"; then
               echo "What10Things is live on the Passenger application."
