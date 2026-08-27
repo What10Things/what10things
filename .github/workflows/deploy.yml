@@ -54,7 +54,7 @@ jobs:
         run: |
           mkdir -p deploy
           cat deploy-package/part-* | base64 --decode > "${RUNNER_TEMP}/what10things-flask.zip"
-          echo "7887b098134f40f9f5de4edeb05d73b707e93f08c6c64bf88d7976dd07f87c1a  ${RUNNER_TEMP}/what10things-flask.zip" | sha256sum --check --strict
+          echo "563746e61d46c82c60ffa7d8fb54c4d291471d7f42c8e2f305f9c094b25af78c  ${RUNNER_TEMP}/what10things-flask.zip" | sha256sum --check --strict
           unzip -q "${RUNNER_TEMP}/what10things-flask.zip" -d deploy
           find deploy -type d -name '__pycache__' -prune -exec rm -rf {} +
           find deploy -type f -name '*.pyc' -delete

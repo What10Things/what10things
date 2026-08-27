@@ -28,6 +28,14 @@ foreach ($companyFiles as $companyFile) {
         $errors[] = basename($companyFile) . ' is missing the company disclosure';
     }
 }
+$privacyContent = file_get_contents(__DIR__ . '/../privacy.php');
+if ($privacyContent === false || !str_contains($privacyContent, 'purposes and lawful bases') || !str_contains($privacyContent, 'Information Commissioner')) {
+    $errors[] = 'privacy.php is missing the expanded privacy information';
+}
+$affiliateContent = file_get_contents(__DIR__ . '/../affiliate-disclosure.php');
+if ($affiliateContent === false || !str_contains($affiliateContent, 'visibly marked <strong>Ad</strong>')) {
+    $errors[] = 'affiliate-disclosure.php is missing the nearby Ad-labelling commitment';
+}
 if ($errors) {
     fwrite(STDERR, implode(PHP_EOL, $errors) . PHP_EOL);
     exit(1);
