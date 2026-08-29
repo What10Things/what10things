@@ -46,15 +46,13 @@ n = nodes['Validate ten sourced facts']
 code = n['parameters']['jsCode']
 if 'W10_R01_VALIDATE_V7_SOURCE_DIVERSITY' not in code:
     code = code.replace('/* W10_R01_VALIDATE_V6_TRAVEL_QUALITY */', '/* W10_R01_VALIDATE_V7_SOURCE_DIVERSITY */')
-    anchor = 'if(items.length!==10)error=`Research produced ${items.length} valid sourced items; exactly 10 required`;'
-    inject = """if(items.length!==10)error=`Research produced ${items.length} valid sourced items; exactly 10 required`;
-if(!error&&String(c.category)==='travel'&&String(c.location_type||'')==='country'){
-  const articleDomains=new Set();
-  for(const item of items){for(const src of (item.sources||[])){const h=host(src.url);if(h)articleDomains.add(h);}}
-  if(articleDomains.size<2)error=`Country travel guide cites only ${articleDomains.size} independent source domain(s); at least 2 required`;
-}"""
-    assert anchor in code, 'validator article-count anchor not found'
+    anchor = "if(items.length!==10){error=`Research produced ${items.length} valid sourced facts instead of 10`;}else{const rel=[];"
+    inject = """if(items.length!==10){error=`Research produced ${items.length} valid sourced facts instead of 10`;}else{const articleDomains=new Set(items.flatMap(i=>i.sources.map(s=>host(s.url))).filter(Boolean));if(String(c.category)==='travel'&&String(c.location_type||'')==='country'&&articleDomains.size<2){error=`Country travel guide cites only ${articleDomains.size} independent source domain(s); at least 2 required`;}const rel=[];"""
+    assert anchor in code, 'validator else anchor not found'
     code = code.replace(anchor, inject, 1)
+    topic_anchor = "topic={slug:c.slug,title:String(x.title||c.title).slice(0,300)"
+    assert topic_anchor in code, 'topic assignment anchor not found'
+    code = code.replace(topic_anchor, "if(!error)topic={slug:c.slug,title:String(x.title||c.title).slice(0,300)", 1)
 n['parameters']['jsCode'] = code
 
 path.write_text(json.dumps(data, separators=(',', ':'), ensure_ascii=False) + '\n')
