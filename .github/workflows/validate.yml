@@ -68,3 +68,51 @@ jobs:
         run: |
           python -m compileall -q test_app
           PYTHONPATH=test_app python test_app/validate.py
+
+  inspect-production:
+    if: github.event_name == 'pull_request' && github.head_ref == 'automation/n8n-knowledge-factory'
+    runs-on: self-hosted
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Locate n8n runtime
+        id: runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'
+          N8N_CONTAINER="$(docker ps --format '{{.Names}} {{.Image}}' | awk 'tolower($0) ~ /n8n/ {print $1; exit}')"
+          test -n "$N8N_CONTAINER" || { echo 'No running n8n container found'; exit 1; }
+          echo "container=$N8N_CONTAINER" >> "$GITHUB_OUTPUT"
+          docker exec "$N8N_CONTAINER" n8n --version
+      - name: Inspect relevant n8n workflows
+        shell: bash
+        env:
+          N8N_CONTAINER: ${{ steps.runtime.outputs.container }}
+        run: |
+          set -euo pipefail
+          docker exec "$N8N_CONTAINER" rm -f /tmp/w10-workflows.json || true
+          docker exec "$N8N_CONTAINER" n8n export:workflow --all --output=/tmp/w10-workflows.json
+          docker cp "$N8N_CONTAINER:/tmp/w10-workflows.json" "$RUNNER_TEMP/n8n-workflows.json"
+          python3 - <<'PY'
+          import json, os
+          p=os.path.join(os.environ['RUNNER_TEMP'],'n8n-workflows.json')
+          data=json.load(open(p,encoding='utf-8'))
+          if isinstance(data,dict): data=[data]
+          wanted=[]
+          for w in data:
+              name=str(w.get('name',''))
+              if name.startswith('W10-') or name.startswith('MB-AI01'):
+                  wanted.append({'id':w.get('id'),'name':name,'active':w.get('active')})
+          print(json.dumps(wanted,indent=2))
+          PY
+      - name: Probe live site
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo '--- /api/status ---'
+          curl --fail --silent --show-error --location --max-time 30 'https://what10things.co.uk/api/status' | head -c 12000
+          echo
+          echo '--- Spain topic/search matches ---'
+          curl --fail --silent --show-error --location --max-time 30 'https://what10things.co.uk/topics' | grep -i -C 2 'spain' || true
+          curl --fail --silent --show-error --location --max-time 30 'https://what10things.co.uk/search?q=Spain' | grep -i -C 3 'spain' || true
