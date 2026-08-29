@@ -31,7 +31,6 @@ jobs:
           data=json.loads(path.read_text())
           w=data[0]
           nodes={n['name']:n for n in w['nodes']}
-
           p=nodes['Build evidence-grounded research prompt']['parameters']['jsCode']
           old="Prefer durable attractions over temporary events. Do not state current prices or opening hours unless the supplied evidence clearly dates them."
           new=("Use durable places and attractions only: exclude festivals, one-off events, seasonal celebrations and other date-dependent experiences from an evergreen things-to-do guide. "
@@ -42,27 +41,27 @@ jobs:
               p=p.replace(old,new)
           p=p.replace('/* W10_R01_PROMPT_V5_ROUTER */','/* W10_R01_PROMPT_V6_TRAVEL_QUALITY */')
           nodes['Build evidence-grounded research prompt']['parameters']['jsCode']=p
-
           v=nodes['Validate ten sourced facts']['parameters']['jsCode']
           anchor="if(title.length<5||body.length<40||!ids.length)continue;"
-          guard=r'''if(title.length<5||body.length<40||!ids.length)continue;
-if(String(c.category)==='travel'){
-  const joined=(title+' '+body);
-  if(/\b(currently|today|ongoing|continues today|still under construction)\b/i.test(joined))continue;
-  if(String(c.intent||base.intent)==='things_to_do'&&/\b(festival|festivities|annual event|seasonal celebration|one-off event)\b/i.test(joined))continue;
-  const titleLoc=title.match(/\bin\s+([A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ .'-]{2,40})$/u);
-  const lead=body.slice(0,240);
-  const bodyLoc=lead.match(/\b(?:located|situated|based|set|complex)\s+(?:on|in|near)\s+(?:the\s+)?([A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ .'-]{2,40}?)(?=[,.;]|\sis\b|\sand\b)/u)||lead.match(/\bin\s+([A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'-]{2,30})(?=[,.;])/u);
-  if(titleLoc&&bodyLoc){const norm=s=>String(s||'').toLowerCase().replace(/[^a-zà-öø-ÿ]+/g,' ').trim();if(norm(titleLoc[1])!==norm(bodyLoc[1]))continue;}
-  const risky=body.match(/\b(highest|lowest|largest|smallest|oldest|newest|best|most visited|most popular)\b/i);
-  if(risky){const needle=String(risky[1]).toLowerCase();const support=ids.map(id=>String(byId.get(id)?.content||'').toLowerCase()).join(' ');if(!support.includes(needle))continue;}
-}'''
+          guard=(
+              "if(title.length<5||body.length<40||!ids.length)continue;\n"
+              "if(String(c.category)==='travel'){\n"
+              "  const joined=(title+' '+body);\n"
+              "  if(/\\b(currently|today|ongoing|continues today|still under construction)\\b/i.test(joined))continue;\n"
+              "  if(String(c.intent||base.intent)==='things_to_do'&&/\\b(festival|festivities|annual event|seasonal celebration|one-off event)\\b/i.test(joined))continue;\n"
+              "  const titleLoc=title.match(/\\bin\\s+([A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ .'-]{2,40})$/u);\n"
+              "  const lead=body.slice(0,240);\n"
+              "  const bodyLoc=lead.match(/\\b(?:located|situated|based|set|complex)\\s+(?:on|in|near)\\s+(?:the\\s+)?([A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ .'-]{2,40}?)(?=[,.;]|\\sis\\b|\\sand\\b)/u)||lead.match(/\\bin\\s+([A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'-]{2,30})(?=[,.;])/u);\n"
+              "  if(titleLoc&&bodyLoc){const norm=s=>String(s||'').toLowerCase().replace(/[^a-zà-öø-ÿ]+/g,' ').trim();if(norm(titleLoc[1])!==norm(bodyLoc[1]))continue;}\n"
+              "  const risky=body.match(/\\b(highest|lowest|largest|smallest|oldest|newest|best|most visited|most popular)\\b/i);\n"
+              "  if(risky){const needle=String(risky[1]).toLowerCase();const support=ids.map(id=>String(byId.get(id)?.content||'').toLowerCase()).join(' ');if(!support.includes(needle))continue;}\n"
+              "}"
+          )
           if 'W10_R01_VALIDATE_V6_TRAVEL_QUALITY' not in v:
               assert anchor in v, 'validator anchor not found'
               v=v.replace(anchor,guard,1)
           v=v.replace('/* W10_R01_VALIDATE_V5 */','/* W10_R01_VALIDATE_V6_TRAVEL_QUALITY */')
           nodes['Validate ten sourced facts']['parameters']['jsCode']=v
-
           path.write_text(json.dumps(data,separators=(',',':'),ensure_ascii=False)+'\n')
           check=json.loads(path.read_text())[0]
           assert check['active'] is False
