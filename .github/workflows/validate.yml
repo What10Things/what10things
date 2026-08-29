@@ -10,9 +10,76 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
+  patch-r01:
+    if: github.event_name == 'pull_request' && github.head_ref == 'automation/n8n-knowledge-factory'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: automation/n8n-knowledge-factory
+          fetch-depth: 0
+      - name: Tighten travel quality gates
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path('automation/n8n/W10-R01-evidence-research.json')
+          data=json.loads(path.read_text())
+          w=data[0]
+          nodes={n['name']:n for n in w['nodes']}
+
+          p=nodes['Build evidence-grounded research prompt']['parameters']['jsCode']
+          old="Prefer durable attractions over temporary events. Do not state current prices or opening hours unless the supplied evidence clearly dates them."
+          new=("Use durable places and attractions only: exclude festivals, one-off events, seasonal celebrations and other date-dependent experiences from an evergreen things-to-do guide. "
+               "Geography must be exact: if an item title names a city, region or island, the body and cited evidence must place the attraction in that same location. Never guess a location. "
+               "Avoid wording such as currently, today, ongoing, continues today or still under construction. Do not make best/highest/largest/oldest/most-popular or similar superlative claims unless that exact claim is explicitly supported by a cited source. "
+               "Do not state current prices or opening hours unless the supplied evidence clearly dates them.")
+          if old in p:
+              p=p.replace(old,new)
+          p=p.replace('/* W10_R01_PROMPT_V5_ROUTER */','/* W10_R01_PROMPT_V6_TRAVEL_QUALITY */')
+          nodes['Build evidence-grounded research prompt']['parameters']['jsCode']=p
+
+          v=nodes['Validate ten sourced facts']['parameters']['jsCode']
+          anchor="if(title.length<5||body.length<40||!ids.length)continue;"
+          guard=r'''if(title.length<5||body.length<40||!ids.length)continue;
+if(String(c.category)==='travel'){
+  const joined=(title+' '+body);
+  if(/\b(currently|today|ongoing|continues today|still under construction)\b/i.test(joined))continue;
+  if(String(c.intent||base.intent)==='things_to_do'&&/\b(festival|festivities|annual event|seasonal celebration|one-off event)\b/i.test(joined))continue;
+  const titleLoc=title.match(/\bin\s+([A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ .'-]{2,40})$/u);
+  const lead=body.slice(0,240);
+  const bodyLoc=lead.match(/\b(?:located|situated|based|set|complex)\s+(?:on|in|near)\s+(?:the\s+)?([A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ .'-]{2,40}?)(?=[,.;]|\sis\b|\sand\b)/u)||lead.match(/\bin\s+([A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'-]{2,30})(?=[,.;])/u);
+  if(titleLoc&&bodyLoc){const norm=s=>String(s||'').toLowerCase().replace(/[^a-zà-öø-ÿ]+/g,' ').trim();if(norm(titleLoc[1])!==norm(bodyLoc[1]))continue;}
+  const risky=body.match(/\b(highest|lowest|largest|smallest|oldest|newest|best|most visited|most popular)\b/i);
+  if(risky){const needle=String(risky[1]).toLowerCase();const support=ids.map(id=>String(byId.get(id)?.content||'').toLowerCase()).join(' ');if(!support.includes(needle))continue;}
+}'''
+          if 'W10_R01_VALIDATE_V6_TRAVEL_QUALITY' not in v:
+              assert anchor in v, 'validator anchor not found'
+              v=v.replace(anchor,guard,1)
+          v=v.replace('/* W10_R01_VALIDATE_V5 */','/* W10_R01_VALIDATE_V6_TRAVEL_QUALITY */')
+          nodes['Validate ten sourced facts']['parameters']['jsCode']=v
+
+          path.write_text(json.dumps(data,separators=(',',':'),ensure_ascii=False)+'\n')
+          check=json.loads(path.read_text())[0]
+          assert check['active'] is False
+          assert 'W10_R01_PROMPT_V6_TRAVEL_QUALITY' in nodes['Build evidence-grounded research prompt']['parameters']['jsCode']
+          assert 'W10_R01_VALIDATE_V6_TRAVEL_QUALITY' in nodes['Validate ten sourced facts']['parameters']['jsCode']
+          print('R01 travel quality patch ready')
+          PY
+          if git diff --quiet; then
+            echo 'Patch already applied'
+            exit 0
+          fi
+          git config user.name 'What10Things Automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add automation/n8n/W10-R01-evidence-research.json
+          git commit -m 'Tighten travel research quality gates'
+          git push origin HEAD:automation/n8n-knowledge-factory
+
   validate:
     runs-on: ubuntu-latest
     steps:
@@ -22,7 +89,6 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-
           files = sorted(Path('automation/n8n').glob('*.json'))
           assert files, 'No n8n workflow files found'
           for path in files:
@@ -68,51 +134,3 @@ jobs:
         run: |
           python -m compileall -q test_app
           PYTHONPATH=test_app python test_app/validate.py
-
-  inspect-production:
-    if: github.event_name == 'pull_request' && github.head_ref == 'automation/n8n-knowledge-factory'
-    runs-on: self-hosted
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-      - name: Locate n8n runtime
-        id: runtime
-        shell: bash
-        run: |
-          set -euo pipefail
-          docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'
-          N8N_CONTAINER="$(docker ps --format '{{.Names}} {{.Image}}' | awk 'tolower($0) ~ /n8n/ {print $1; exit}')"
-          test -n "$N8N_CONTAINER" || { echo 'No running n8n container found'; exit 1; }
-          echo "container=$N8N_CONTAINER" >> "$GITHUB_OUTPUT"
-          docker exec "$N8N_CONTAINER" n8n --version
-      - name: Inspect relevant n8n workflows
-        shell: bash
-        env:
-          N8N_CONTAINER: ${{ steps.runtime.outputs.container }}
-        run: |
-          set -euo pipefail
-          docker exec "$N8N_CONTAINER" rm -f /tmp/w10-workflows.json || true
-          docker exec "$N8N_CONTAINER" n8n export:workflow --all --output=/tmp/w10-workflows.json
-          docker cp "$N8N_CONTAINER:/tmp/w10-workflows.json" "$RUNNER_TEMP/n8n-workflows.json"
-          python3 - <<'PY'
-          import json, os
-          p=os.path.join(os.environ['RUNNER_TEMP'],'n8n-workflows.json')
-          data=json.load(open(p,encoding='utf-8'))
-          if isinstance(data,dict): data=[data]
-          wanted=[]
-          for w in data:
-              name=str(w.get('name',''))
-              if name.startswith('W10-') or name.startswith('MB-AI01'):
-                  wanted.append({'id':w.get('id'),'name':name,'active':w.get('active')})
-          print(json.dumps(wanted,indent=2))
-          PY
-      - name: Probe live site
-        shell: bash
-        run: |
-          set -euo pipefail
-          echo '--- /api/status ---'
-          curl --fail --silent --show-error --location --max-time 30 'https://what10things.co.uk/api/status' | head -c 12000
-          echo
-          echo '--- Spain topic/search matches ---'
-          curl --fail --silent --show-error --location --max-time 30 'https://what10things.co.uk/topics' | grep -i -C 2 'spain' || true
-          curl --fail --silent --show-error --location --max-time 30 'https://what10things.co.uk/search?q=Spain' | grep -i -C 3 'spain' || true
