@@ -1,6 +1,6 @@
 name: Patch R01 source diversity
 
-# One-shot source-control patch for R01 evidence diversity.
+# One-shot source-control patch for R01 evidence diversity + graph quality.
 on:
   push:
     branches: [main]
@@ -26,5 +26,5 @@ jobs:
           git config user.name 'What10Things Automation'
           git config user.email 'actions@users.noreply.github.com'
           git add automation/n8n/W10-R01-evidence-research.json
-          git commit -m 'Require diverse evidence for country travel guides'
+          git commit -m 'Tighten travel graph expansion quality'
           git push origin HEAD:main
