@@ -1,0 +1,69 @@
+name: What10Things production runtime probe
+
+on:
+  push:
+    branches:
+      - automation/n8n-knowledge-factory
+    paths:
+      - '.github/workflows/production-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect-production:
+    runs-on: self-hosted
+    timeout-minutes: 10
+    steps:
+      - name: Check out automation branch
+        uses: actions/checkout@v4
+
+      - name: Locate n8n runtime
+        id: runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'Docker containers:'
+          docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'
+          N8N_CONTAINER="$(docker ps --format '{{.Names}} {{.Image}}' | awk 'tolower($0) ~ /n8n/ {print $1; exit}')"
+          test -n "$N8N_CONTAINER" || { echo 'No running n8n container found'; exit 1; }
+          echo "container=$N8N_CONTAINER" >> "$GITHUB_OUTPUT"
+          docker exec "$N8N_CONTAINER" n8n --version
+
+      - name: Inspect relevant n8n workflows
+        shell: bash
+        env:
+          N8N_CONTAINER: ${{ steps.runtime.outputs.container }}
+        run: |
+          set -euo pipefail
+          rm -f "$RUNNER_TEMP/n8n-workflows.json"
+          docker exec "$N8N_CONTAINER" rm -f /tmp/w10-workflows.json || true
+          docker exec "$N8N_CONTAINER" n8n export:workflow --all --output=/tmp/w10-workflows.json
+          docker cp "$N8N_CONTAINER:/tmp/w10-workflows.json" "$RUNNER_TEMP/n8n-workflows.json"
+          python3 - <<'PY'
+          import json, os
+          p=os.path.join(os.environ['RUNNER_TEMP'],'n8n-workflows.json')
+          data=json.load(open(p,encoding='utf-8'))
+          if isinstance(data,dict): data=[data]
+          wanted=[]
+          for w in data:
+              name=str(w.get('name',''))
+              if name.startswith('W10-') or name.startswith('MB-AI01'):
+                  wanted.append({'id':w.get('id'),'name':name,'active':w.get('active')})
+          print(json.dumps(wanted,indent=2))
+          if not any(x['name']=='W10-F01 Travel Fallback' for x in wanted):
+              print('W10-F01 not currently imported')
+          PY
+
+      - name: Probe live What10Things API and Spain pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo '--- /api/status ---'
+          curl --fail --silent --show-error --location --max-time 30 'https://what10things.co.uk/api/status' | head -c 12000
+          echo
+          echo '--- /topics containing Spain ---'
+          curl --fail --silent --show-error --location --max-time 30 'https://what10things.co.uk/topics' | grep -i -C 2 'spain' || true
+          echo '--- site search for Spain ---'
+          curl --fail --silent --show-error --location --max-time 30 'https://what10things.co.uk/search?q=Spain' | grep -i -C 3 'spain' || true
