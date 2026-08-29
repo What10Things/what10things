@@ -6,53 +6,29 @@ data = json.loads(path.read_text())
 w = data[0]
 nodes = {n['name']: n for n in w['nodes']}
 
+# Source diversity (idempotent: already present in current main after the first patch).
 n = nodes['Assemble evidence pack']
 code = n['parameters']['jsCode']
-old = """/* W10_R01_ASSEMBLE_FREE_EVIDENCE_V2 */
-const base=$('Prepare evidence search').item.json;const meta=$('Parse Bing evidence').all().map(x=>x.json);const fetched=$input.all().map(x=>x.json||{});const clean=s=>String(s||'').replace(/\\s+/g,' ').trim();const rows=[];
-for(let i=0;i<meta.length&&rows.length<6;i++){const m=meta[i],f=fetched[i]||{};let body=clean(f.body||f.data||'');if(body.length<180)body=clean(m.snippet);if(!m.url||body.length<80)continue;rows.push({source_id:rows.length+1,url:m.url,title:m.title,content:body.slice(0,2600),snippet:clean(m.snippet).slice(0,600)});}
-if(rows.length<3)throw new Error(`Only ${rows.length} readable destination-relevant evidence sources after free fetch`);
-return [{json:{candidate:base.candidate,intent:base.intent,destination:base.destination,query:base.query,evidence:rows,evidence_provider:'bing_rss+jina_reader'}}];"""
-new = """/* W10_R01_ASSEMBLE_FREE_EVIDENCE_V3_DIVERSITY */
-const base=$('Prepare evidence search').item.json;const meta=$('Parse Bing evidence').all().map(x=>x.json);const fetched=$input.all().map(x=>x.json||{});const clean=s=>String(s||'').replace(/\\s+/g,' ').trim();
-const host=u=>{try{return new URL(u).hostname.toLowerCase().replace(/^www\\./,'')}catch{return ''}};
-const preferred=h=>/\\.(gov|gov\\.[a-z]{2}|edu|ac\\.uk)$/.test(h)||/(unesco|tourism|tourist|travel|visit|nationalpark|parks\\.)/.test(h);
-const candidates=[];
-for(let i=0;i<meta.length;i++){const m=meta[i],f=fetched[i]||{};let body=clean(f.body||f.data||'');if(body.length<180)body=clean(m.snippet);if(!m.url||body.length<80)continue;const domain=host(m.url);if(!domain)continue;candidates.push({url:m.url,title:m.title,content:body.slice(0,2600),snippet:clean(m.snippet).slice(0,600),domain,preferred:preferred(domain),rank:i});}
-candidates.sort((a,b)=>Number(b.preferred)-Number(a.preferred)||a.rank-b.rank);
-const rows=[];const used=new Set();
-for(const r of candidates){if(rows.length>=6)break;if(used.has(r.domain)&&used.size<3)continue;used.add(r.domain);rows.push({...r,source_id:rows.length+1});}
-if(rows.length<6){for(const r of candidates){if(rows.length>=6)break;if(rows.some(x=>x.url===r.url))continue;rows.push({...r,source_id:rows.length+1});}}
-if(rows.length<3)throw new Error(`Only ${rows.length} readable destination-relevant evidence sources after free fetch`);
-const domains=new Set(rows.map(r=>r.domain));
-if(String(base.candidate?.category)==='travel'&&String(base.candidate?.location_type||'')==='country'&&domains.size<2)throw new Error(`Country travel evidence has only ${domains.size} independent source domain(s)`);
-return [{json:{candidate:base.candidate,intent:base.intent,destination:base.destination,query:base.query,evidence:rows,evidence_provider:'bing_rss+jina_reader',evidence_domains:[...domains],preferred_source_count:rows.filter(r=>r.preferred).length}}];"""
-if 'W10_R01_ASSEMBLE_FREE_EVIDENCE_V3_DIVERSITY' not in code:
-    assert old in code, 'evidence assembly anchor not found'
-    code = code.replace(old, new)
-n['parameters']['jsCode'] = code
+assert 'W10_R01_ASSEMBLE_FREE_EVIDENCE_V3_DIVERSITY' in code
 
 n = nodes['Build evidence-grounded research prompt']
 code = n['parameters']['jsCode']
-if 'W10_R01_PROMPT_V8_SOURCE_DIVERSITY' not in code:
-    code = code.replace('/* W10_R01_PROMPT_V7_CANDIDATE_POOL */', '/* W10_R01_PROMPT_V8_SOURCE_DIVERSITY */')
-    anchor = 'Prefer official tourism boards, government, UNESCO, national parks, museums and authoritative destination sources where present.'
-    repl = anchor + ' For country travel guides, ensure the 10 strongest publishable items collectively cite at least two independent source domains; do not let one publisher support the whole article when other supplied evidence is available.'
-    assert anchor in code, 'prompt anchor not found'
+if 'W10_R01_PROMPT_V9_GRAPH_QUALITY' not in code:
+    code = code.replace('/* W10_R01_PROMPT_V8_SOURCE_DIVERSITY */', '/* W10_R01_PROMPT_V9_GRAPH_QUALITY */')
+    anchor = 'For travel topics, favour related cities, regions, landmarks and companion destination guides.'
+    repl = anchor + " Related travel topics must name a specific real place, city, region, island, landmark, museum, park or attraction. Never return generic category labels such as 'Natural landmark', 'Historical site', 'Museum', 'Beach', 'National park', 'City' or 'Attraction' as a related topic."
+    assert anchor in code, 'related prompt anchor not found'
     code = code.replace(anchor, repl)
 n['parameters']['jsCode'] = code
 
 n = nodes['Validate ten sourced facts']
 code = n['parameters']['jsCode']
-if 'W10_R01_VALIDATE_V7_SOURCE_DIVERSITY' not in code:
-    code = code.replace('/* W10_R01_VALIDATE_V6_TRAVEL_QUALITY */', '/* W10_R01_VALIDATE_V7_SOURCE_DIVERSITY */')
-    anchor = "if(items.length!==10){error=`Research produced ${items.length} valid sourced facts instead of 10`;}else{const rel=[];"
-    inject = """if(items.length!==10){error=`Research produced ${items.length} valid sourced facts instead of 10`;}else{const articleDomains=new Set(items.flatMap(i=>i.sources.map(s=>host(s.url))).filter(Boolean));if(String(c.category)==='travel'&&String(c.location_type||'')==='country'&&articleDomains.size<2){error=`Country travel guide cites only ${articleDomains.size} independent source domain(s); at least 2 required`;}const rel=[];"""
-    assert anchor in code, 'validator else anchor not found'
-    code = code.replace(anchor, inject, 1)
-    topic_anchor = "topic={slug:c.slug,title:String(x.title||c.title).slice(0,300)"
-    assert topic_anchor in code, 'topic assignment anchor not found'
-    code = code.replace(topic_anchor, "if(!error)topic={slug:c.slug,title:String(x.title||c.title).slice(0,300)", 1)
+if 'W10_R01_VALIDATE_V8_GRAPH_QUALITY' not in code:
+    code = code.replace('/* W10_R01_VALIDATE_V7_SOURCE_DIVERSITY */', '/* W10_R01_VALIDATE_V8_GRAPH_QUALITY */')
+    old = """const rel=[];for(const r of (Array.isArray(x.related_topics)?x.related_topics:[]).slice(0,6)){const slug=slugify(r?.slug||r?.subject||r?.title);const cat=allowed.has(String(r?.category))?String(r.category):String(c.category||'general-knowledge');const score=Math.max(0,Math.min(1,Number(r?.score)||.65)),ever=Math.max(0,Math.min(1,Number(r?.evergreen_score)||score));if(slug&&slug!==c.slug&&score>=.65&&ever>=.70)rel.push({slug,title:String(r?.title||slug.replace(/-/g,' ')).slice(0,300),subject:String(r?.subject||r?.title||slug.replace(/-/g,' ')).slice(0,300),category:cat,relationship:String(r?.relationship||'related').slice(0,80),score,evergreen_score:ever,rationale:String(r?.rationale||'Related evidence-backed follow-up subject.').slice(0,1200)});}"""
+    new = """const rel=[];const genericTravel=/^(natural landmark|historical site|historic site|museum|beach|national park|park|city|town|island|region|attraction|landmark|tourist attraction|heritage site|world heritage site|nature reserve|cultural site|religious site|archaeological site|scenic area|coastal area)$/i;for(const r of (Array.isArray(x.related_topics)?x.related_topics:[]).slice(0,6)){const rawTitle=String(r?.title||r?.subject||'').trim();const rawSubject=String(r?.subject||r?.title||'').trim();const slug=slugify(r?.slug||rawSubject||rawTitle);const cat=allowed.has(String(r?.category))?String(r.category):String(c.category||'general-knowledge');let score=Math.max(0,Math.min(1,Number(r?.score)||.65)),ever=Math.max(0,Math.min(1,Number(r?.evergreen_score)||score));if(cat==='travel'){if(genericTravel.test(rawTitle)||genericTravel.test(rawSubject))continue;score=Math.min(score,.84);ever=Math.min(ever,.90);}if(slug&&slug!==c.slug&&rawTitle.length>=3&&rawSubject.length>=3&&score>=.65&&ever>=.70)rel.push({slug,title:rawTitle.slice(0,300),subject:rawSubject.slice(0,300),category:cat,relationship:String(r?.relationship||'related').slice(0,80),score,evergreen_score:ever,rationale:String(r?.rationale||'Related evidence-backed follow-up subject.').slice(0,1200)});}"""
+    assert old in code, 'related-topic validator anchor not found'
+    code = code.replace(old, new, 1)
 n['parameters']['jsCode'] = code
 
 path.write_text(json.dumps(data, separators=(',', ':'), ensure_ascii=False) + '\n')
@@ -60,6 +36,8 @@ check = json.loads(path.read_text())[0]
 nodes = {n['name']: n for n in check['nodes']}
 assert check.get('active') is False
 assert 'W10_R01_ASSEMBLE_FREE_EVIDENCE_V3_DIVERSITY' in nodes['Assemble evidence pack']['parameters']['jsCode']
-assert 'W10_R01_PROMPT_V8_SOURCE_DIVERSITY' in nodes['Build evidence-grounded research prompt']['parameters']['jsCode']
-assert 'W10_R01_VALIDATE_V7_SOURCE_DIVERSITY' in nodes['Validate ten sourced facts']['parameters']['jsCode']
-print('R01 source-diversity patch applied')
+assert 'W10_R01_PROMPT_V9_GRAPH_QUALITY' in nodes['Build evidence-grounded research prompt']['parameters']['jsCode']
+assert 'W10_R01_VALIDATE_V8_GRAPH_QUALITY' in nodes['Validate ten sourced facts']['parameters']['jsCode']
+assert 'genericTravel' in nodes['Validate ten sourced facts']['parameters']['jsCode']
+assert 'Math.min(score,.84)' in nodes['Validate ten sourced facts']['parameters']['jsCode']
+print('R01 source-diversity + graph-quality patch applied')
