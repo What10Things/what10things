@@ -17,6 +17,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Validate n8n workflow structure
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          files = sorted(Path('automation/n8n').glob('*.json'))
+          assert files, 'No n8n workflow files found'
+          for path in files:
+              data = json.loads(path.read_text())
+              assert isinstance(data, list) and len(data) == 1, path
+              workflow = data[0]
+              assert workflow.get('active') is False, f'{path}: source workflow must be inactive'
+              nodes = workflow.get('nodes') or []
+              assert nodes, f'{path}: no nodes'
+              names = {node.get('name') for node in nodes}
+              assert len(names) == len(nodes) and None not in names, f'{path}: duplicate/missing node names'
+              for node in nodes:
+                  assert isinstance(node.get('position'), list) and len(node['position']) == 2, f"{path}: {node.get('name')} missing position"
+                  assert isinstance(node.get('typeVersion'), (int, float)), f"{path}: {node.get('name')} missing typeVersion"
+                  assert isinstance(node.get('parameters'), dict), f"{path}: {node.get('name')} missing parameters"
+              for source, routes in (workflow.get('connections') or {}).items():
+                  assert source in names, f'{path}: connection source {source!r} missing'
+                  for outputs in routes.values():
+                      for branch in outputs:
+                          for edge in branch:
+                              assert edge.get('node') in names, f"{path}: connection target {edge.get('node')!r} missing"
+              print(f'{path}: {len(nodes)} nodes OK')
+          PY
       - name: Reconstruct application under test
         run: |
           mkdir -p test_app
