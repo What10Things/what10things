@@ -1,0 +1,3 @@
+what10things-knowledge-overlay.zip sha256 eb13d90d422dfbc74f48461cfefb40b54629ced80e4d037cc8a94fa84021cc67
+parts 4
+contains app.py, knowledge_store.py, validate.py
