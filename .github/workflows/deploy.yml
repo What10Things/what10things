@@ -113,27 +113,36 @@ jobs:
         id: live_check
         shell: bash
         run: |
-          check_route() {
+          fetch_route() {
             path="$1"
-            expected="$2"
             curl --fail --silent --show-error --location --max-time 30 \
               -H 'Cache-Control: no-cache' \
               -H 'Pragma: no-cache' \
-              "https://what10things.co.uk${path}?deploy=${GITHUB_SHA}" \
-              | grep -Fq "${expected}"
+              "https://what10things.co.uk${path}?deploy=${GITHUB_SHA}"
+          }
+
+          check_text() {
+            path="$1"
+            expected="$2"
+            fetch_route "${path}" | grep -Fq "${expected}"
+          }
+
+          check_json_ok() {
+            path="$1"
+            fetch_route "${path}" | python3 -c 'import json,sys; data=json.load(sys.stdin); assert data.get("ok") is True'
           }
 
           for attempt in $(seq 1 20); do
-            if check_route "/" "Ten clear things" \
-              && check_route "/" "What10Things.co.uk is operated by Urban Sky Web Ltd." \
-              && check_route "/topics" "Knowledge network" \
-              && check_route "/methodology" "Map the evergreen subject" \
-              && check_route "/api/status" '"ok": true' \
-              && check_route "/about" "What10Things.co.uk is operated by Urban Sky Web Ltd." \
-              && check_route "/privacy" "17421062" \
-              && check_route "/affiliate-disclosure" "registered in England and Wales" \
-              && check_route "/guides/air-fryer-buying-guide" "Start with usable capacity" \
-              && check_route "/travel/rome" "Rome"; then
+            if check_text "/" "Ten clear things" \
+              && check_text "/" "What10Things.co.uk is operated by Urban Sky Web Ltd." \
+              && check_text "/topics" "Knowledge network" \
+              && check_text "/methodology" "Map the evergreen subject" \
+              && check_json_ok "/api/status" \
+              && check_text "/about" "What10Things.co.uk is operated by Urban Sky Web Ltd." \
+              && check_text "/privacy" "17421062" \
+              && check_text "/affiliate-disclosure" "registered in England and Wales" \
+              && check_text "/guides/air-fryer-buying-guide" "Start with usable capacity" \
+              && check_text "/travel/rome" "Rome"; then
               echo "What10Things knowledge platform is live on Passenger."
               exit 0
             fi
