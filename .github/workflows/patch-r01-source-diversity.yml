@@ -1,5 +1,6 @@
 name: Patch R01 source diversity
 
+# One-shot source-control patch for R01 evidence diversity.
 on:
   push:
     branches: [main]
