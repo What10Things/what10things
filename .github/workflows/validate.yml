@@ -1,0 +1,41 @@
+name: Validate What10Things knowledge platform
+
+on:
+  pull_request:
+    paths:
+      - 'flask-overlay/**'
+      - '.github/workflows/deploy.yml'
+      - '.github/workflows/validate.yml'
+      - 'automation/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reconstruct application under test
+        run: |
+          mkdir -p test_app
+          cat deploy-package/part-* | base64 --decode > "${RUNNER_TEMP}/what10things-flask.zip"
+          echo "563746e61d46c82c60ffa7d8fb54c4d291471d7f42c8e2f305f9c094b25af78c  ${RUNNER_TEMP}/what10things-flask.zip" | sha256sum --check --strict
+          unzip -q "${RUNNER_TEMP}/what10things-flask.zip" -d test_app
+          cat flask-overlay/part-* | base64 --decode > "${RUNNER_TEMP}/what10things-knowledge-overlay.zip"
+          echo "eb13d90d422dfbc74f48461cfefb40b54629ced80e4d037cc8a94fa84021cc67  ${RUNNER_TEMP}/what10things-knowledge-overlay.zip" | sha256sum --check --strict
+          unzip -q -o "${RUNNER_TEMP}/what10things-knowledge-overlay.zip" -d test_app
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: test_app/requirements.txt
+      - name: Install application requirements
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r test_app/requirements.txt
+      - name: Compile and run full validation
+        run: |
+          python -m compileall -q test_app
+          PYTHONPATH=test_app python test_app/validate.py
