@@ -1,0 +1,99 @@
+name: Patch R01 source diversity
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/patch-r01-source-diversity.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Enforce diverse country evidence
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          path=Path('automation/n8n/W10-R01-evidence-research.json')
+          data=json.loads(path.read_text())
+          w=data[0]
+          nodes={n['name']:n for n in w['nodes']}
+
+          # V3 evidence assembly: rank primary/official-looking sources first while preserving domain diversity.
+          n=nodes['Assemble evidence pack']
+          code=n['parameters']['jsCode']
+          old="""/* W10_R01_ASSEMBLE_FREE_EVIDENCE_V2 */
+const base=$('Prepare evidence search').item.json;const meta=$('Parse Bing evidence').all().map(x=>x.json);const fetched=$input.all().map(x=>x.json||{});const clean=s=>String(s||'').replace(/\\s+/g,' ').trim();const rows=[];
+for(let i=0;i<meta.length&&rows.length<6;i++){const m=meta[i],f=fetched[i]||{};let body=clean(f.body||f.data||'');if(body.length<180)body=clean(m.snippet);if(!m.url||body.length<80)continue;rows.push({source_id:rows.length+1,url:m.url,title:m.title,content:body.slice(0,2600),snippet:clean(m.snippet).slice(0,600)});}
+if(rows.length<3)throw new Error(`Only ${rows.length} readable destination-relevant evidence sources after free fetch`);
+return [{json:{candidate:base.candidate,intent:base.intent,destination:base.destination,query:base.query,evidence:rows,evidence_provider:'bing_rss+jina_reader'}}];"""
+          new="""/* W10_R01_ASSEMBLE_FREE_EVIDENCE_V3_DIVERSITY */
+const base=$('Prepare evidence search').item.json;const meta=$('Parse Bing evidence').all().map(x=>x.json);const fetched=$input.all().map(x=>x.json||{});const clean=s=>String(s||'').replace(/\\s+/g,' ').trim();
+const host=u=>{try{return new URL(u).hostname.toLowerCase().replace(/^www\\./,'')}catch{return ''}};
+const preferred=h=>/\\.(gov|gov\\.[a-z]{2}|edu|ac\\.uk)$/.test(h)||/(unesco|tourism|tourist|travel|visit|nationalpark|parks\\.)/.test(h);
+const candidates=[];
+for(let i=0;i<meta.length;i++){const m=meta[i],f=fetched[i]||{};let body=clean(f.body||f.data||'');if(body.length<180)body=clean(m.snippet);if(!m.url||body.length<80)continue;const domain=host(m.url);if(!domain)continue;candidates.push({url:m.url,title:m.title,content:body.slice(0,2600),snippet:clean(m.snippet).slice(0,600),domain,preferred:preferred(domain),rank:i});}
+candidates.sort((a,b)=>Number(b.preferred)-Number(a.preferred)||a.rank-b.rank);
+const rows=[];const used=new Set();
+for(const r of candidates){if(rows.length>=6)break;if(used.has(r.domain)&&used.size<3)continue;used.add(r.domain);rows.push({...r,source_id:rows.length+1});}
+if(rows.length<6){for(const r of candidates){if(rows.length>=6)break;if(rows.some(x=>x.url===r.url))continue;rows.push({...r,source_id:rows.length+1});}}
+if(rows.length<3)throw new Error(`Only ${rows.length} readable destination-relevant evidence sources after free fetch`);
+const domains=new Set(rows.map(r=>r.domain));
+if(String(base.candidate?.category)==='travel'&&String(base.candidate?.location_type||'')==='country'&&domains.size<2)throw new Error(`Country travel evidence has only ${domains.size} independent source domain(s)`);
+return [{json:{candidate:base.candidate,intent:base.intent,destination:base.destination,query:base.query,evidence:rows,evidence_provider:'bing_rss+jina_reader',evidence_domains:[...domains],preferred_source_count:rows.filter(r=>r.preferred).length}}];"""
+          if 'W10_R01_ASSEMBLE_FREE_EVIDENCE_V3_DIVERSITY' not in code:
+              assert old in code, 'evidence assembly anchor not found'
+              code=code.replace(old,new)
+          n['parameters']['jsCode']=code
+
+          # Prompt: explicitly require the final selection to use multiple independent domains for country guides.
+          n=nodes['Build evidence-grounded research prompt']
+          code=n['parameters']['jsCode']
+          if 'W10_R01_PROMPT_V8_SOURCE_DIVERSITY' not in code:
+              code=code.replace('/* W10_R01_PROMPT_V7_CANDIDATE_POOL */','/* W10_R01_PROMPT_V8_SOURCE_DIVERSITY */')
+              anchor="Prefer official tourism boards, government, UNESCO, national parks, museums and authoritative destination sources where present."
+              repl=anchor+" For country travel guides, ensure the 10 strongest publishable items collectively cite at least two independent source domains; do not let one publisher support the whole article when other supplied evidence is available."
+              assert anchor in code, 'prompt anchor not found'
+              code=code.replace(anchor,repl)
+          n['parameters']['jsCode']=code
+
+          # Validator: keep item-level checks, then enforce final article-level domain diversity for country travel pages.
+          n=nodes['Validate ten sourced facts']
+          code=n['parameters']['jsCode']
+          if 'W10_R01_VALIDATE_V7_SOURCE_DIVERSITY' not in code:
+              code=code.replace('/* W10_R01_VALIDATE_V6_TRAVEL_QUALITY */','/* W10_R01_VALIDATE_V7_SOURCE_DIVERSITY */')
+              anchor="if(items.length!==10)error=`Research produced ${items.length} valid sourced items; exactly 10 required`;"
+              inject="""if(items.length!==10)error=`Research produced ${items.length} valid sourced items; exactly 10 required`;
+if(!error&&String(c.category)==='travel'&&String(c.location_type||'')==='country'){
+  const articleDomains=new Set();
+  for(const item of items){for(const src of (item.sources||[])){const h=host(src.url);if(h)articleDomains.add(h);}}
+  if(articleDomains.size<2)error=`Country travel guide cites only ${articleDomains.size} independent source domain(s); at least 2 required`;
+}"""
+              assert anchor in code, 'validator article-count anchor not found'
+              code=code.replace(anchor,inject,1)
+          n['parameters']['jsCode']=code
+
+          path.write_text(json.dumps(data,separators=(',',':'),ensure_ascii=False)+'\n')
+          check=json.loads(path.read_text())[0]
+          nodes={n['name']:n for n in check['nodes']}
+          assert check.get('active') is False
+          assert 'W10_R01_ASSEMBLE_FREE_EVIDENCE_V3_DIVERSITY' in nodes['Assemble evidence pack']['parameters']['jsCode']
+          assert 'W10_R01_PROMPT_V8_SOURCE_DIVERSITY' in nodes['Build evidence-grounded research prompt']['parameters']['jsCode']
+          assert 'W10_R01_VALIDATE_V7_SOURCE_DIVERSITY' in nodes['Validate ten sourced facts']['parameters']['jsCode']
+          print('R01 source-diversity patch applied')
+          PY
+          git diff --check
+          git config user.name 'What10Things Automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add automation/n8n/W10-R01-evidence-research.json
+          git commit -m 'Require diverse evidence for country travel guides'
+          git push origin HEAD:main
