@@ -10,9 +10,59 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
+  patch-r01-pool:
+    if: github.event_name == 'pull_request' && github.head_ref == 'automation/n8n-knowledge-factory'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: automation/n8n-knowledge-factory
+          fetch-depth: 0
+      - name: Increase research candidate pool without weakening validation
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path('automation/n8n/W10-R01-evidence-research.json')
+          data=json.loads(path.read_text())
+          w=data[0]
+          nodes={n['name']:n for n in w['nodes']}
+          node=nodes['Build evidence-grounded research prompt']
+          code=node['parameters']['jsCode']
+          if 'W10_R01_PROMPT_V7_CANDIDATE_POOL' not in code:
+              code=code.replace('/* W10_R01_PROMPT_V6_TRAVEL_QUALITY */','/* W10_R01_PROMPT_V7_CANDIDATE_POOL */')
+              code=code.replace('Produce exactly 10 distinct places, attractions or experiences a visitor could realistically consider.', 'Produce exactly 14 ranked candidate places, attractions or experiences a visitor could realistically consider. The validator will discard weak candidates and publish only the first 10 that pass all evidence and quality checks.')
+              code=code.replace('Produce exactly 10 distinct destinations, neighbourhoods, islands, regions or attractions that are genuinely useful choices for a visitor.', 'Produce exactly 14 ranked candidate destinations, neighbourhoods, islands, regions or attractions that are genuinely useful choices for a visitor. The validator will publish only the first 10 that pass all evidence and quality checks.')
+              code=code.replace('Produce exactly 10 durable planning points a visitor should understand before travelling.', 'Produce exactly 14 ranked candidate planning points a visitor should understand before travelling. The validator will publish only the first 10 that pass all evidence and quality checks.')
+              code=code.replace('Produce exactly 10 interesting, durable facts about the location,', 'Produce exactly 14 ranked candidate interesting, durable facts about the location,')
+              code=code.replace('items:[EXACTLY 10]', 'items:[EXACTLY 14 CANDIDATES]')
+              code=code.replace('max_tokens:5000', 'max_tokens:6500')
+          node['parameters']['jsCode']=code
+          path.write_text(json.dumps(data,separators=(',',':'),ensure_ascii=False)+'\n')
+          check=json.loads(path.read_text())[0]
+          c={n['name']:n for n in check['nodes']}['Build evidence-grounded research prompt']['parameters']['jsCode']
+          v={n['name']:n for n in check['nodes']}['Validate ten sourced facts']['parameters']['jsCode']
+          assert 'W10_R01_PROMPT_V7_CANDIDATE_POOL' in c
+          assert 'items:[EXACTLY 14 CANDIDATES]' in c
+          assert 'max_tokens:6500' in c
+          assert 'if(items.length>=10)break' in v
+          assert 'W10_R01_VALIDATE_V6_TRAVEL_QUALITY' in v
+          print('14-candidate pool ready; 10-item quality gate retained')
+          PY
+          if git diff --quiet; then
+            echo 'Candidate-pool patch already applied'
+            exit 0
+          fi
+          git config user.name 'What10Things Automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add automation/n8n/W10-R01-evidence-research.json
+          git commit -m 'Generate 14 research candidates for 10-item quality gate'
+          git push origin HEAD:automation/n8n-knowledge-factory
+
   validate:
     runs-on: ubuntu-latest
     steps:
@@ -22,7 +72,6 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-
           files = sorted(Path('automation/n8n').glob('*.json'))
           assert files, 'No n8n workflow files found'
           for path in files:
