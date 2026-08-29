@@ -49,15 +49,21 @@ jobs:
             "${{ github.api_url }}/repos/${{ github.repository }}/statuses/${{ github.sha }}" \
             -d "${payload}"
 
-      - name: Reconstruct verified Flask application
+      - name: Reconstruct base Flask application and overlay knowledge source
         shell: bash
         run: |
+          rm -rf deploy
           mkdir -p deploy
           cat deploy-package/part-* | base64 --decode > "${RUNNER_TEMP}/what10things-flask.zip"
           echo "563746e61d46c82c60ffa7d8fb54c4d291471d7f42c8e2f305f9c094b25af78c  ${RUNNER_TEMP}/what10things-flask.zip" | sha256sum --check --strict
           unzip -q "${RUNNER_TEMP}/what10things-flask.zip" -d deploy
+          cp flask_app/app.py deploy/app.py
+          cp flask_app/knowledge_store.py deploy/knowledge_store.py
+          cp flask_app/site_data.json deploy/site_data.json
+          cp flask_app/validate.py deploy/validate.py
           find deploy -type d -name '__pycache__' -prune -exec rm -rf {} +
           find deploy -type f -name '*.pyc' -delete
+          rm -f deploy/runtime/knowledge.db deploy/runtime/knowledge.db-shm deploy/runtime/knowledge.db-wal
           mkdir -p deploy/tmp
           date -u +'%Y-%m-%dT%H:%M:%SZ' > deploy/tmp/restart.txt
 
@@ -101,6 +107,8 @@ jobs:
             **/.git*/**
             **/__pycache__/**
             **/*.pyc
+            **/runtime/*.db
+            **/runtime/*.db-*
 
       - name: Verify live Passenger routes
         id: live_check
@@ -119,19 +127,22 @@ jobs:
           for attempt in $(seq 1 20); do
             if check_route "/" "Ten clear things" \
               && check_route "/" "What10Things.co.uk is operated by Urban Sky Web Ltd." \
+              && check_route "/topics" "Knowledge network" \
+              && check_route "/methodology" "Map the evergreen subject" \
+              && check_route "/api/status" '"ok": true' \
               && check_route "/about" "What10Things.co.uk is operated by Urban Sky Web Ltd." \
               && check_route "/privacy" "17421062" \
               && check_route "/affiliate-disclosure" "registered in England and Wales" \
               && check_route "/guides/air-fryer-buying-guide" "Start with usable capacity" \
               && check_route "/travel/rome" "Rome"; then
-              echo "What10Things is live on the Passenger application."
+              echo "What10Things knowledge platform is live on Passenger."
               exit 0
             fi
             echo "Passenger has not reloaded yet (attempt ${attempt}/20)."
             sleep 8
           done
 
-          echo "The root deployment completed, but the live routes did not return the rebuilt application."
+          echo "The deployment completed, but the live routes did not return the rebuilt application."
           exit 1
 
       - name: Record deployment result
@@ -142,7 +153,7 @@ jobs:
         shell: bash
         run: |
           state="${JOB_STATUS}"
-          description="Flask app deployed to public_html and verified live"
+          description="What10Things knowledge Flask app deployed and verified live"
           if [ "${state}" = "cancelled" ]; then
             state="error"
             description="Deployment run was cancelled"
