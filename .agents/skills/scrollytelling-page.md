@@ -1,0 +1,5 @@
+---
+name: scrollytelling-page
+description: Design and review mobile-first scroll-scrubbed WebGL/3D editorial landing pages for What10Things.
+---
+Build one persistent spatial system that changes state as the reader scrolls. Tie every visual state to the ten-item editorial model, topic relationships, evidence or discovery rather than decoration. Prefer Three.js/WebGL for spatial meaning and GSAP ScrollTrigger or an equivalent deterministic scroll controller for reversible scrubbed state changes. Treat 375–430px portrait framing as a first-class composition. Keep mobile GPU work conservative, cap render resolution, pause when hidden, support Save-Data and prefers-reduced-motion, provide a static fallback, avoid horizontal overflow, and keep touch/keyboard navigation accessible. Do not imply unreleased What10Things features are already operational. Do not spend Flow/Veo credits in automated preview builds.

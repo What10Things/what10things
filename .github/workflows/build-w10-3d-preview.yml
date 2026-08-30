@@ -1,0 +1,334 @@
+name: Build What10Things 3D Preview
+
+on:
+  push:
+    branches:
+      - design/what10things-3d-preview
+    paths:
+      - '.github/workflows/build-w10-3d-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test-deploy:
+    runs-on: [self-hosted, Linux]
+    timeout-minutes: 90
+    env:
+      TARGET_REPO: What10Things/what10things
+      TARGET_BRANCH: design/what10things-3d-preview
+      PREVIEW_URL: https://what10things.co.uk/w10-preview/
+      FTP_SERVER: mainbuyer.com
+      FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+      FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+    steps:
+      - name: Prepare agent toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
+          claude auth status >/dev/null
+          agy --version
+          python3 --version
+          node --version
+          npm --version
+
+          claude plugin marketplace add anthropics/claude-plugins-official --scope user || true
+          claude plugin marketplace update claude-plugins-official || true
+          claude plugin marketplace add obra/superpowers-marketplace --scope user || true
+          claude plugin marketplace update superpowers-marketplace || true
+
+          plugins=(frontend-design playwright context7 code-review code-simplifier security-guidance claude-code-setup)
+          for plugin in "${plugins[@]}"; do
+            if ! claude plugin list 2>/dev/null | grep -qiE "(^|[[:space:]])${plugin}([[:space:]@]|$)"; then
+              claude plugin install "${plugin}@claude-plugins-official" --scope user || true
+            fi
+          done
+          if ! claude plugin list 2>/dev/null | grep -qi 'superpowers'; then
+            claude plugin install superpowers@superpowers-marketplace --scope user || true
+          fi
+
+      - name: Clone isolated design branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
+          gh auth setup-git
+          work="$HOME/agents/what10things-3d-preview"
+          rm -rf "$work"
+          mkdir -p "$HOME/agents"
+          gh repo clone "$TARGET_REPO" "$work"
+          cd "$work"
+          git fetch origin "$TARGET_BRANCH"
+          git checkout -B "$TARGET_BRANCH" "origin/$TARGET_BRANCH"
+          git config user.name "w10-design-agents"
+          git config user.email "actions@what10things.local"
+
+          mkdir -p .agents/plugins/what10things-scrollytelling/rules
+          mkdir -p .agents/plugins/what10things-scrollytelling/skills/scrollytelling-page
+          cat > .agents/plugins/what10things-scrollytelling/plugin.json <<'JSON'
+          {"name":"what10things-scrollytelling"}
+          JSON
+          cat > .agents/plugins/what10things-scrollytelling/rules/design.md <<'EOF'
+          # What10Things interactive design rules
+          - Mobile first: 375, 390 and 430px must be intentionally composed before desktop.
+          - Do not imply What10Things is a mature populated platform beyond what the repository/live site supports.
+          - Use British English and preserve factual/editorial credibility.
+          - Avoid generic SaaS visuals, neon gradient blobs, glassmorphism, bento grids and repetitive rounded cards.
+          - 3D/motion must explain navigation, topic relationships or the ten-item structure; never be decoration alone.
+          - Prefer progressive enhancement, semantic HTML, reduced-motion fallback, Save-Data fallback and conservative mobile GPU work.
+          - No paid assets, API calls or Flow/Veo generations are permitted in this automated preview build.
+          EOF
+          cat > .agents/plugins/what10things-scrollytelling/skills/scrollytelling-page/SKILL.md <<'EOF'
+          ---
+          name: scrollytelling-page
+          description: Design and review mobile-first scroll-scrubbed WebGL/3D editorial landing pages for What10Things.
+          ---
+          Build one persistent spatial system that changes state as the reader scrolls. Tie the states to the ten-item editorial model, topic relationships and discovery. Use Three.js/WebGL only where it adds spatial meaning, GSAP ScrollTrigger or equivalent for deterministic scroll scrubbing, and static/2D fallbacks for reduced motion or low capability. Verify portrait framing, touch targets, text contrast, horizontal overflow and runtime errors.
+          EOF
+
+      - name: Antigravity researches and revises the how-to guide
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
+          cd "$HOME/agents/what10things-3d-preview"
+          timeout 600s agy -p "You are the Google-side research and architecture agent for a What10Things design experiment. Work only in this isolated git branch. Inspect the current repository, especially index.php, data/site.php, includes, automation/README.md and deployment notes. If network tools are available, also inspect the live homepage at https://what10things.co.uk/ and current official documentation for Antigravity CLI plugins/MCP, Three.js/WebGL, GSAP ScrollTrigger and Google Flow. Write two files: HOWTO_3D_SCROLL_WEBSITE.md and ANTIGRAVITY_DESIGN_BRIEF.md. The how-to must be an up-to-date practical guide for using ChatGPT as product/copy director, Claude Code as primary frontend implementation agent, Antigravity as independent architecture/review agent, and Google Flow as an OPTIONAL visual asset-generation stage. Be precise about what the authenticated Antigravity CLI can and cannot directly automate: do not claim it can invoke Flow unless you can verify a supported subscription-auth route. Note that this automated preview must spend zero Flow/Veo credits; Flow prompts may be proposed for a later manual asset pass. Recommend a mobile-first stack and performance/accessibility safeguards. The design brief must define an original What10Things concept called Knowledge Constellations: one persistent 3D knowledge map, ten numbered nodes, topic clusters, evidence/relationship lines, scroll-driven state changes, playful editorial tone, and a clear distinction from Urban Sky Web's Sky Atlas. Preserve truthful current product status and existing useful copy. Do not modify production PHP/Flask files. Do not deploy. Do not inspect secrets. Finish only after both markdown files are written." --mode accept-edits --dangerously-skip-permissions --output-format text | tee /tmp/w10-antigravity-research.txt
+          test -s HOWTO_3D_SCROLL_WEBSITE.md
+          test -s ANTIGRAVITY_DESIGN_BRIEF.md
+
+      - name: Install local preview build and browser tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
+          cd "$HOME/agents/what10things-3d-preview"
+          rm -rf .preview-tools
+          mkdir .preview-tools
+          cd .preview-tools
+          npm init -y >/dev/null 2>&1
+          npm install --silent three gsap esbuild playwright
+          if ! node -e "const {chromium}=require('playwright'); console.log(chromium.executablePath())" | xargs test -x; then
+            npx playwright install chromium
+          fi
+
+      - name: Claude builds the Knowledge Constellations preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
+          cd "$HOME/agents/what10things-3d-preview"
+          cat > /tmp/w10-claude-build.txt <<'EOF'
+          IMPLEMENT a complete, original, production-quality static design prototype for What10Things in preview/site/. Do not merely plan it. Read HOWTO_3D_SCROLL_WEBSITE.md, ANTIGRAVITY_DESIGN_BRIEF.md, index.php, data/site.php, includes/header.php, includes/footer.php and automation/README.md first.
+
+          PURPOSE
+          This is a safe public preview of a possible future What10Things landing experience, not a replacement for production yet. Preserve the site's useful editorial promise: ten clear, useful things without filler. Do not exaggerate current content/product maturity.
+
+          CONCEPT — KNOWLEDGE CONSTELLATIONS
+          - One persistent spatial knowledge system lives behind/alongside the whole scroll journey.
+          - Hero: ten numbered nodes assemble from a loose field into a legible constellation around a central '10'.
+          - Discovery: topic clusters form as distinct spatial territories (travel, buying, science/nature, history/culture, technology, everyday/general knowledge — use labels supported by the repo where practical).
+          - Evidence: selected nodes connect with precise source/evidence-style lines and measurement ticks, expressing that useful facts should be grounded rather than invented.
+          - Deep dive: one topic expands so the ten nodes become a guided numbered sequence; copy explains that each fact can lead to related topics.
+          - Social/discovery: nodes compress into shareable '10' frames without pretending social publishing is already mature.
+          - Horizon: the map resolves into a route forward to browse current guides/search.
+          The visual language must be more playful/editorial than Urban Sky Web's sober survey atlas. Think dark ink / paper-white typography with bright-but-controlled category accents, crisp numerals, diagrammatic geometry and tactile motion. No generic AI gradients, glass cards, bento layouts, floating emoji, or decorative particle soup.
+
+          IMPLEMENTATION
+          - Build preview/site/index.html, preview/site/style.css, preview/site/src/main.js and preview/site/.htaccess.
+          - main.js must import three and gsap/ScrollTrigger as npm modules. Do not use a CDN. The workflow will bundle it with esbuild.
+          - Use Three.js for the persistent node/line scene. Keep geometry/material count modest. No expensive post-processing.
+          - Use GSAP ScrollTrigger with scrubbed chapter progress/state interpolation. Animations must reverse naturally when scrolling back.
+          - Pointer/touch parallax may be subtle but comprehension cannot depend on hover.
+          - Mobile portrait framing is a first-class art direction, not a scaled desktop.
+          - Respect prefers-reduced-motion and Save-Data. Provide a meaningful static fallback if WebGL/JS is unavailable.
+          - Pause rendering when document is hidden; cap DPR; reduce node/line workload on mobile.
+          - Semantic headings, visible focus, keyboard navigation, 44px touch targets, no horizontal overflow.
+          - Include <meta name=robots content='noindex,nofollow,noarchive'> and an obvious small 'Design preview' label.
+          - Link real calls to action to production routes such as /guides, /travel, /search where appropriate.
+          - Do not use any generated video or remote image dependency in this automated pass. Create graphics procedurally with HTML/CSS/SVG/Three.js only.
+          - Add a hidden/comment marker W10_KNOWLEDGE_CONSTELLATIONS_PREVIEW so automated live verification can confirm the right build.
+
+          COPY
+          Reuse or carefully adapt truthful language from the current site. Any new copy must not invent user numbers, staff, partnerships, revenue, awards, research claims or product capabilities. The preview can describe the design intent in present-tense UI terms, but not claim unreleased automation/social features are already operating.
+
+          QA
+          You may inspect locally, but do not deploy. Write preview/CLAUDE_PREVIEW_REPORT.md summarising design decisions, mobile considerations, accessibility/performance decisions and known limitations. Do not stop until the actual files exist and contain working implementation code.
+          EOF
+          cat /tmp/w10-claude-build.txt | claude --print --allowedTools "Read,Glob,Grep,Edit,Write,Bash,WebFetch,WebSearch,Skill,Task,ToolSearch" | tee /tmp/w10-claude-build-output.txt
+
+          if [ ! -s preview/site/index.html ] || [ ! -s preview/site/src/main.js ] || [ ! -s preview/CLAUDE_PREVIEW_REPORT.md ]; then
+            printf '%s\n' "Your previous response did not complete the implementation. IMPLEMENT NOW. Edit the files in preview/site/ and write preview/CLAUDE_PREVIEW_REPORT.md. Do not return a plan; do not finish until the files exist and are testable." | claude --print --allowedTools "Read,Glob,Grep,Edit,Write,Bash,WebFetch,WebSearch,Skill,Task,ToolSearch" | tee /tmp/w10-claude-build-retry.txt
+          fi
+          test -s preview/site/index.html
+          test -s preview/site/style.css
+          test -s preview/site/src/main.js
+          test -s preview/CLAUDE_PREVIEW_REPORT.md
+
+      - name: Bundle preview and run first browser QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
+          cd "$HOME/agents/what10things-3d-preview"
+          TOOL_NODE="$PWD/.preview-tools/node_modules"
+          mkdir -p preview/site/assets preview/qa
+          "$PWD/.preview-tools/node_modules/.bin/esbuild" preview/site/src/main.js --bundle --minify --format=iife --outfile=preview/site/assets/app.js --sourcemap
+          grep -q 'W10_KNOWLEDGE_CONSTELLATIONS_PREVIEW' preview/site/index.html
+          grep -q 'prefers-reduced-motion' preview/site/style.css
+          node --check preview/site/assets/app.js
+
+          pkill -f 'python3 -m http.server 8770' >/dev/null 2>&1 || true
+          nohup python3 -m http.server 8770 --bind 127.0.0.1 --directory preview/site >/tmp/w10-preview-server.log 2>&1 &
+          echo $! >/tmp/w10-preview-server.pid
+          sleep 2
+          curl -fsS http://127.0.0.1:8770/ | grep -q 'W10_KNOWLEDGE_CONSTELLATIONS_PREVIEW'
+
+          NODE_PATH="$TOOL_NODE" node <<'JS'
+          const { chromium } = require('playwright');
+          const fs = require('fs');
+          (async()=>{
+            const browser = await chromium.launch({headless:true});
+            const cases = [[390,844,'390'],[768,1024,'768'],[1440,1000,'1440']];
+            const results=[];
+            for (const [width,height,name] of cases) {
+              const page = await browser.newPage({viewport:{width,height}});
+              const errors=[];
+              page.on('console', m=>{ if(m.type()==='error') errors.push('console:'+m.text()); });
+              page.on('pageerror', e=>errors.push('page:'+e.message));
+              await page.goto('http://127.0.0.1:8770/', {waitUntil:'networkidle'});
+              const overflow = await page.evaluate(()=>document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
+              await page.screenshot({path:`preview/qa/${name}.png`,fullPage:true});
+              await page.evaluate(()=>window.scrollTo(0, document.documentElement.scrollHeight * 0.52));
+              await page.waitForTimeout(350);
+              const scene = await page.locator('canvas').count();
+              results.push({width,height,overflow,scene,errors});
+              await page.close();
+            }
+            const reduced = await browser.newPage({viewport:{width:390,height:844}, reducedMotion:'reduce'});
+            await reduced.goto('http://127.0.0.1:8770/', {waitUntil:'networkidle'});
+            const rm = await reduced.evaluate(()=>matchMedia('(prefers-reduced-motion: reduce)').matches);
+            await reduced.close();
+            await browser.close();
+            fs.writeFileSync('preview/qa/browser-results.json', JSON.stringify({results,reducedMotionMedia:rm},null,2));
+            if (!rm || results.some(r=>r.overflow || r.errors.length || r.scene < 1)) process.exit(2);
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          cat preview/qa/browser-results.json
+
+      - name: Antigravity independently reviews rendered preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
+          cd "$HOME/agents/what10things-3d-preview"
+          timeout 600s agy -p "Act as an independent reviewer, not the primary designer. Inspect HOWTO_3D_SCROLL_WEBSITE.md, ANTIGRAVITY_DESIGN_BRIEF.md, preview/site/index.html, preview/site/style.css, preview/site/src/main.js, preview/qa/browser-results.json and the PNG screenshots in preview/qa. Review the Knowledge Constellations preview for originality, mobile portrait composition, 3D meaning, scroll-scrub architecture, accessibility, performance, truthful What10Things positioning and whether it is sufficiently distinct from Urban Sky Web. Fix clear implementation defects directly in preview/site/ if needed, but do not redesign it into a generic SaaS page. Write ANTIGRAVITY_PREVIEW_REVIEW.md with PASS/REVISE and concrete findings. Do not deploy, do not inspect secrets, do not use Flow/Veo or spend credits." --mode accept-edits --dangerously-skip-permissions --output-format text | tee /tmp/w10-antigravity-review.txt
+          test -s ANTIGRAVITY_PREVIEW_REVIEW.md
+
+      - name: Claude final polish from independent review
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
+          cd "$HOME/agents/what10things-3d-preview"
+          printf '%s\n' "Read ANTIGRAVITY_PREVIEW_REVIEW.md and the existing preview implementation. Apply only justified fixes/polish. Preserve Knowledge Constellations, mobile-first framing, truthful copy and performance/accessibility constraints. Do not plan only: edit the actual preview files where needed. Update preview/CLAUDE_PREVIEW_REPORT.md with a final-review section. Do not deploy." | claude --print --allowedTools "Read,Glob,Grep,Edit,Write,Bash,Skill,Task,ToolSearch" | tee /tmp/w10-claude-final.txt
+
+      - name: Rebuild and run final browser validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
+          cd "$HOME/agents/what10things-3d-preview"
+          TOOL_NODE="$PWD/.preview-tools/node_modules"
+          "$PWD/.preview-tools/node_modules/.bin/esbuild" preview/site/src/main.js --bundle --minify --format=iife --outfile=preview/site/assets/app.js --sourcemap
+          node --check preview/site/assets/app.js
+          grep -q 'W10_KNOWLEDGE_CONSTELLATIONS_PREVIEW' preview/site/index.html
+          grep -q 'noindex' preview/site/index.html
+          grep -q 'prefers-reduced-motion' preview/site/style.css
+          curl -fsS http://127.0.0.1:8770/ | grep -q 'W10_KNOWLEDGE_CONSTELLATIONS_PREVIEW'
+
+          NODE_PATH="$TOOL_NODE" node <<'JS'
+          const { chromium } = require('playwright');
+          const fs=require('fs');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const cases=[[375,812,'375-final'],[390,844,'390-final'],[430,932,'430-final'],[768,1024,'768-final'],[1440,1000,'1440-final'],[1920,1080,'1920-final']];
+            const results=[];
+            for(const [width,height,name] of cases){
+              const page=await browser.newPage({viewport:{width,height}}); const errors=[];
+              page.on('console',m=>{if(m.type()==='error') errors.push(m.text())}); page.on('pageerror',e=>errors.push(e.message));
+              await page.goto('http://127.0.0.1:8770/',{waitUntil:'networkidle'});
+              const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth+1);
+              const h1=await page.locator('h1').count(); const canvas=await page.locator('canvas').count();
+              await page.evaluate(()=>window.scrollTo(0,document.documentElement.scrollHeight)); await page.waitForTimeout(250);
+              results.push({width,height,overflow,h1,canvas,errors});
+              await page.screenshot({path:`preview/qa/${name}.png`,fullPage:true}); await page.close();
+            }
+            await browser.close();
+            fs.writeFileSync('preview/qa/final-browser-results.json',JSON.stringify(results,null,2));
+            if(results.some(r=>r.overflow||r.h1!==1||r.canvas<1||r.errors.length)) process.exit(2);
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          cat preview/qa/final-browser-results.json
+
+      - name: Commit preview branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
+          cd "$HOME/agents/what10things-3d-preview"
+          rm -rf .preview-tools
+          git add HOWTO_3D_SCROLL_WEBSITE.md ANTIGRAVITY_DESIGN_BRIEF.md ANTIGRAVITY_PREVIEW_REVIEW.md .agents preview
+          if ! git diff --cached --quiet; then
+            git commit -m 'Design preview: Knowledge Constellations 3D scrollytelling'
+            git push origin "$TARGET_BRANCH"
+          fi
+
+      - name: Deploy isolated noindex preview to GoDaddy
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$FTP_USERNAME"
+          test -n "$FTP_PASSWORD"
+          cd "$HOME/agents/what10things-3d-preview"
+          python3 - <<'PY'
+          import ftplib, os
+          from pathlib import Path
+          host=os.environ['FTP_SERVER']; user=os.environ['FTP_USERNAME']; password=os.environ['FTP_PASSWORD']
+          root=Path('preview/site')
+          ftp=ftplib.FTP_TLS(host, timeout=30)
+          ftp.login(user,password); ftp.prot_p()
+          def ensure(path):
+              ftp.cwd('/')
+              for part in [p for p in path.split('/') if p and p!='.']:
+                  try: ftp.cwd(part)
+                  except ftplib.error_perm:
+                      ftp.mkd(part); ftp.cwd(part)
+          ensure('w10-preview')
+          for local in root.rglob('*'):
+              if not local.is_file() or local.name.endswith('.map') or 'src' in local.parts: continue
+              rel=local.relative_to(root).as_posix(); parent=os.path.dirname(rel)
+              ensure('w10-preview' + ('/' + parent if parent else ''))
+              with local.open('rb') as fh: ftp.storbinary('STOR '+local.name, fh)
+          ftp.quit()
+          print('Preview files uploaded to /w10-preview/')
+          PY
+
+      - name: Verify public preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 12); do
+            if curl -fsSL --max-time 30 -H 'Cache-Control: no-cache' "${PREVIEW_URL}?v=$(date +%s)" | grep -q 'W10_KNOWLEDGE_CONSTELLATIONS_PREVIEW'; then
+              echo "PREVIEW_OK=${PREVIEW_URL}"
+              exit 0
+            fi
+            if curl -fsSL --max-time 30 -H 'Cache-Control: no-cache' "${PREVIEW_URL}index.html?v=$(date +%s)" | grep -q 'W10_KNOWLEDGE_CONSTELLATIONS_PREVIEW'; then
+              echo "PREVIEW_OK=${PREVIEW_URL}index.html"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo 'Preview upload completed but public verification failed.'
+          exit 1

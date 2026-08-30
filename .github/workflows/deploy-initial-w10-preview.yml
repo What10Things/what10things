@@ -1,0 +1,68 @@
+name: Deploy Initial What10Things Preview
+
+on:
+  push:
+    branches:
+      - design/what10things-3d-preview
+    paths:
+      - 'preview/site/**'
+      - '.github/workflows/deploy-initial-w10-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: what10things-initial-preview
+  cancel-in-progress: true
+
+jobs:
+  validate-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Static validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s preview/site/index.html
+          test -s preview/site/style.css
+          test -s preview/site/app.js
+          grep -q 'W10_KNOWLEDGE_CONSTELLATIONS_PREVIEW' preview/site/index.html
+          grep -q 'noindex,nofollow,noarchive' preview/site/index.html
+          grep -q 'prefers-reduced-motion' preview/site/style.css
+          node --check preview/site/app.js
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          class P(HTMLParser): pass
+          P().feed(Path('preview/site/index.html').read_text())
+          print('HTML parse OK')
+          PY
+      - name: Deploy isolated noindex preview
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: mainbuyer.com
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./preview/site/
+          server-dir: ./w10-preview/
+          state-name: .ftp-deploy-w10-design-preview-state.json
+          dangerous-clean-slate: false
+      - name: Verify public preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 12); do
+            body=$(curl -fsSL --max-time 25 -H 'Cache-Control: no-cache' "https://what10things.co.uk/w10-preview/?v=${GITHUB_SHA}" || true)
+            if printf '%s' "$body" | grep -q 'W10_KNOWLEDGE_CONSTELLATIONS_PREVIEW'; then
+              printf '%s' "$body" | grep -q 'noindex,nofollow,noarchive'
+              echo 'INITIAL_PREVIEW_OK=https://what10things.co.uk/w10-preview/'
+              exit 0
+            fi
+            sleep 5
+          done
+          exit 1
