@@ -41,9 +41,10 @@ jobs:
             const results=[];
             for(const [width,height,name] of cases){
               const page=await browser.newPage({viewport:{width,height}});
+              page.setDefaultNavigationTimeout(20000);
               const errors=[]; page.on('console',m=>{if(m.type()==='error') errors.push('console: '+m.text())}); page.on('pageerror',e=>errors.push('page: '+e.message));
-              await page.goto('https://what10things.co.uk/w10-preview/?qa='+Date.now(),{waitUntil:'networkidle'});
-              await page.waitForTimeout(500);
+              await page.goto('https://what10things.co.uk/w10-preview/?qa='+Date.now(),{waitUntil:'domcontentloaded'});
+              await page.waitForTimeout(900);
               const data=await page.evaluate(()=>({
                 marker:document.documentElement.innerHTML.includes('W10_KNOWLEDGE_CONSTELLATIONS_PREVIEW'),
                 noindex:(document.querySelector('meta[name="robots"]')?.content||'').includes('noindex'),
@@ -52,12 +53,14 @@ jobs:
                 h1:document.querySelectorAll('h1').length,
                 chapters:document.querySelectorAll('.chapter').length
               }));
-              await page.evaluate(()=>window.scrollTo(0,document.documentElement.scrollHeight*.56)); await page.waitForTimeout(350);
+              await page.evaluate(()=>window.scrollTo(0,document.documentElement.scrollHeight*.56)); await page.waitForTimeout(450);
               await page.screenshot({path:`${process.env.GITHUB_WORKSPACE}/browser-qa/${name}.png`,fullPage:true});
               results.push({width,height,...data,errors}); await page.close();
             }
             const reduced=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
-            await reduced.goto('https://what10things.co.uk/w10-preview/?rm='+Date.now(),{waitUntil:'networkidle'});
+            reduced.setDefaultNavigationTimeout(20000);
+            await reduced.goto('https://what10things.co.uk/w10-preview/?rm='+Date.now(),{waitUntil:'domcontentloaded'});
+            await reduced.waitForTimeout(500);
             const rm=await reduced.evaluate(()=>({matches:matchMedia('(prefers-reduced-motion: reduce)').matches,canvasDisplay:getComputedStyle(document.querySelector('#scene')).display,fallbackDisplay:getComputedStyle(document.querySelector('.scene-fallback')).display}));
             await reduced.screenshot({path:`${process.env.GITHUB_WORKSPACE}/browser-qa/reduced-motion.png`,fullPage:true});
             await reduced.close(); await browser.close();
