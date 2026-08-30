@@ -1,0 +1,75 @@
+name: Test Public What10Things Preview
+
+on:
+  push:
+    branches:
+      - design/what10things-3d-preview
+    paths:
+      - '.github/workflows/test-public-w10-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install Playwright
+        run: |
+          mkdir -p /tmp/w10qa && cd /tmp/w10qa
+          npm init -y >/dev/null
+          npm install --silent playwright
+          npx playwright install --with-deps chromium
+      - name: Test public preview on mobile and desktop
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p browser-qa
+          cd /tmp/w10qa
+          node <<'JS'
+          const {chromium}=require('playwright');
+          const fs=require('fs');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const cases=[[375,812,'375'],[390,844,'390'],[430,932,'430'],[768,1024,'768'],[1440,1000,'1440']];
+            const results=[];
+            for(const [width,height,name] of cases){
+              const page=await browser.newPage({viewport:{width,height}});
+              const errors=[]; page.on('console',m=>{if(m.type()==='error') errors.push('console: '+m.text())}); page.on('pageerror',e=>errors.push('page: '+e.message));
+              await page.goto('https://what10things.co.uk/w10-preview/?qa='+Date.now(),{waitUntil:'networkidle'});
+              await page.waitForTimeout(500);
+              const data=await page.evaluate(()=>({
+                marker:document.documentElement.innerHTML.includes('W10_KNOWLEDGE_CONSTELLATIONS_PREVIEW'),
+                noindex:(document.querySelector('meta[name="robots"]')?.content||'').includes('noindex'),
+                overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth+1,
+                canvas:document.querySelectorAll('canvas').length,
+                h1:document.querySelectorAll('h1').length,
+                chapters:document.querySelectorAll('.chapter').length
+              }));
+              await page.evaluate(()=>window.scrollTo(0,document.documentElement.scrollHeight*.56)); await page.waitForTimeout(350);
+              await page.screenshot({path:`${process.env.GITHUB_WORKSPACE}/browser-qa/${name}.png`,fullPage:true});
+              results.push({width,height,...data,errors}); await page.close();
+            }
+            const reduced=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
+            await reduced.goto('https://what10things.co.uk/w10-preview/?rm='+Date.now(),{waitUntil:'networkidle'});
+            const rm=await reduced.evaluate(()=>({matches:matchMedia('(prefers-reduced-motion: reduce)').matches,canvasDisplay:getComputedStyle(document.querySelector('#scene')).display,fallbackDisplay:getComputedStyle(document.querySelector('.scene-fallback')).display}));
+            await reduced.screenshot({path:`${process.env.GITHUB_WORKSPACE}/browser-qa/reduced-motion.png`,fullPage:true});
+            await reduced.close(); await browser.close();
+            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/browser-qa/results.json`,JSON.stringify({results,reducedMotion:rm},null,2));
+            const bad=results.some(r=>!r.marker||!r.noindex||r.overflow||r.canvas!==1||r.h1!==1||r.chapters<6||r.errors.length);
+            if(bad||!rm.matches||rm.fallbackDisplay==='none') process.exit(2);
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          cat "$GITHUB_WORKSPACE/browser-qa/results.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: what10things-preview-browser-qa
+          path: browser-qa/
+          if-no-files-found: error
