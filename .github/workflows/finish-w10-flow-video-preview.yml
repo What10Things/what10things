@@ -10,105 +10,53 @@ permissions:
   contents: read
 
 jobs:
-  optimize-test-push:
+  test-push:
     runs-on: [self-hosted, Linux, mainbuyer-server2]
-    timeout-minutes: 20
+    timeout-minutes: 15
     env:
       WORK: /home/ubuntu/agents/w10-flow-video-scroll
       FLOW_ROOT: /home/ubuntu/agents/flow-browser-automation
       TARGET_BRANCH: design/w10-flow-video-scroll
     steps:
-      - name: Build a seek-friendly Chromium derivative without changing Flow original
+      - name: Validate preserved agent output and cross-browser media
         shell: bash
         run: |
           set -euo pipefail
           export PATH="$HOME/.local/bin:$HOME/.local/node24/bin:$PATH"
-          SRC="$WORK/preview/video/media/knowledge-constellation.mp4"
-          WEBM="$WORK/preview/video/media/knowledge-constellation-scroll.webm"
-          test -s "$SRC"
-          ffmpeg -y -i "$SRC" -an -c:v libvpx -b:v 2200k -crf 10 -deadline good -cpu-used 2 -g 6 -keyint_min 6 -auto-alt-ref 0 "$WEBM"
-          test -s "$WEBM"
-          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height -of default=noprint_wrappers=1 "$WEBM"
-
-      - name: Add WebM first with H264 fallback and preserve data-saving behavior
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          from pathlib import Path
-          root=Path.home()/"agents/w10-flow-video-scroll/preview/video"
-          index=root/"index.html"; app=root/"app.js"; ht=root/".htaccess"
-          s=index.read_text()
-          old='        <source data-src="./media/knowledge-constellation.mp4" type="video/mp4">'
-          new='        <source data-src="./media/knowledge-constellation-scroll.webm" type="video/webm">\n        <source data-src="./media/knowledge-constellation.mp4" type="video/mp4">'
-          if 'knowledge-constellation-scroll.webm' not in s:
-              if old not in s: raise SystemExit('index source marker not found')
-              s=s.replace(old,new)
-          index.write_text(s)
-
-          s=app.read_text()
-          old="  const canPlayMp4      = !!video.canPlayType && video.canPlayType('video/mp4') !== '';"
-          new="  const canPlayVideo    = !!video.canPlayType && (video.canPlayType('video/webm; codecs=\"vp8\"') !== '' || video.canPlayType('video/mp4') !== '');"
-          if old in s: s=s.replace(old,new)
-          elif 'const canPlayVideo' not in s: raise SystemExit('canPlay marker not found')
-          s=s.replace('!canPlayMp4', '!canPlayVideo')
-          s=s.replace('const source = video.querySelector("source[data-src]");', 'const sources = Array.from(video.querySelectorAll("source[data-src]"));')
-          s=s.replace('if (!source) {', 'if (!sources.length) {')
-          s=s.replace('source.src = source.dataset.src;', 'sources.forEach((source) => { source.src = source.dataset.src; });')
-          s=s.replace("const src = video.querySelector('source');\n      if (src) src.removeAttribute(\"src\");", "video.querySelectorAll('source').forEach((src) => src.removeAttribute('src'));")
-          if 'const sources = Array.from' not in s or 'canPlayVideo' not in s: raise SystemExit('source patch incomplete')
-          app.write_text(s)
-
-          s=ht.read_text()
-          if 'video/webm' not in s:
-              s += '\nAddType video/webm .webm\n'
-          ht.write_text(s)
-          PY
-          node --check "$WORK/preview/video/app.js"
+          for f in index.html style.css app.js CLAUDE_VIDEO_REPORT.md CODEX_VIDEO_REVIEW.md media/knowledge-constellation.mp4 media/knowledge-constellation-scroll.webm; do test -s "$WORK/preview/video/$f"; done
           grep -q 'knowledge-constellation-scroll.webm' "$WORK/preview/video/index.html"
+          grep -q 'canPlayVideo' "$WORK/preview/video/app.js"
           grep -q 'video/webm' "$WORK/preview/video/.htaccess"
+          rm -f "$WORK/preview/video/index.html.orig"
+          node --check "$WORK/preview/video/app.js"
+          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height -of default=noprint_wrappers=1 "$WORK/preview/video/media/knowledge-constellation-scroll.webm"
 
-      - name: Prove forward reverse and static fallback in Chromium
+      - name: Prove forward and reverse scrubbing using HTTP byte ranges
         shell: bash
         run: |
           set -euo pipefail
           export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
-          pkill -f 'python3 -m http.server 8792' >/dev/null 2>&1 || true
-          nohup python3 -m http.server 8792 --bind 127.0.0.1 --directory "$WORK/preview/video" >/tmp/w10-video-preview-server.log 2>&1 &
+          cat > /tmp/w10-range-server.js <<'JS'
+          const http=require('http'),fs=require('fs'),path=require('path');
+          const root=path.resolve(process.argv[2]); const port=Number(process.argv[3]||8792);
+          const types={'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.webm':'video/webm','.mp4':'video/mp4','.jpg':'image/jpeg','.png':'image/png'};
+          http.createServer((req,res)=>{try{let u=new URL(req.url,'http://localhost').pathname; if(u.endsWith('/'))u+='index.html'; const f=path.resolve(root,'.'+decodeURIComponent(u)); if(!f.startsWith(root+path.sep)){res.writeHead(403);return res.end();} const st=fs.statSync(f); if(!st.isFile()){res.writeHead(404);return res.end();} const type=types[path.extname(f).toLowerCase()]||'application/octet-stream'; res.setHeader('Content-Type',type); res.setHeader('Accept-Ranges','bytes'); const r=req.headers.range; if(r){const m=/bytes=(\d*)-(\d*)/.exec(r); if(!m){res.writeHead(416);return res.end();} let start=m[1]?Number(m[1]):0,end=m[2]?Number(m[2]):st.size-1; end=Math.min(end,st.size-1); if(start> end||start>=st.size){res.writeHead(416,{'Content-Range':`bytes */${st.size}`});return res.end();} res.writeHead(206,{'Content-Range':`bytes ${start}-${end}/${st.size}`,'Content-Length':end-start+1}); if(req.method==='HEAD')return res.end(); fs.createReadStream(f,{start,end}).pipe(res);} else {res.writeHead(200,{'Content-Length':st.size}); if(req.method==='HEAD')return res.end(); fs.createReadStream(f).pipe(res);}}catch(e){res.writeHead(404);res.end();}}).listen(port,'127.0.0.1',()=>console.log('range server',root,port));
+          JS
+          pkill -f '/tmp/w10-range-server.js' >/dev/null 2>&1 || true
+          nohup node /tmp/w10-range-server.js "$WORK/preview/video" 8792 >/tmp/w10-range-server.log 2>&1 &
           sleep 2
-          curl -fsS http://127.0.0.1:8792/ -o /tmp/w10-local-preview.html
-          grep -q 'W10_FLOW_VIDEO_SCROLL_PREVIEW' /tmp/w10-local-preview.html
+          curl -fsS -H 'Range: bytes=1000-1999' -D /tmp/w10-range-headers.txt http://127.0.0.1:8792/media/knowledge-constellation-scroll.webm -o /tmp/w10-range-slice.bin
+          grep -q '206 Partial Content' /tmp/w10-range-headers.txt
+          test "$(stat -c%s /tmp/w10-range-slice.bin)" -eq 1000
           cd "$FLOW_ROOT"
           node - <<'JS'
           const {chromium}=require('playwright');
-          (async()=>{
-            const browser=await chromium.launch({headless:true});
-            for(const [width,height] of [[390,844],[1440,1000]]){
-              const page=await browser.newPage({viewport:{width,height}});
-              const errors=[]; page.on('console',m=>{if(m.type()==='error')errors.push(m.text())}); page.on('pageerror',e=>errors.push(e.message));
-              await page.goto('http://127.0.0.1:8792/',{waitUntil:'domcontentloaded',timeout:30000});
-              await page.waitForFunction(()=>window.__W10_VIDEO_SCROLL__?.ready===true,null,{timeout:15000});
-              const initial=await page.evaluate(()=>({mode:window.__W10_VIDEO_SCROLL__?.mode,duration:document.querySelector('#video')?.duration||0,ready:document.querySelector('#video')?.readyState||0,currentSrc:document.querySelector('#video')?.currentSrc||'',overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth+1}));
-              await page.evaluate(()=>window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*0.72)); await page.waitForTimeout(1500);
-              const forward=await page.evaluate(()=>({time:document.querySelector('#video')?.currentTime||0,p:window.__W10_SCROLL_PROGRESS__||0}));
-              await page.evaluate(()=>window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*0.18)); await page.waitForTimeout(1500);
-              const backward=await page.evaluate(()=>({time:document.querySelector('#video')?.currentTime||0,p:window.__W10_SCROLL_PROGRESS__||0}));
-              console.log(JSON.stringify({width,initial,forward,backward,errors}));
-              if(initial.mode!=='video'||initial.duration<7.5||initial.ready<2||!initial.currentSrc.includes('.webm')||initial.overflow||errors.length)process.exit(2);
-              if(forward.p<0.3||forward.time<=0.5)process.exit(3);
-              if(backward.p>=forward.p||backward.time>=forward.time)process.exit(4);
-              await page.close();
-            }
-            const rm=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'}); const media=[]; rm.on('request',r=>{if(/\.(mp4|webm)(\?|$)/.test(r.url()))media.push(r.url())});
-            await rm.goto('http://127.0.0.1:8792/',{waitUntil:'domcontentloaded'}); await rm.waitForTimeout(800);
-            const state=await rm.evaluate(()=>({mode:window.__W10_VIDEO_SCROLL__?.mode,static:document.body.classList.contains('is-static'),video:getComputedStyle(document.querySelector('#video')).display,poster:getComputedStyle(document.querySelector('.stage-poster')).display}));
-            console.log(JSON.stringify({reducedMotion:state,mediaRequests:media}));
-            if(state.mode!=='static'||!state.static||state.video!=='none'||state.poster==='none'||media.length)process.exit(5);
-            await rm.close(); await browser.close();
-          })().catch(e=>{console.error(e);process.exit(1)});
+          (async()=>{const b=await chromium.launch({headless:true});
+            for(const [width,height] of [[390,844],[1440,1000]]){const p=await b.newPage({viewport:{width,height}});const errors=[];p.on('console',m=>{if(m.type()==='error')errors.push(m.text())});p.on('pageerror',e=>errors.push(e.message));await p.goto('http://127.0.0.1:8792/',{waitUntil:'domcontentloaded'});await p.waitForFunction(()=>window.__W10_VIDEO_SCROLL__?.ready===true,null,{timeout:15000});const a=await p.evaluate(()=>{const v=document.querySelector('#video');return{mode:window.__W10_VIDEO_SCROLL__?.mode,d:v.duration,rs:v.readyState,src:v.currentSrc,seek:v.seekable.length?[v.seekable.start(0),v.seekable.end(0)]:[],overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth+1}});await p.evaluate(()=>scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.72));await p.waitForTimeout(1800);const f=await p.evaluate(()=>({t:document.querySelector('#video').currentTime,p:window.__W10_SCROLL_PROGRESS__}));await p.evaluate(()=>scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.18));await p.waitForTimeout(1800);const r=await p.evaluate(()=>({t:document.querySelector('#video').currentTime,p:window.__W10_SCROLL_PROGRESS__}));console.log(JSON.stringify({width,a,f,r,errors}));if(a.mode!=='video'||a.d<7.5||a.rs<2||!a.src.includes('.webm')||!a.seek.length||a.seek[1]<7.5||a.overflow||errors.length||f.p<.3||f.t<=.5||r.p>=f.p||r.t>=f.t)process.exit(2);await p.close();}
+            const rm=await b.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});const media=[];rm.on('request',x=>{if(/\.(mp4|webm)(\?|$)/.test(x.url()))media.push(x.url())});await rm.goto('http://127.0.0.1:8792/',{waitUntil:'domcontentloaded'});await rm.waitForTimeout(700);const s=await rm.evaluate(()=>({mode:window.__W10_VIDEO_SCROLL__?.mode,static:document.body.classList.contains('is-static'),video:getComputedStyle(document.querySelector('#video')).display,poster:getComputedStyle(document.querySelector('.stage-poster')).display}));console.log(JSON.stringify({reduced:s,media}));if(s.mode!=='static'||!s.static||s.video!=='none'||s.poster==='none'||media.length)process.exit(3);await rm.close();await b.close();})().catch(e=>{console.error(e);process.exit(1)});
           JS
 
-      - name: Commit preview then rebase onto latest design branch
+      - name: Commit tested preview and rebase onto latest branch
         shell: bash
         run: |
           set -euo pipefail
@@ -117,83 +65,26 @@ jobs:
           git config user.name 'w10-flow-agent-test'
           git config user.email 'actions@what10things.local'
           git add preview/video
-          git commit -m 'Add Flow video scroll-scrub preview with cross-browser media'
+          git commit -m 'Add tested Flow video scroll-scrub preview'
           git fetch origin "$TARGET_BRANCH"
           git rebase "origin/$TARGET_BRANCH"
 
-      - name: Install corrected deployment and public QA workflow
+      - name: Correct deployment QA and push preview
         shell: bash
         run: |
           set -euo pipefail
           cd "$WORK"
-          cat > .github/workflows/deploy-w10-flow-video-preview.yml <<'YAML'
-          name: Deploy W10 Flow Video Preview
-          on:
-            push:
-              branches: [design/w10-flow-video-scroll]
-              paths: ['preview/video/**', '.github/workflows/deploy-w10-flow-video-preview.yml']
-            workflow_dispatch:
-          permissions:
-            contents: read
-          concurrency:
-            group: w10-flow-video-preview
-            cancel-in-progress: true
-          jobs:
-            validate-deploy-qa:
-              runs-on: [self-hosted, Linux, mainbuyer-server2]
-              timeout-minutes: 20
-              steps:
-                - uses: actions/checkout@v4
-                - name: Validate preview bundle
-                  shell: bash
-                  run: |
-                    set -euo pipefail
-                    for f in index.html style.css app.js CLAUDE_VIDEO_REPORT.md CODEX_VIDEO_REVIEW.md media/knowledge-constellation.mp4 media/knowledge-constellation-scroll.webm; do test -s "preview/video/$f"; done
-                    grep -q 'W10_FLOW_VIDEO_SCROLL_PREVIEW' preview/video/index.html
-                    grep -q 'noindex,nofollow,noarchive' preview/video/index.html
-                    node --check preview/video/app.js
-                    ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height -of default=noprint_wrappers=1 preview/video/media/knowledge-constellation-scroll.webm
-                - name: Deploy isolated preview
-                  uses: SamKirkland/FTP-Deploy-Action@v4.3.6
-                  with:
-                    server: mainbuyer.com
-                    username: ${{ secrets.FTP_USERNAME }}
-                    password: ${{ secrets.FTP_PASSWORD }}
-                    protocol: ftps
-                    port: 21
-                    local-dir: ./preview/video/
-                    server-dir: ./w10-video-preview/
-                    state-name: .ftp-deploy-w10-video-preview-state.json
-                    dangerous-clean-slate: false
-                - name: Verify public files
-                  shell: bash
-                  run: |
-                    set -euo pipefail
-                    for attempt in $(seq 1 15); do
-                      if curl -fsSL --max-time 25 -H 'Cache-Control: no-cache' "https://what10things.co.uk/w10-video-preview/?v=${GITHUB_SHA}" -o /tmp/w10-public.html && grep -q 'W10_FLOW_VIDEO_SCROLL_PREVIEW' /tmp/w10-public.html; then
-                        grep -q 'noindex,nofollow,noarchive' /tmp/w10-public.html
-                        curl -fsSI --max-time 25 "https://what10things.co.uk/w10-video-preview/media/knowledge-constellation-scroll.webm?v=${GITHUB_SHA}" | grep -Ei 'HTTP/|content-type|content-length'
-                        echo 'PREVIEW_URL=https://what10things.co.uk/w10-video-preview/'
-                        exit 0
-                      fi
-                      sleep 5
-                    done
-                    exit 1
-                - name: Browser QA forward reverse mobile desktop and reduced motion
-                  shell: bash
-                  run: |
-                    set -euo pipefail
-                    export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
-                    cd "$HOME/agents/flow-browser-automation"
-                    node - <<'JS'
-                    const {chromium}=require('playwright');
-                    (async()=>{const browser=await chromium.launch({headless:true});
-                      for(const [width,height] of [[390,844],[1440,1000]]){const p=await browser.newPage({viewport:{width,height}});const errors=[];p.on('console',m=>{if(m.type()==='error')errors.push(m.text())});p.on('pageerror',e=>errors.push(e.message));await p.goto('https://what10things.co.uk/w10-video-preview/?qa='+Date.now(),{waitUntil:'domcontentloaded',timeout:30000});await p.waitForFunction(()=>window.__W10_VIDEO_SCROLL__?.ready===true,null,{timeout:15000});const a=await p.evaluate(()=>({src:document.querySelector('#video')?.currentSrc||'',duration:document.querySelector('#video')?.duration||0,overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth+1,noindex:(document.querySelector('meta[name="robots"]')?.content||'').includes('noindex')}));await p.evaluate(()=>scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.72));await p.waitForTimeout(1500);const f=await p.evaluate(()=>({t:document.querySelector('#video')?.currentTime||0,p:window.__W10_SCROLL_PROGRESS__||0}));await p.evaluate(()=>scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.18));await p.waitForTimeout(1500);const r=await p.evaluate(()=>({t:document.querySelector('#video')?.currentTime||0,p:window.__W10_SCROLL_PROGRESS__||0}));console.log({width,a,f,r,errors});if(!a.noindex||a.duration<7.5||a.overflow||errors.length||f.p<.3||f.t<=.5||r.p>=f.p||r.t>=f.t)process.exit(2);await p.close();}
-                      const rm=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});await rm.goto('https://what10things.co.uk/w10-video-preview/?rm='+Date.now(),{waitUntil:'domcontentloaded'});await rm.waitForTimeout(700);const s=await rm.evaluate(()=>({mode:window.__W10_VIDEO_SCROLL__?.mode,static:document.body.classList.contains('is-static'),video:getComputedStyle(document.querySelector('#video')).display,poster:getComputedStyle(document.querySelector('.stage-poster')).display}));console.log({reduced:s});if(s.mode!=='static'||!s.static||s.video!=='none'||s.poster==='none')process.exit(3);await rm.close();await browser.close();})().catch(e=>{console.error(e);process.exit(1)});
-                    JS
-          YAML
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('.github/workflows/deploy-w10-flow-video-preview.yml')
+          s=p.read_text()
+          s=s.replace("test -s preview/video/media/knowledge-constellation.mp4", "test -s preview/video/media/knowledge-constellation.mp4\n          test -s preview/video/media/knowledge-constellation-scroll.webm")
+          s=s.replace("document.querySelector('#scrollVideo')", "document.querySelector('#video')")
+          s=s.replace("document.querySelector('.motion-fallback')", "document.querySelector('.stage-poster')")
+          p.write_text(s)
+          PY
           git add .github/workflows/deploy-w10-flow-video-preview.yml
-          git commit -m 'Update Flow video preview deployment QA'
+          git commit -m 'Update Flow video preview deployment selectors'
           git push origin "$TARGET_BRANCH"
 
       - name: Confirm billing guard
