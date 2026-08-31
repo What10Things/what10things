@@ -1,0 +1,67 @@
+name: Analyse Flow Video Motion
+on:
+  push:
+    branches: [design/w10-flow-video-scroll]
+    paths: ['.github/workflows/analyse-flow-video-motion.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  analyse:
+    runs-on: [self-hosted, Linux, mainbuyer-server2]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Analyse decoded frame differences
+        shell: bash
+        run: |
+          set -euo pipefail
+          V=preview/video/media/knowledge-constellation.mp4
+          test -s "$V"
+          rm -rf /tmp/w10-motion && mkdir -p /tmp/w10-motion
+          for t in 0 2 4 6 7.8; do
+            ffmpeg -hide_banner -loglevel error -ss "$t" -i "$V" -frames:v 1 -vf 'scale=320:180,format=gray' -f rawvideo "/tmp/w10-motion/${t}.gray"
+          done
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          root=Path('/tmp/w10-motion')
+          labels=['0','2','4','6','7.8']
+          data={k:(root/f'{k}.gray').read_bytes() for k in labels}
+          print('DECODED_FRAME_SHA256')
+          for k in labels: print(k,hashlib.sha256(data[k]).hexdigest())
+          base=data['0']
+          print('MEAN_ABSOLUTE_PIXEL_DIFFERENCE_VS_START')
+          for k in labels[1:]:
+              b=data[k]
+              mad=sum(abs(x-y) for x,y in zip(base,b))/len(base)
+              changed=sum(1 for x,y in zip(base,b) if abs(x-y)>=5)/len(base)*100
+              print(f'{k}s MAD={mad:.3f} changed_pixels_ge5={changed:.2f}%')
+          consec=[]
+          for a,b in zip(labels,labels[1:]):
+              x,y=data[a],data[b]
+              mad=sum(abs(i-j) for i,j in zip(x,y))/len(x)
+              consec.append(mad)
+              print(f'{a}->{b}s MAD={mad:.3f}')
+          if max(consec)<0.5:
+              print('MOTION_VERDICT=effectively_static')
+          elif max(consec)<2.0:
+              print('MOTION_VERDICT=very_subtle')
+          else:
+              print('MOTION_VERDICT=real_motion')
+          PY
+      - name: Generate five-frame contact sheet artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/w10-contact
+          for spec in '000:0' '020:2' '040:4' '060:6' '078:7.8'; do
+            name=${spec%%:*}; t=${spec#*:}
+            ffmpeg -hide_banner -loglevel error -ss "$t" -i preview/video/media/knowledge-constellation.mp4 -frames:v 1 -vf 'scale=640:-2' "/tmp/w10-contact/${name}.jpg"
+          done
+          ffmpeg -hide_banner -loglevel error -i /tmp/w10-contact/000.jpg -i /tmp/w10-contact/020.jpg -i /tmp/w10-contact/040.jpg -i /tmp/w10-contact/060.jpg -i /tmp/w10-contact/078.jpg -filter_complex '[0:v][1:v][2:v][3:v][4:v]hstack=inputs=5' -q:v 3 /tmp/w10-contact/contact-sheet.jpg
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flow-video-motion-check
+          path: /tmp/w10-contact/
+          retention-days: 7
