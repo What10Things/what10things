@@ -11,19 +11,21 @@ jobs:
     runs-on: [self-hosted, Linux, mainbuyer-server2]
     timeout-minutes: 5
     steps:
-      - name: Inspect current video source handling
+      - name: Inspect seek controller and direct browser seek
         shell: bash
         run: |
           set -euo pipefail
           ROOT="$HOME/agents/w10-flow-video-scroll/preview/video"
-          echo '=== index video block ==='
-          grep -n -A12 -B5 '<video' "$ROOT/index.html" || true
-          echo '=== app source and readiness lines ==='
-          grep -n -E -A8 -B8 'canPlay|data-src|startVideo|loadeddata|loadedmetadata|querySelector.*source|failToStatic' "$ROOT/app.js" || true
-          echo '=== video canplay diagnostic in headless chromium ==='
+          echo '=== seek controller ==='
+          sed -n '70,150p' "$ROOT/app.js"
+          echo '=== source block ==='
+          sed -n '200,260p' "$ROOT/app.js"
           export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
+          pkill -f 'python3 -m http.server 8793' >/dev/null 2>&1 || true
+          nohup python3 -m http.server 8793 --bind 127.0.0.1 --directory "$ROOT" >/tmp/w10-seek-diag-server.log 2>&1 &
+          sleep 2
           cd "$HOME/agents/flow-browser-automation"
           node - <<'JS'
           const {chromium}=require('playwright');
-          (async()=>{const b=await chromium.launch({headless:true}); const p=await b.newPage(); console.log(await p.evaluate(()=>({mp4:document.createElement('video').canPlayType('video/mp4; codecs="avc1.42E01E"'),webm:document.createElement('video').canPlayType('video/webm; codecs="vp8"'),vp9:document.createElement('video').canPlayType('video/webm; codecs="vp9"')}))); await b.close();})().catch(e=>{console.error(e);process.exit(1)});
+          (async()=>{const b=await chromium.launch({headless:true});const p=await b.newPage();const ev=[];p.on('console',m=>ev.push('console:'+m.type()+':'+m.text()));await p.goto('http://127.0.0.1:8793/',{waitUntil:'domcontentloaded'});await p.waitForTimeout(1500);let a=await p.evaluate(()=>{const v=document.querySelector('#video');return {mode:window.__W10_VIDEO_SCROLL__?.mode,ready:window.__W10_VIDEO_SCROLL__?.ready,rs:v.readyState,ns:v.networkState,d:v.duration,t:v.currentTime,src:v.currentSrc,error:v.error&&{code:v.error.code,message:v.error.message},seekable:v.seekable.length?[v.seekable.start(0),v.seekable.end(0)]:[]}});console.log('before',a);await p.evaluate(()=>{const v=document.querySelector('#video');v.currentTime=4});await p.waitForTimeout(1800);let bstate=await p.evaluate(()=>{const v=document.querySelector('#video');return {rs:v.readyState,t:v.currentTime,seeking:v.seeking,error:v.error&&{code:v.error.code,message:v.error.message},seekable:v.seekable.length?[v.seekable.start(0),v.seekable.end(0)]:[]}});console.log('directSeek',bstate);let play=await p.evaluate(async()=>{const v=document.querySelector('#video');try{await v.play();await new Promise(r=>setTimeout(r,350));v.pause();return {ok:true,t:v.currentTime}}catch(e){return {ok:false,name:e.name,message:e.message,t:v.currentTime}}});console.log('prime',play);await p.evaluate(()=>document.querySelector('#video').currentTime=6);await p.waitForTimeout(1200);console.log('afterPrimeSeek',await p.evaluate(()=>({t:document.querySelector('#video').currentTime,seeking:document.querySelector('#video').seeking})));console.log(ev);await b.close();})().catch(e=>{console.error(e);process.exit(1)});
           JS
