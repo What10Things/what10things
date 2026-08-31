@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="googlebot" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#07070a">
+  <meta name="color-scheme" content="dark">
+  <title>What10Things — Three.js + Flow video design preview</title>
+  <meta name="description" content="Internal design experiment: one Google Flow generated sequence used as a scroll-driven knowledge surface with a light Three.js spatial layer. Not a live production feature.">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="preload" as="image" href="./media/frames/frame-001.webp">
+</head>
+<body>
+<!-- W10_THREEJS_FLOW_VIDEO_PREVIEW -->
+<a class="skip-link" href="#reading">Skip to the written brief</a>
+
+<p class="preview-flag" role="note">Design preview · Three.js + Flow video</p>
+
+<div id="three-stage" aria-hidden="true">
+  <canvas id="three-canvas"></canvas>
+  <div id="stage-static" class="stage-static" hidden>
+    <img id="stage-static-img" src="./media/frames/frame-001.webp" alt="" decoding="async">
+  </div>
+  <div class="stage-vignette"></div>
+  <noscript>
+    <img class="stage-static-img" src="./media/frames/frame-001.webp" alt="First frame of the generated Flow constellation sequence">
+  </noscript>
+</div>
+
+<main id="reading">
+  <header class="lede-block">
+    <p class="kicker">What10Things · Design experiment</p>
+    <h1>Ten things,<br>held in orbit</h1>
+    <p class="lede">
+      This page is an experiment. It takes a single eight-second sequence generated with
+      Google Flow (Veo) — an amber core ringed by ten orbiting points — and turns it into a
+      scroll-driven knowledge surface. Scrolling does not play a video: it steps through the
+      generated frames one by one, forwards and backwards, on a Three.js texture.
+    </p>
+    <p class="scroll-hint" aria-hidden="true">Scroll — the generated Flow frames advance with you ↓</p>
+  </header>
+
+  <section class="chapter" data-chapter="1">
+    <p class="chapter-index">01</p>
+    <h2>One generated sequence, treated as a timeline</h2>
+    <p>
+      The Flow clip was decoded once into ninety-six still frames. Those frames are the only
+      visual source on this page. As you scroll down, later frames are drawn onto a canvas and
+      shown on a flat plane in 3D; scroll up and the earlier frames return. The motion you see
+      is the original render, scrubbed by scroll position rather than by a play head.
+    </p>
+  </section>
+
+  <section class="chapter" data-chapter="2">
+    <p class="chapter-index">02</p>
+    <h2>Why a knowledge surface</h2>
+    <p>
+      What10Things guides are built around ten distinct points. The generated sequence happens
+      to show ten lit nodes circling a centre, so it reads as a natural stand-in for a single
+      guide: one subject, ten things worth knowing, each holding its own position.
+    </p>
+  </section>
+
+  <section class="chapter" data-chapter="3">
+    <p class="chapter-index">03</p>
+    <h2>The 3D layer is deliberately quiet</h2>
+    <p>
+      Around the footage there is a small amount of genuine three-dimensional treatment:
+      the camera drifts through the composition as the chapters advance, and a handful of
+      light nodes and relationship lines sit in front of the plane with real depth and
+      parallax. The generated footage stays dominant; nothing is layered over its centre.
+    </p>
+  </section>
+
+  <section class="chapter" data-chapter="4">
+    <p class="chapter-index">04</p>
+    <h2>Built for a 390&nbsp;px phone first</h2>
+    <p>
+      The scroll interaction runs from the same canvas texture on every device, including
+      mobile Safari — it never depends on seeking a video element. Controls are at least
+      44&nbsp;px, there is no hover requirement, and the layout holds without horizontal
+      scrolling on a narrow portrait screen.
+    </p>
+  </section>
+
+  <section class="chapter" data-chapter="5">
+    <p class="chapter-index">05</p>
+    <h2>What this is not</h2>
+    <p>
+      This is not a production feature and not a claim about finished functionality. It is one
+      generated sequence, a scroll mapping, and a restrained spatial frame around it — a way to
+      feel out whether a guide could be read as a surface you move through rather than a page
+      you scroll past.
+    </p>
+  </section>
+
+  <section class="chapter" data-chapter="6">
+    <p class="chapter-index">06</p>
+    <h2>Check the source for yourself</h2>
+    <p>
+      The control in the corner opens the exact Flow clip these frames came from, so the
+      generated sequence and the scrubbed frames can be compared directly. The clip is only
+      loaded if you open it.
+    </p>
+  </section>
+
+  <footer class="reading-foot">
+    <p>Design preview · Three.js + Flow video — internal experiment, not indexed.</p>
+    <p>What10Things.co.uk is operated by Urban Sky Web Ltd.</p>
+  </footer>
+</main>
+
+<button type="button" id="play-original" class="play-original">
+  <span class="play-original__icon" aria-hidden="true">▶</span>
+  <span class="play-original__label">Play original Flow clip</span>
+</button>
+
+<div id="flow-modal" class="flow-modal" hidden>
+  <div class="flow-modal__backdrop" data-close="1"></div>
+  <div class="flow-modal__panel" role="dialog" aria-modal="true" aria-label="Original Google Flow clip">
+    <button type="button" class="flow-modal__close" data-close="1">Close</button>
+    <video id="flow-video" class="flow-modal__video" controls playsinline preload="none" poster="./media/source-poster.jpg"></video>
+    <p class="flow-modal__note">
+      Exact Google Flow / Veo clip — <code>media/source-flow-video.mp4</code>. This file is the
+      frame source for the scroll surface and is used nowhere else on the page.
+    </p>
+  </div>
+</div>
+
+<script src="./app.js" defer></script>
+</body>
+</html>

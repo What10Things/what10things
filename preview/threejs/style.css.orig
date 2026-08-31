@@ -1,0 +1,323 @@
+/* What10Things — Three.js + Flow video design preview
+   Premium dark editorial. The generated amber Flow footage stays dominant;
+   HTML text is a separate legible/SEO layer over a fixed full-viewport 3D stage. */
+
+:root {
+  --bg: #07070a;
+  --ink: #f4f1e9;
+  --muted: #9a968c;
+  --amber: #f6a63c;
+  --amber-soft: #ffd9a1;
+  --line: rgba(244, 241, 233, 0.14);
+  --maxw: 34rem;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  background: var(--bg);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  color: var(--ink);
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img, video, canvas { max-width: 100%; }
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: -4rem;
+  z-index: 60;
+  padding: 0.75rem 1rem;
+  background: var(--ink);
+  color: var(--bg);
+  text-decoration: none;
+  border-radius: 2px;
+  transition: top 0.15s ease;
+}
+.skip-link:focus { top: 1rem; }
+
+/* ---------- Visible preview label ---------- */
+.preview-flag {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 40;
+  margin: 0;
+  padding: 0.5rem 0.85rem;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--amber-soft);
+  background: rgba(7, 7, 10, 0.72);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom-right-radius: 6px;
+}
+
+/* ---------- Fixed full-viewport 3D stage ---------- */
+#three-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(120% 90% at 62% 42%, #14100c 0%, #0a0a0d 48%, #07070a 100%);
+  overflow: hidden;
+}
+
+#three-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.stage-static,
+.stage-static-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.stage-static img,
+.stage-static-img {
+  object-fit: cover;
+  object-position: 55% 45%;
+  opacity: 0.92;
+}
+
+/* Editorial vignette so the text side stays readable over the footage */
+.stage-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(7, 7, 10, 0.9) 0%, rgba(7, 7, 10, 0.55) 44%, rgba(7, 7, 10, 0.05) 82%),
+    linear-gradient(0deg, rgba(7, 7, 10, 0.82) 0%, rgba(7, 7, 10, 0.1) 40%);
+}
+
+/* ---------- Reading layer ---------- */
+#reading {
+  position: relative;
+  z-index: 2;
+  max-width: 100%;
+  padding: 0 1.4rem 6rem;
+}
+
+.lede-block {
+  min-height: 100svh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 6rem 0 3rem;
+  max-width: var(--maxw);
+}
+
+.kicker {
+  margin: 0 0 1.4rem;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+h1 {
+  margin: 0;
+  font-weight: 600;
+  font-size: clamp(2.6rem, 11vw, 4.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+
+.lede {
+  margin: 1.6rem 0 0;
+  color: #d9d5ca;
+  font-size: clamp(1.02rem, 3.4vw, 1.2rem);
+}
+
+.scroll-hint {
+  margin: 2.4rem 0 0;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.chapter {
+  min-height: 92svh;
+  min-height: 92dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3.5rem 0;
+  max-width: var(--maxw);
+  border-top: 1px solid var(--line);
+}
+
+.chapter-index {
+  margin: 0 0 0.9rem;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  color: var(--amber);
+}
+
+.chapter h2 {
+  margin: 0 0 1rem;
+  font-weight: 600;
+  font-size: clamp(1.6rem, 6.4vw, 2.3rem);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.chapter p {
+  margin: 0;
+  color: #cbc7bc;
+  font-size: clamp(1rem, 3.2vw, 1.08rem);
+}
+
+.reading-foot {
+  max-width: var(--maxw);
+  padding-top: 2.4rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  line-height: 1.7;
+}
+.reading-foot p { margin: 0.2rem 0; }
+
+/* ---------- Play original Flow clip ---------- */
+.play-original {
+  position: fixed;
+  right: 0.9rem;
+  bottom: 0.9rem;
+  z-index: 45;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  padding: 0.6rem 0.95rem;
+  font: inherit;
+  font-size: 0.82rem;
+  color: var(--ink);
+  background: rgba(7, 7, 10, 0.78);
+  border: 1px solid rgba(246, 166, 60, 0.5);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+}
+.play-original:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+.play-original__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  font-size: 0.6rem;
+  color: #07070a;
+  background: var(--amber);
+  border-radius: 50%;
+}
+
+/* ---------- Original clip modal ---------- */
+.flow-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem;
+}
+.flow-modal[hidden] { display: none; }
+.flow-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 4, 6, 0.86);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.flow-modal__panel {
+  position: relative;
+  width: min(46rem, 100%);
+  max-height: 100%;
+  overflow: auto;
+  padding: 1rem;
+  background: #0c0c10;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.flow-modal__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  margin: 0 0 0.75rem auto;
+  padding: 0 1rem;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.flow-modal__close:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+.flow-modal__video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 6px;
+}
+.flow-modal__note {
+  margin: 0.8rem 0 0;
+  color: var(--muted);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+.flow-modal__note code { color: var(--amber-soft); }
+
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 4px; }
+
+/* ---------- Desktop ---------- */
+@media (min-width: 48rem) {
+  :root { --maxw: 30rem; }
+  #reading { padding-left: 6vw; }
+  .stage-vignette {
+    background:
+      linear-gradient(90deg, rgba(7, 7, 10, 0.86) 0%, rgba(7, 7, 10, 0.4) 38%, rgba(7, 7, 10, 0) 72%),
+      linear-gradient(0deg, rgba(7, 7, 10, 0.5) 0%, rgba(7, 7, 10, 0) 34%);
+  }
+  .preview-flag { font-size: 0.68rem; }
+  .play-original { right: 1.4rem; bottom: 1.4rem; }
+}
+
+/* ---------- Reduced motion / Save-Data: static, calm ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  #three-canvas { display: none; }
+  .stage-static { display: block; }
+}
