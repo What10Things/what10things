@@ -16,12 +16,14 @@ jobs:
         run: |
           set -euo pipefail
           echo '=== processes ==='
-          ps -eo pid,etimes,cmd | grep -E '[c]laude|[c]odex|[a]gy-safe|[a]gy -p' || true
+          ps -eo pid,etimes,%cpu,%mem,stat,cmd | grep -E '[c]laude|[c]odex|[a]gy-safe|[a]gy -p' || true
           echo '=== work files ==='
           find "$HOME/agents/w10-flow-video-scroll/preview/video" -maxdepth 2 -type f -printf '%p %s bytes\n' 2>/dev/null | sort || true
           echo '=== reports ==='
           ls -l "$HOME/agents/w10-flow-video-scroll"/*VIDEO*REPORT*.md "$HOME/agents/w10-flow-video-scroll"/*VIDEO*REVIEW*.md 2>/dev/null || true
+          echo '=== antigravity result ==='
+          cat /tmp/w10-flow-video-antigravity.txt 2>/dev/null || true
           echo '=== claude output tail ==='
-          tail -80 /tmp/w10-claude-video-output.txt 2>/dev/null || true
+          tail -120 /tmp/w10-claude-video-output.txt 2>/dev/null || true
           echo '=== video probe ==='
           ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height -of default=noprint_wrappers=1 "$HOME/agents/flow-browser-automation/artifacts/w10-flow-video/knowledge-constellation.mp4" 2>/dev/null || true
