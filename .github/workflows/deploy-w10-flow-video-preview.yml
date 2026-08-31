@@ -31,6 +31,7 @@ jobs:
           test -s preview/video/style.css
           test -s preview/video/app.js
           test -s preview/video/media/knowledge-constellation.mp4
+          test -s preview/video/media/knowledge-constellation-scroll.webm
           grep -q 'W10_FLOW_VIDEO_SCROLL_PREVIEW' preview/video/index.html
           grep -q 'noindex,nofollow,noarchive' preview/video/index.html
           grep -q 'knowledge-constellation.mp4' preview/video/index.html
@@ -88,14 +89,14 @@ jobs:
               const initial=await page.evaluate(()=>({
                 marker:document.documentElement.innerHTML.includes('W10_FLOW_VIDEO_SCROLL_PREVIEW'),
                 noindex:(document.querySelector('meta[name="robots"]')?.content||'').includes('noindex'),
-                video:!!document.querySelector('#scrollVideo'),
-                ready:document.querySelector('#scrollVideo')?.readyState||0,
-                duration:document.querySelector('#scrollVideo')?.duration||0,
+                video:!!document.querySelector('#video'),
+                ready:document.querySelector('#video')?.readyState||0,
+                duration:document.querySelector('#video')?.duration||0,
                 overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth+1
               }));
               await page.evaluate(()=>window.scrollTo(0,document.documentElement.scrollHeight*.65));
               await page.waitForTimeout(1200);
-              const after=await page.evaluate(()=>({time:document.querySelector('#scrollVideo')?.currentTime||0,progress:window.__W10_SCROLL_PROGRESS__||0}));
+              const after=await page.evaluate(()=>({time:document.querySelector('#video')?.currentTime||0,progress:window.__W10_SCROLL_PROGRESS__||0}));
               console.log({width,initial,after,errors});
               if(!initial.marker||!initial.noindex||!initial.video||initial.ready<1||initial.duration<=0||initial.overflow||errors.length||after.progress<0.3||after.time<=0) process.exit(2);
               await page.close();
@@ -103,7 +104,7 @@ jobs:
             const reduced=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
             await reduced.goto('https://what10things.co.uk/w10-video-preview/?rm='+Date.now(),{waitUntil:'domcontentloaded',timeout:30000});
             await reduced.waitForTimeout(700);
-            const rm=await reduced.evaluate(()=>({matches:matchMedia('(prefers-reduced-motion: reduce)').matches,videoDisplay:getComputedStyle(document.querySelector('#scrollVideo')).display,posterDisplay:getComputedStyle(document.querySelector('.motion-fallback')).display}));
+            const rm=await reduced.evaluate(()=>({matches:matchMedia('(prefers-reduced-motion: reduce)').matches,videoDisplay:getComputedStyle(document.querySelector('#video')).display,posterDisplay:getComputedStyle(document.querySelector('.stage-poster')).display}));
             console.log({reducedMotion:rm});
             if(!rm.matches||rm.posterDisplay==='none') process.exit(3);
             await reduced.close();
