@@ -38,7 +38,8 @@ jobs:
           pkill -f 'python3 -m http.server 8792' >/dev/null 2>&1 || true
           nohup python3 -m http.server 8792 --bind 127.0.0.1 --directory "$WORK/preview/video" >/tmp/w10-video-preview-server.log 2>&1 &
           sleep 2
-          curl -fsS http://127.0.0.1:8792/ | grep -q 'W10_FLOW_VIDEO_SCROLL_PREVIEW'
+          curl -fsS http://127.0.0.1:8792/ -o /tmp/w10-local-preview.html
+          grep -q 'W10_FLOW_VIDEO_SCROLL_PREVIEW' /tmp/w10-local-preview.html
           cd "$FLOW_ROOT"
           node - <<'JS'
           const { chromium }=require('playwright');
