@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en-GB" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#090b0e">
+  <title>What10Things — scroll-scrubbed video preview</title>
+  <meta name="description" content="Experimental design preview: a Flow-generated sequence scrubbed frame by frame with page scroll. Not part of the live site.">
+  <meta name="w10-preview" content="W10_FLOW_VIDEO_SCROLL_PREVIEW">
+  <link rel="preload" href="./media/knowledge-constellation-poster.jpg" as="image">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<!-- W10_FLOW_VIDEO_SCROLL_PREVIEW -->
+<a class="skip-link" href="#read">Skip to preview text</a>
+
+<header class="head">
+  <a class="brand" href="https://what10things.co.uk/" aria-label="What10Things home">
+    <span class="brand-mark">10</span>
+    <span class="brand-word">What<span>Things</span></span>
+  </a>
+  <p class="head-tag">Design preview</p>
+  <p class="transport" id="transport" data-dir="hold" aria-hidden="true">
+    <span class="transport-glyph" id="transportGlyph">■</span><span id="transportWord">HOLD</span>
+  </p>
+</header>
+
+<main>
+  <section class="scroll-track" id="track" aria-label="Video sequence scrubbed by scroll">
+    <div class="stage" id="stage" aria-hidden="true">
+      <img class="stage-poster" src="./media/knowledge-constellation-poster.jpg" alt="" decoding="async">
+      <video class="stage-video" id="video" muted playsinline webkit-playsinline preload="none"
+             poster="./media/knowledge-constellation-poster.jpg"
+             disablepictureinpicture tabindex="-1">
+        <source data-src="./media/knowledge-constellation-scroll.webm" type="video/webm">
+        <source data-src="./media/knowledge-constellation.mp4" type="video/mp4">
+      </video>
+      <p class="stage-loader" id="loader">
+        <span class="stage-loader-bar"></span>
+        <span class="stage-loader-text">Loading sequence…</span>
+      </p>
+    </div>
+
+    <div class="beats" id="read">
+      <section class="beat">
+        <div class="beat-panel">
+          <p class="eyebrow"><span class="eyebrow-num">01</span> 00:00 · Transport</p>
+          <h1>Scroll is the transport.</h1>
+          <p>This page holds one eight-second sequence generated with Flow. Nothing plays on its own — each frame is pinned to how far down the page you are.</p>
+        </div>
+      </section>
+
+      <section class="beat">
+        <div class="beat-panel">
+          <p class="eyebrow"><span class="eyebrow-num">02</span> 00:03 · Forward</p>
+          <h2>Down runs it forward.</h2>
+          <p>Scrolling down advances the clip. Stop anywhere and the picture holds on the exact frame you left it, steady until you move again.</p>
+        </div>
+      </section>
+
+      <section class="beat">
+        <div class="beat-panel">
+          <p class="eyebrow"><span class="eyebrow-num">03</span> 00:05 · Reverse</p>
+          <h2>Up runs it back.</h2>
+          <p>Scroll up and the sequence unwinds at the speed of your gesture — the same frames in reverse. Try it now: push back up the page and watch the counter fall.</p>
+        </div>
+      </section>
+
+      <section class="beat">
+        <div class="beat-panel">
+          <p class="eyebrow"><span class="eyebrow-num">04</span> 00:08 · End of reel</p>
+          <h2>That's the whole idea.</h2>
+          <p>A short generated sequence, scrubbed by scroll, with the reading copy kept in plain HTML over the top. This is a design preview, not a live What10Things feature.</p>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <section class="outro" id="outro">
+    <p class="eyebrow"><span class="eyebrow-num">—</span> End of preview</p>
+    <h2>Back to the real thing.</h2>
+    <p>What10Things publishes practical ten-point guides for decisions that take too long. This scroll-scrubbing experiment isn't part of the site yet.</p>
+    <a class="cta" href="https://what10things.co.uk/">Go to What10Things.co.uk <span aria-hidden="true">→</span></a>
+    <p class="colophon">W10_FLOW_VIDEO_SCROLL_PREVIEW · Knowledge Constellations editorial direction · What10Things.co.uk is operated by Urban Sky Web Ltd.</p>
+  </section>
+</main>
+
+<aside class="scrub-rail" id="rail" aria-hidden="true">
+  <p class="rail-label">Scroll · scrub</p>
+  <span class="rail-scale">
+    <span class="rail-fill" id="railFill"></span>
+    <span class="rail-ticks" id="railTicks"></span>
+    <span class="rail-head" id="railHead"></span>
+  </span>
+  <p class="rail-readout">
+    <span class="rail-k">FRAME</span>
+    <b id="railFrame">000</b>
+    <span class="rail-sep">/</span>
+    <span id="railTotal">192</span>
+    <span class="rail-tc" id="railTc">0:00.0</span>
+  </p>
+  <p class="rail-note" id="railNote" hidden>Reduced-motion or Save-Data is on, so the sequence is shown as a single still frame. The text still reads in order.</p>
+</aside>
+
+<noscript>
+  <p class="noscript-note">This preview needs JavaScript to scrub the sequence by scroll. A still frame is shown instead; the text below still reads in order.</p>
+</noscript>
+
+<script src="./app.js" defer></script>
+</body>
+</html>
