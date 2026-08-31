@@ -11,16 +11,19 @@ jobs:
     runs-on: [self-hosted, Linux, mainbuyer-server2]
     timeout-minutes: 5
     steps:
-      - name: Inspect Codex CLI and current files
+      - name: Inspect current video source handling
         shell: bash
         run: |
           set -euo pipefail
-          export PATH="$HOME/.local/bin:$HOME/.local/node24/bin:$PATH"
-          echo '=== codex exec help ==='
-          codex exec --help
-          echo '=== work files ==='
-          find "$HOME/agents/w10-flow-video-scroll/preview/video" -maxdepth 2 -type f -printf '%p %s bytes\n' 2>/dev/null | sort || true
-          echo '=== antigravity result ==='
-          cat /tmp/w10-flow-video-antigravity.txt 2>/dev/null || true
-          echo '=== video probe ==='
-          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height -of default=noprint_wrappers=1 "$HOME/agents/flow-browser-automation/artifacts/w10-flow-video/knowledge-constellation.mp4" 2>/dev/null || true
+          ROOT="$HOME/agents/w10-flow-video-scroll/preview/video"
+          echo '=== index video block ==='
+          grep -n -A12 -B5 '<video' "$ROOT/index.html" || true
+          echo '=== app source and readiness lines ==='
+          grep -n -E -A8 -B8 'canPlay|data-src|startVideo|loadeddata|loadedmetadata|querySelector.*source|failToStatic' "$ROOT/app.js" || true
+          echo '=== video canplay diagnostic in headless chromium ==='
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
+          cd "$HOME/agents/flow-browser-automation"
+          node - <<'JS'
+          const {chromium}=require('playwright');
+          (async()=>{const b=await chromium.launch({headless:true}); const p=await b.newPage(); console.log(await p.evaluate(()=>({mp4:document.createElement('video').canPlayType('video/mp4; codecs="avc1.42E01E"'),webm:document.createElement('video').canPlayType('video/webm; codecs="vp8"'),vp9:document.createElement('video').canPlayType('video/webm; codecs="vp9"')}))); await b.close();})().catch(e=>{console.error(e);process.exit(1)});
+          JS
