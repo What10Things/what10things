@@ -70,7 +70,7 @@ jobs:
 
           Write preview/video/CODEX_VIDEO_REVIEW.md summarising findings and patches. The final line must be exactly VERDICT: PASS if fit for browser QA; otherwise VERDICT: FAIL. Run node --check preview/video/app.js before finishing.
           EOF
-          timeout 600s codex exec -C "$WORK" -s workspace-write --approve-for-me "$(cat /tmp/w10-codex-video-prompt.txt)" | tee /tmp/w10-codex-video-output.txt
+          timeout 600s codex exec -C "$WORK" --approve-for-me "$(cat /tmp/w10-codex-video-prompt.txt)" | tee /tmp/w10-codex-video-output.txt
           test -s preview/video/CODEX_VIDEO_REVIEW.md
           grep -q '^VERDICT: PASS$' preview/video/CODEX_VIDEO_REVIEW.md
           node --check preview/video/app.js
@@ -97,12 +97,7 @@ jobs:
               page.on('pageerror',e=>errors.push(e.message));
               await page.goto('http://127.0.0.1:8792/',{waitUntil:'domcontentloaded',timeout:30000});
               await page.waitForTimeout(1800);
-              const before=await page.evaluate(()=>({
-                duration:document.querySelector('#scrollVideo')?.duration||0,
-                ready:document.querySelector('#scrollVideo')?.readyState||0,
-                overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth+1,
-                marker:document.documentElement.innerHTML.includes('W10_FLOW_VIDEO_SCROLL_PREVIEW')
-              }));
+              const before=await page.evaluate(()=>({duration:document.querySelector('#scrollVideo')?.duration||0,ready:document.querySelector('#scrollVideo')?.readyState||0,overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth+1,marker:document.documentElement.innerHTML.includes('W10_FLOW_VIDEO_SCROLL_PREVIEW')}));
               await page.evaluate(()=>window.scrollTo(0,document.documentElement.scrollHeight*.72));
               await page.waitForTimeout(1400);
               const forward=await page.evaluate(()=>({time:document.querySelector('#scrollVideo')?.currentTime||0,p:window.__W10_SCROLL_PROGRESS__||0}));
