@@ -1,0 +1,24 @@
+name: Export Flow Video
+on:
+  push:
+    branches: [design/w10-flow-video-scroll]
+    paths: ['.github/workflows/export-flow-video.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: [self-hosted, Linux, mainbuyer-server2]
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify video
+        run: |
+          set -euo pipefail
+          test -s preview/video/media/knowledge-constellation.mp4
+          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height -of default=noprint_wrappers=1 preview/video/media/knowledge-constellation.mp4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: what10things-flow-source-video
+          path: preview/video/media/knowledge-constellation.mp4
+          retention-days: 7
