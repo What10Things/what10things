@@ -1,0 +1,92 @@
+name: Recover W10 Flow Video Preview
+
+on:
+  push:
+    branches: [design/w10-flow-video-scroll]
+    paths: ['.github/workflows/recover-w10-flow-video-preview.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recover-qa-push:
+    runs-on: [self-hosted, Linux, mainbuyer-server2]
+    timeout-minutes: 12
+    env:
+      WORK: /home/ubuntu/agents/w10-flow-video-scroll
+      FLOW_ROOT: /home/ubuntu/agents/flow-browser-automation
+      TARGET_BRANCH: design/w10-flow-video-scroll
+    steps:
+      - name: Validate preserved Claude and Codex result
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/bin:$HOME/.local/node24/bin:$PATH"
+          test -s "$WORK/preview/video/index.html"
+          test -s "$WORK/preview/video/style.css"
+          test -s "$WORK/preview/video/app.js"
+          test -s "$WORK/preview/video/CLAUDE_VIDEO_REPORT.md"
+          test -s "$WORK/preview/video/CODEX_VIDEO_REVIEW.md"
+          test -s "$WORK/preview/video/media/knowledge-constellation.mp4"
+          grep -q '^VERDICT: PASS$' "$WORK/preview/video/CODEX_VIDEO_REVIEW.md"
+          node --check "$WORK/preview/video/app.js"
+          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height -of default=noprint_wrappers=1 "$WORK/preview/video/media/knowledge-constellation.mp4"
+
+      - name: Playwright proves forward and reverse scrolling locally
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
+          pkill -f 'python3 -m http.server 8792' >/dev/null 2>&1 || true
+          nohup python3 -m http.server 8792 --bind 127.0.0.1 --directory "$WORK/preview/video" >/tmp/w10-video-preview-server.log 2>&1 &
+          sleep 2
+          curl -fsS http://127.0.0.1:8792/ | grep -q 'W10_FLOW_VIDEO_SCROLL_PREVIEW'
+          cd "$FLOW_ROOT"
+          node - <<'JS'
+          const { chromium }=require('playwright');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            for(const [width,height] of [[390,844],[1440,1000]]){
+              const page=await browser.newPage({viewport:{width,height}});
+              const errors=[]; page.on('console',m=>{if(m.type()==='error')errors.push(m.text())}); page.on('pageerror',e=>errors.push(e.message));
+              await page.goto('http://127.0.0.1:8792/',{waitUntil:'domcontentloaded',timeout:30000});
+              await page.waitForFunction(()=>window.__W10_VIDEO_SCROLL__?.ready===true,{timeout:12000});
+              const initial=await page.evaluate(()=>({duration:document.querySelector('#video')?.duration||0,ready:document.querySelector('#video')?.readyState||0,overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth+1,mode:window.__W10_VIDEO_SCROLL__?.mode}));
+              await page.evaluate(()=>window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*0.72));
+              await page.waitForTimeout(1400);
+              const forward=await page.evaluate(()=>({time:document.querySelector('#video')?.currentTime||0,p:window.__W10_SCROLL_PROGRESS__||0}));
+              await page.evaluate(()=>window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*0.18));
+              await page.waitForTimeout(1400);
+              const backward=await page.evaluate(()=>({time:document.querySelector('#video')?.currentTime||0,p:window.__W10_SCROLL_PROGRESS__||0}));
+              console.log(JSON.stringify({width,initial,forward,backward,errors}));
+              if(initial.mode!=='video'||initial.duration<=0||initial.ready<2||initial.overflow||errors.length) process.exit(2);
+              if(forward.p<0.3||forward.time<=0.5) process.exit(3);
+              if(backward.p>=forward.p||backward.time>=forward.time) process.exit(4);
+              await page.close();
+            }
+            const rm=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
+            await rm.goto('http://127.0.0.1:8792/',{waitUntil:'domcontentloaded'}); await rm.waitForTimeout(500);
+            const r=await rm.evaluate(()=>({matches:matchMedia('(prefers-reduced-motion: reduce)').matches,mode:window.__W10_VIDEO_SCROLL__?.mode,static:document.body.classList.contains('is-static'),videoDisplay:getComputedStyle(document.querySelector('#video')).display,posterDisplay:getComputedStyle(document.querySelector('.stage-poster')).display}));
+            console.log(JSON.stringify({reducedMotion:r}));
+            if(!r.matches||r.mode!=='static'||!r.static||r.videoDisplay!=='none'||r.posterDisplay==='none') process.exit(5);
+            await rm.close(); await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+
+      - name: Commit and push tested preview bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/bin:$HOME/.local/node24/bin:$PATH"
+          cd "$WORK"
+          git config user.name 'w10-flow-agent-test'
+          git config user.email 'actions@what10things.local'
+          git add preview/video
+          git commit -m 'Add tested Flow video scroll-scrub preview' || true
+          git push origin "$TARGET_BRANCH"
+
+      - name: Confirm billing guard
+        if: always()
+        shell: bash
+        run: python3 "$FLOW_ROOT/bin/enforce-antigravity-overage.py"
