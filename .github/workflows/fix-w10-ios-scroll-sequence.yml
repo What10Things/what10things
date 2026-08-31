@@ -47,6 +47,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
           python3 .github/scripts/w10_ios_scroll_patch.py "$GITHUB_WORKSPACE"
           git checkout -- .github/workflows/deploy-w10-flow-video-preview.yml
           node --check preview/video/app.js
@@ -58,6 +59,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
           export NODE_PATH="$FLOW_ROOT/node_modules"
           pkill -f 'w10_range_server.js.*8794' >/dev/null 2>&1 || true
           nohup node .github/scripts/w10_range_server.js "$GITHUB_WORKSPACE/preview/video" 8794 >/tmp/w10-ios-range.log 2>&1 &
@@ -101,6 +103,7 @@ jobs:
             sleep 5
           done
           grep -q 'W10_FLOW_VIDEO_SCROLL_PREVIEW' /tmp/w10-ios-public.html
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
           export NODE_PATH="$FLOW_ROOT/node_modules"
           node .github/scripts/w10_scroll_qa.js https://what10things.co.uk/w10-video-preview/
 
