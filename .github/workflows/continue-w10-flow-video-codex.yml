@@ -70,7 +70,7 @@ jobs:
 
           Write preview/video/CODEX_VIDEO_REVIEW.md summarising findings and patches. The final line must be exactly VERDICT: PASS if fit for browser QA; otherwise VERDICT: FAIL. Run node --check preview/video/app.js before finishing.
           EOF
-          timeout 600s codex exec --full-auto -C "$WORK" "$(cat /tmp/w10-codex-video-prompt.txt)" | tee /tmp/w10-codex-video-output.txt
+          timeout 600s codex exec -C "$WORK" -s workspace-write --approve-for-me "$(cat /tmp/w10-codex-video-prompt.txt)" | tee /tmp/w10-codex-video-output.txt
           test -s preview/video/CODEX_VIDEO_REVIEW.md
           grep -q '^VERDICT: PASS$' preview/video/CODEX_VIDEO_REVIEW.md
           node --check preview/video/app.js
