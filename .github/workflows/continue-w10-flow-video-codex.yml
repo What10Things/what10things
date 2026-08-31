@@ -1,0 +1,139 @@
+name: Continue W10 Flow Video With Codex
+
+on:
+  push:
+    branches: [design/w10-flow-video-scroll]
+    paths: ['.github/workflows/continue-w10-flow-video-codex.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  codex-review-qa-push:
+    runs-on: [self-hosted, Linux, mainbuyer-server2]
+    timeout-minutes: 20
+    env:
+      TARGET_REPO: What10Things/what10things
+      TARGET_BRANCH: design/w10-flow-video-scroll
+      FLOW_ROOT: /home/ubuntu/agents/flow-browser-automation
+      WORK: /home/ubuntu/agents/w10-flow-video-scroll
+      STAGE: /home/ubuntu/agents/w10-flow-video-stage
+    steps:
+      - name: Preserve Claude result and refresh branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/bin:$HOME/.local/node24/bin:$PATH"
+          test -s "$WORK/preview/video/index.html"
+          test -s "$WORK/preview/video/style.css"
+          test -s "$WORK/preview/video/app.js"
+          test -s "$WORK/preview/video/CLAUDE_VIDEO_REPORT.md"
+          test -s "$WORK/preview/video/media/knowledge-constellation.mp4"
+          rm -rf "$STAGE"
+          mkdir -p "$STAGE"
+          cp -a "$WORK/preview/video" "$STAGE/video"
+          gh auth setup-git
+          rm -rf "$WORK"
+          gh repo clone "$TARGET_REPO" "$WORK"
+          cd "$WORK"
+          git fetch origin "$TARGET_BRANCH"
+          git checkout -B "$TARGET_BRANCH" "origin/$TARGET_BRANCH"
+          git config user.name 'w10-flow-agent-test'
+          git config user.email 'actions@what10things.local'
+          rm -rf preview/video
+          mkdir -p preview
+          cp -a "$STAGE/video" preview/video
+          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height -of default=noprint_wrappers=1 preview/video/media/knowledge-constellation.mp4
+
+      - name: Codex independently reviews and patches Claude implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/bin:$HOME/.local/node24/bin:$PATH"
+          cd "$WORK"
+          cat > /tmp/w10-codex-video-prompt.txt <<'EOF'
+          Independently review the implementation in preview/video/ as a senior web performance and interaction engineer. Claude Code created this implementation from a Google Flow Veo clip. The requirement is a robust scroll-scrubbed HTML5 video experience: scroll down advances the video and scroll up reverses it.
+
+          Read preview/video/index.html, style.css, app.js, .htaccess and CLAUDE_VIDEO_REPORT.md. Inspect the local MP4 with ffprobe if useful. PATCH clear defects directly in preview/video/ while preserving the Knowledge Constellations design and noindex preview status.
+
+          Priorities:
+          - iOS Safari/mobile video seeking behaviour and playsinline/muted readiness.
+          - Reliable metadata readiness and graceful fallback.
+          - requestAnimationFrame smoothing; avoid assigning currentTime on every raw scroll event.
+          - Forward and reverse scroll mapping must be deterministic.
+          - No horizontal overflow at 390px or 1440px.
+          - prefers-reduced-motion and Save-Data must show the poster/static experience rather than loading/scrubbing unnecessarily.
+          - Accessible focus, readable semantic HTML and no dependency on audio.
+          - Keep visible copy in HTML and do not alter/generate the media files.
+          - Do not touch production files outside preview/video/.
+
+          Write preview/video/CODEX_VIDEO_REVIEW.md summarising findings and patches. The final line must be exactly VERDICT: PASS if fit for browser QA; otherwise VERDICT: FAIL. Run node --check preview/video/app.js before finishing.
+          EOF
+          timeout 600s codex exec --full-auto -C "$WORK" "$(cat /tmp/w10-codex-video-prompt.txt)" | tee /tmp/w10-codex-video-output.txt
+          test -s preview/video/CODEX_VIDEO_REVIEW.md
+          grep -q '^VERDICT: PASS$' preview/video/CODEX_VIDEO_REVIEW.md
+          node --check preview/video/app.js
+
+      - name: Server Playwright proves forward and reverse scroll scrubbing
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
+          cd "$WORK"
+          pkill -f 'python3 -m http.server 8792' >/dev/null 2>&1 || true
+          nohup python3 -m http.server 8792 --bind 127.0.0.1 --directory preview/video >/tmp/w10-video-preview-server.log 2>&1 &
+          sleep 2
+          curl -fsS http://127.0.0.1:8792/ | grep -q 'W10_FLOW_VIDEO_SCROLL_PREVIEW'
+          cd "$FLOW_ROOT"
+          node - <<'JS'
+          const { chromium }=require('playwright');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            for(const [w,h] of [[390,844],[1440,1000]]){
+              const page=await browser.newPage({viewport:{width:w,height:h}});
+              const errors=[];
+              page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});
+              page.on('pageerror',e=>errors.push(e.message));
+              await page.goto('http://127.0.0.1:8792/',{waitUntil:'domcontentloaded',timeout:30000});
+              await page.waitForTimeout(1800);
+              const before=await page.evaluate(()=>({
+                duration:document.querySelector('#scrollVideo')?.duration||0,
+                ready:document.querySelector('#scrollVideo')?.readyState||0,
+                overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth+1,
+                marker:document.documentElement.innerHTML.includes('W10_FLOW_VIDEO_SCROLL_PREVIEW')
+              }));
+              await page.evaluate(()=>window.scrollTo(0,document.documentElement.scrollHeight*.72));
+              await page.waitForTimeout(1400);
+              const forward=await page.evaluate(()=>({time:document.querySelector('#scrollVideo')?.currentTime||0,p:window.__W10_SCROLL_PROGRESS__||0}));
+              await page.evaluate(()=>window.scrollTo(0,document.documentElement.scrollHeight*.18));
+              await page.waitForTimeout(1400);
+              const backward=await page.evaluate(()=>({time:document.querySelector('#scrollVideo')?.currentTime||0,p:window.__W10_SCROLL_PROGRESS__||0}));
+              console.log(JSON.stringify({w,before,forward,backward,errors}));
+              if(!before.marker||before.duration<=0||before.ready<1||before.overflow||errors.length)process.exit(2);
+              if(forward.p<0.3||forward.time<=0.5)process.exit(3);
+              if(backward.p>=forward.p||backward.time>=forward.time)process.exit(4);
+              await page.close();
+            }
+            const rm=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
+            await rm.goto('http://127.0.0.1:8792/',{waitUntil:'domcontentloaded'}); await rm.waitForTimeout(500);
+            const r=await rm.evaluate(()=>({matches:matchMedia('(prefers-reduced-motion: reduce)').matches,fallback:getComputedStyle(document.querySelector('.motion-fallback')).display,video:getComputedStyle(document.querySelector('#scrollVideo')).display}));
+            console.log(JSON.stringify({reducedMotion:r}));
+            if(!r.matches||r.fallback==='none')process.exit(5);
+            await rm.close(); await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+
+      - name: Commit and push tested isolated preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$WORK"
+          git add preview/video
+          git commit -m 'Add Flow video scroll-scrub preview reviewed by Codex'
+          git push origin "$TARGET_BRANCH"
+
+      - name: Verify Antigravity overage still disabled
+        if: always()
+        shell: bash
+        run: python3 "$FLOW_ROOT/bin/enforce-antigravity-overage.py"
