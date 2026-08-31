@@ -1,0 +1,317 @@
+name: Fix W10 iOS Scroll Sequence
+
+on:
+  push:
+    branches: [design/w10-flow-video-scroll]
+    paths: ['.github/workflows/fix-w10-ios-scroll-sequence.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test-push:
+    runs-on: [self-hosted, Linux, mainbuyer-server2]
+    timeout-minutes: 20
+    env:
+      WORK: /home/ubuntu/agents/w10-flow-video-scroll
+      FLOW_ROOT: /home/ubuntu/agents/flow-browser-automation
+      TARGET_BRANCH: design/w10-flow-video-scroll
+    steps:
+      - name: Sync persistent design worktree
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/bin:$HOME/.local/node24/bin:$PATH"
+          cd "$WORK"
+          git fetch origin "$TARGET_BRANCH"
+          git checkout "$TARGET_BRANCH"
+          git reset --hard "origin/$TARGET_BRANCH"
+
+      - name: Extract lightweight iPhone frame sequence from existing Flow video
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/bin:$HOME/.local/node24/bin:$PATH"
+          SRC="$WORK/preview/video/media/knowledge-constellation.mp4"
+          OUT="$WORK/preview/video/media/frames"
+          test -s "$SRC"
+          rm -rf "$OUT"
+          mkdir -p "$OUT"
+          ffmpeg -hide_banner -loglevel error -y -i "$SRC" -an \
+            -vf "fps=12,scale=768:-2:flags=lanczos" \
+            -c:v libwebp -quality 72 -compression_level 6 -preset picture \
+            "$OUT/frame-%03d.webp"
+          COUNT=$(find "$OUT" -maxdepth 1 -type f -name 'frame-*.webp' | wc -l)
+          echo "FRAME_COUNT=$COUNT"
+          test "$COUNT" -ge 95
+          BYTES=$(du -sb "$OUT" | awk '{print $1}')
+          echo "FRAME_BYTES=$BYTES"
+          # Keep the mobile derivative lighter than the original+WebM pair combined.
+          if [ "$BYTES" -gt 6000000 ]; then
+            rm -rf "$OUT" && mkdir -p "$OUT"
+            ffmpeg -hide_banner -loglevel error -y -i "$SRC" -an \
+              -vf "fps=12,scale=640:-2:flags=lanczos" \
+              -c:v libwebp -quality 66 -compression_level 6 -preset picture \
+              "$OUT/frame-%03d.webp"
+          fi
+          du -sh "$OUT"
+
+      - name: Add Apple touch frame-scrubbing mode
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          root=Path.home()/"agents/w10-flow-video-scroll/preview/video"
+          app=root/"app.js"
+          css=root/"style.css"
+          ht=root/".htaccess"
+          s=app.read_text()
+
+          s=s.replace(
+            "  const video     = document.getElementById('video');\n",
+            "  const video     = document.getElementById('video');\n  const poster    = stage ? stage.querySelector('.stage-poster') : null;\n  const staticPoster = poster ? poster.getAttribute('src') : '';\n"
+          )
+
+          old="""  const canPlayVideo    = !!video.canPlayType && (video.canPlayType('video/webm; codecs=\"vp8\"') !== '' || video.canPlayType('video/mp4') !== '');\n\n  let mode = (prefersReduced || prefersLessData || saveData || !canPlayVideo) ? 'static' : 'video';\n"""
+          new="""  const canPlayVideo    = !!video.canPlayType && (video.canPlayType('video/webm; codecs=\"vp8\"') !== '' || video.canPlayType('video/mp4') !== '');
+  const appleTouch = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                     (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+  const FRAME_COUNT = 96;
+
+  let mode = (prefersReduced || prefersLessData || saveData)
+    ? 'static'
+    : (appleTouch ? 'frames' : (canPlayVideo ? 'video' : 'frames'));
+"""
+          if old not in s and 'const FRAME_COUNT = 96;' not in s:
+              raise SystemExit('mode block not found')
+          s=s.replace(old,new)
+
+          s=s.replace(
+            "  let stalls = 0, watchdog = 0, metaTimer = 0;\n",
+            "  let stalls = 0, watchdog = 0, metaTimer = 0;\n  let frameIndex = -1;\n  const frameCache = new Array(96);\n"
+          )
+
+          s=s.replace(
+            "  function totalFrames() {\n    return Math.max(1, Math.round(duration * FPS));\n  }",
+            "  function totalFrames() {\n    return mode === 'frames' ? FRAME_COUNT : Math.max(1, Math.round(duration * FPS));\n  }"
+          )
+
+          old_tick="""    if (mode === 'video' && ready) {
+      if (!video.paused) video.pause();
+      seekTo(shown);
+    }
+    if (shown !== target) schedule();
+"""
+          new_tick="""    if (mode === 'video' && ready) {
+      if (!video.paused) video.pause();
+      seekTo(shown);
+    } else if (mode === 'frames' && ready) {
+      renderFrame(shown);
+    }
+    if (shown !== target) schedule();
+"""
+          if old_tick not in s and "mode === 'frames' && ready" not in s:
+              raise SystemExit('tick block not found')
+          s=s.replace(old_tick,new_tick)
+
+          s=s.replace(
+            "    stage.classList.remove('is-loading', 'is-ready');\n",
+            "    stage.classList.remove('is-loading', 'is-ready', 'is-frame-mode');\n    if (poster && staticPoster) poster.src = staticPoster;\n"
+          )
+
+          marker="  function startVideoMode() {\n"
+          if 'function startFrameMode()' not in s:
+              helpers=r'''  function frameUrl(index) {
+    return './media/frames/frame-' + String(index + 1).padStart(3, '0') + '.webp';
+  }
+
+  function renderFrame(p) {
+    if (!poster) return;
+    const index = clamp(Math.round(p * (FRAME_COUNT - 1)), 0, FRAME_COUNT - 1);
+    if (index === frameIndex) return;
+    frameIndex = index;
+    const cached = frameCache[index];
+    poster.src = (cached && cached.complete && cached.naturalWidth) ? cached.src : frameUrl(index);
+  }
+
+  function preloadFrameBatches(start) {
+    let next = start;
+    function batch() {
+      const end = Math.min(next + 8, FRAME_COUNT);
+      for (; next < end; next += 1) {
+        if (frameCache[next]) continue;
+        const image = new Image();
+        image.decoding = 'async';
+        image.src = frameUrl(next);
+        frameCache[next] = image;
+      }
+      if (next < FRAME_COUNT) setTimeout(batch, 90);
+    }
+    batch();
+  }
+
+  function startFrameMode() {
+    if (!poster) {
+      failToStatic('The mobile frame sequence is unavailable, so a single still frame is shown instead.');
+      return;
+    }
+    stage.classList.add('is-frame-mode', 'is-loading');
+    video.querySelectorAll('source').forEach((src) => src.removeAttribute('src'));
+    video.preload = 'none';
+
+    const first = new Image();
+    first.decoding = 'async';
+    frameCache[0] = first;
+    first.onload = () => {
+      ready = true;
+      poster.src = first.src;
+      frameIndex = 0;
+      stage.classList.remove('is-loading');
+      stage.classList.add('is-ready');
+      buildTicks();
+      measure();
+      renderFrame(shown);
+      schedule();
+      preloadFrameBatches(1);
+    };
+    first.onerror = () => failToStatic('The mobile sequence could not be loaded, so a single still frame is shown instead.');
+    first.src = frameUrl(0);
+  }
+
+'''
+              if marker not in s: raise SystemExit('startVideoMode marker not found')
+              s=s.replace(marker,helpers+marker)
+
+          old_end="""  if (mode === 'static') {
+    document.body.classList.add('is-static');
+    if (railNote) railNote.hidden = false;
+    try {
+      video.querySelectorAll('source').forEach((src) => src.removeAttribute('src'));
+      video.preload = "none";
+    } catch (err) { /* ignore */ }
+  } else {
+    startVideoMode();
+  }
+"""
+          new_end="""  if (mode === 'static') {
+    document.body.classList.add('is-static');
+    if (railNote) railNote.hidden = false;
+    try {
+      video.querySelectorAll('source').forEach((src) => src.removeAttribute('src'));
+      video.preload = "none";
+    } catch (err) { /* ignore */ }
+  } else if (mode === 'frames') {
+    startFrameMode();
+  } else {
+    startVideoMode();
+  }
+"""
+          if old_end not in s and "else if (mode === 'frames')" not in s:
+              raise SystemExit('mode startup block not found')
+          s=s.replace(old_end,new_end)
+
+          s=s.replace(
+            "    get currentTime() { return video ? video.currentTime : 0; }",
+            "    get currentTime() { return mode === 'frames' ? shown * duration : (video ? video.currentTime : 0); }"
+          )
+          app.write_text(s)
+
+          c=css.read_text()
+          frame_css="""
+/* Apple touch devices use a frame sequence instead of HTML video seeking. */
+.stage.is-frame-mode .stage-video{display:none}
+.stage.is-frame-mode .stage-poster{display:block;opacity:1}
+"""
+          if '.stage.is-frame-mode .stage-video' not in c:
+              c += frame_css
+          css.write_text(c)
+
+          h=ht.read_text()
+          if 'image/webp' not in h:
+              h += '\nAddType image/webp .webp\n'
+          ht.write_text(h)
+          PY
+          node --check "$WORK/preview/video/app.js"
+          grep -q "mode === 'frames'" "$WORK/preview/video/app.js"
+          grep -q 'is-frame-mode' "$WORK/preview/video/style.css"
+
+      - name: Add iPhone path to public deployment QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path.home()/"agents/w10-flow-video-scroll/.github/workflows/deploy-w10-flow-video-preview.yml"
+          s=p.read_text()
+          if "media/frames/frame-001.webp" not in s:
+              s=s.replace(
+                "          test -s preview/video/media/knowledge-constellation-scroll.webm\n",
+                "          test -s preview/video/media/knowledge-constellation-scroll.webm\n          test -s preview/video/media/frames/frame-001.webp\n          test -s preview/video/media/frames/frame-096.webp\n"
+              )
+          if "const iphoneUA" not in s:
+              needle="""            const reduced=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});\n"""
+              insert="""            const iphoneUA='Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Mobile/15E148 Safari/604.1';
+            const iphone=await browser.newPage({viewport:{width:390,height:844},userAgent:iphoneUA,isMobile:true,hasTouch:true});
+            const iphoneVideo=[]; iphone.on('request',r=>{if(/\\.(mp4|webm)(\\?|$)/.test(r.url())) iphoneVideo.push(r.url())});
+            await iphone.goto('https://what10things.co.uk/w10-video-preview/?iosqa='+Date.now(),{waitUntil:'domcontentloaded',timeout:30000});
+            await iphone.waitForFunction(()=>window.__W10_VIDEO_SCROLL__?.mode==='frames' && window.__W10_VIDEO_SCROLL__?.ready===true,null,{timeout:15000});
+            const iosInitial=await iphone.evaluate(()=>({mode:window.__W10_VIDEO_SCROLL__?.mode,frame:window.__W10_VIDEO_SCROLL__?.frame,src:document.querySelector('.stage-poster')?.src||'',overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth+1}));
+            await iphone.evaluate(()=>window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.72)); await iphone.waitForTimeout(1400);
+            const iosForward=await iphone.evaluate(()=>({frame:window.__W10_VIDEO_SCROLL__?.frame,src:document.querySelector('.stage-poster')?.src||'',p:window.__W10_SCROLL_PROGRESS__||0}));
+            await iphone.evaluate(()=>window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.18)); await iphone.waitForTimeout(1400);
+            const iosReverse=await iphone.evaluate(()=>({frame:window.__W10_VIDEO_SCROLL__?.frame,src:document.querySelector('.stage-poster')?.src||'',p:window.__W10_SCROLL_PROGRESS__||0}));
+            console.log({iphone:iosInitial,iosForward,iosReverse,iphoneVideo});
+            if(iosInitial.mode!=='frames'||iosInitial.overflow||!iosInitial.src.includes('frame-001.webp')||iosForward.frame<50||!iosForward.src.includes('/frames/frame-')||iosReverse.frame>=iosForward.frame||iphoneVideo.length) process.exit(4);
+            await iphone.close();
+
+"""
+              if needle not in s: raise SystemExit('deployment QA insertion marker not found')
+              s=s.replace(needle,insert+needle)
+          p.write_text(s)
+          PY
+
+      - name: Local QA iPhone frames, desktop video and reduced motion
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
+          cat > /tmp/w10-range-server.js <<'JS'
+          const http=require('http'),fs=require('fs'),path=require('path');const root=path.resolve(process.argv[2]);const port=8794;
+          const types={'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.webm':'video/webm','.mp4':'video/mp4','.jpg':'image/jpeg','.webp':'image/webp'};
+          http.createServer((req,res)=>{try{let u=new URL(req.url,'http://localhost').pathname;if(u.endsWith('/'))u+='index.html';const f=path.resolve(root,'.'+decodeURIComponent(u));if(!f.startsWith(root+path.sep)){res.writeHead(403);return res.end();}const st=fs.statSync(f);const type=types[path.extname(f).toLowerCase()]||'application/octet-stream';res.setHeader('Content-Type',type);res.setHeader('Accept-Ranges','bytes');const r=req.headers.range;if(r){const m=/bytes=(\d*)-(\d*)/.exec(r);let a=m&&m[1]?Number(m[1]):0,b=m&&m[2]?Number(m[2]):st.size-1;b=Math.min(b,st.size-1);res.writeHead(206,{'Content-Range':`bytes ${a}-${b}/${st.size}`,'Content-Length':b-a+1});if(req.method==='HEAD')return res.end();return fs.createReadStream(f,{start:a,end:b}).pipe(res);}res.writeHead(200,{'Content-Length':st.size});if(req.method==='HEAD')return res.end();fs.createReadStream(f).pipe(res);}catch(e){res.writeHead(404);res.end();}}).listen(port,'127.0.0.1');
+          JS
+          pkill -f '/tmp/w10-range-server.js' >/dev/null 2>&1 || true
+          nohup node /tmp/w10-range-server.js "$WORK/preview/video" >/tmp/w10-ios-range.log 2>&1 &
+          sleep 2
+          cd "$FLOW_ROOT"
+          node - <<'JS'
+          const {chromium}=require('playwright');
+          (async()=>{const b=await chromium.launch({headless:true});
+            const iphoneUA='Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Mobile/15E148 Safari/604.1';
+            const p=await b.newPage({viewport:{width:390,height:844},userAgent:iphoneUA,isMobile:true,hasTouch:true});const videos=[];p.on('request',r=>{if(/\.(mp4|webm)(\?|$)/.test(r.url()))videos.push(r.url())});
+            await p.goto('http://127.0.0.1:8794/',{waitUntil:'domcontentloaded'});await p.waitForFunction(()=>window.__W10_VIDEO_SCROLL__?.mode==='frames'&&window.__W10_VIDEO_SCROLL__?.ready===true,null,{timeout:12000});
+            const a=await p.evaluate(()=>({mode:window.__W10_VIDEO_SCROLL__.mode,frame:window.__W10_VIDEO_SCROLL__.frame,src:document.querySelector('.stage-poster').src,overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth+1}));
+            await p.evaluate(()=>scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.72));await p.waitForTimeout(1400);const f=await p.evaluate(()=>({frame:window.__W10_VIDEO_SCROLL__.frame,src:document.querySelector('.stage-poster').src,p:window.__W10_SCROLL_PROGRESS__}));
+            await p.evaluate(()=>scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.18));await p.waitForTimeout(1400);const r=await p.evaluate(()=>({frame:window.__W10_VIDEO_SCROLL__.frame,src:document.querySelector('.stage-poster').src,p:window.__W10_SCROLL_PROGRESS__}));console.log({a,f,r,videos});
+            if(a.mode!=='frames'||a.overflow||!a.src.includes('frame-001.webp')||f.frame<50||r.frame>=f.frame||videos.length)process.exit(2);await p.close();
+            const d=await b.newPage({viewport:{width:1440,height:1000}});await d.goto('http://127.0.0.1:8794/',{waitUntil:'domcontentloaded'});await d.waitForFunction(()=>window.__W10_VIDEO_SCROLL__?.mode==='video'&&window.__W10_VIDEO_SCROLL__?.ready===true,null,{timeout:12000});await d.evaluate(()=>scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.72));await d.waitForTimeout(1300);const ds=await d.evaluate(()=>({mode:window.__W10_VIDEO_SCROLL__.mode,t:document.querySelector('#video').currentTime,p:window.__W10_SCROLL_PROGRESS__}));console.log({desktop:ds});if(ds.mode!=='video'||ds.t<1||ds.p<.3)process.exit(3);await d.close();
+            const rm=await b.newPage({viewport:{width:390,height:844},userAgent:iphoneUA,isMobile:true,hasTouch:true,reducedMotion:'reduce'});const media=[];rm.on('request',x=>{if(/\.(mp4|webm|frame-\d+\.webp)(\?|$)/.test(x.url()))media.push(x.url())});await rm.goto('http://127.0.0.1:8794/',{waitUntil:'domcontentloaded'});await rm.waitForTimeout(700);const rs=await rm.evaluate(()=>({mode:window.__W10_VIDEO_SCROLL__.mode,poster:getComputedStyle(document.querySelector('.stage-poster')).display}));console.log({reduced:rs,media});if(rs.mode!=='static'||rs.poster==='none'||media.length)process.exit(4);await rm.close();await b.close();})().catch(e=>{console.error(e);process.exit(1)});
+          JS
+
+      - name: Commit and push iPhone fix
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$WORK"
+          git config user.name 'w10-ios-scroll-agent'
+          git config user.email 'actions@what10things.local'
+          git add preview/video .github/workflows/deploy-w10-flow-video-preview.yml
+          git commit -m 'Use frame sequence for reliable iPhone scroll animation'
+          git push origin "$TARGET_BRANCH"
+
+      - name: Confirm billing guard
+        if: always()
+        shell: bash
+        run: python3 "$FLOW_ROOT/bin/enforce-antigravity-overage.py"
