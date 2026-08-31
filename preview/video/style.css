@@ -308,3 +308,8 @@ body.is-static .outro{padding-bottom:4rem}
 @media (prefers-contrast:more){
   :root{--muted:#cdcbc4;--line:rgba(243,240,232,.4);--line-2:rgba(243,240,232,.55)}
 }
+
+
+/* Apple touch devices use a frame sequence instead of HTML video seeking. */
+.stage.is-frame-mode .stage-video{display:none}
+.stage.is-frame-mode .stage-poster{display:block;opacity:1}

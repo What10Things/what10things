@@ -20,6 +20,8 @@
   const track     = document.getElementById('track');
   const stage     = document.getElementById('stage');
   const video     = document.getElementById('video');
+  const poster    = stage ? stage.querySelector('.stage-poster') : null;
+  const staticPoster = poster ? poster.getAttribute('src') : '';
   const beats     = Array.prototype.slice.call(document.querySelectorAll('.beat'));
   const railTicks  = document.getElementById('railTicks');
   const railFrame  = document.getElementById('railFrame');
@@ -39,8 +41,13 @@
   const prefersLessData = matchMedia('(prefers-reduced-data: reduce)').matches;
   const saveData        = !!(navigator.connection && navigator.connection.saveData);
   const canPlayVideo    = !!video.canPlayType && (video.canPlayType('video/webm; codecs="vp8"') !== '' || video.canPlayType('video/mp4') !== '');
+  const appleTouch = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                     (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+  const FRAME_COUNT = 96;
 
-  let mode = (prefersReduced || prefersLessData || saveData || !canPlayVideo) ? 'static' : 'video';
+  let mode = (prefersReduced || prefersLessData || saveData)
+    ? 'static'
+    : (appleTouch ? 'frames' : (canPlayVideo ? 'video' : 'frames'));
 
   let duration = 8;
   let target = 0, shown = 0, lastTarget = 0, lastTick = 0;
@@ -48,6 +55,8 @@
   let rafId = 0;
   let seeking = false, ready = false, pendingTime = null;
   let stalls = 0, watchdog = 0, metaTimer = 0;
+  let frameIndex = -1;
+  const frameCache = new Array(96);
 
   const clamp = (n, a, b) => (n < a ? a : n > b ? b : n);
   const pad3  = (n) => String(n).padStart(3, '0');
@@ -65,7 +74,7 @@
   }
 
   function totalFrames() {
-    return Math.max(1, Math.round(duration * FPS));
+    return mode === 'frames' ? FRAME_COUNT : Math.max(1, Math.round(duration * FPS));
   }
 
   function paint(p) {
@@ -102,6 +111,8 @@
     if (mode === 'video' && ready) {
       if (!video.paused) video.pause();
       seekTo(shown);
+    } else if (mode === 'frames' && ready) {
+      renderFrame(shown);
     }
     if (shown !== target) schedule();
   }
@@ -153,7 +164,8 @@
     clearTimeout(watchdog);
     clearTimeout(metaTimer);
     document.body.classList.add('is-static');
-    stage.classList.remove('is-loading', 'is-ready');
+    stage.classList.remove('is-loading', 'is-ready', 'is-frame-mode');
+    if (poster && staticPoster) poster.src = staticPoster;
     if (railNote) {
       if (message) railNote.textContent = message;
       railNote.hidden = false;
@@ -199,6 +211,63 @@
       tick.appendChild(num);
       railTicks.appendChild(tick);
     });
+  }
+
+  function frameUrl(index) {
+    return './media/frames/frame-' + String(index + 1).padStart(3, '0') + '.webp';
+  }
+
+  function renderFrame(p) {
+    if (!poster) return;
+    const index = clamp(Math.round(p * (FRAME_COUNT - 1)), 0, FRAME_COUNT - 1);
+    if (index === frameIndex) return;
+    frameIndex = index;
+    const cached = frameCache[index];
+    poster.src = (cached && cached.complete && cached.naturalWidth) ? cached.src : frameUrl(index);
+  }
+
+  function preloadFrameBatches(start) {
+    let next = start;
+    function batch() {
+      const end = Math.min(next + 8, FRAME_COUNT);
+      for (; next < end; next += 1) {
+        if (frameCache[next]) continue;
+        const image = new Image();
+        image.decoding = 'async';
+        image.src = frameUrl(next);
+        frameCache[next] = image;
+      }
+      if (next < FRAME_COUNT) setTimeout(batch, 90);
+    }
+    batch();
+  }
+
+  function startFrameMode() {
+    if (!poster) {
+      failToStatic('The mobile frame sequence is unavailable, so a single still frame is shown instead.');
+      return;
+    }
+    stage.classList.add('is-frame-mode', 'is-loading');
+    video.querySelectorAll('source').forEach((src) => src.removeAttribute('src'));
+    video.preload = 'none';
+
+    const first = new Image();
+    first.decoding = 'async';
+    frameCache[0] = first;
+    first.onload = () => {
+      ready = true;
+      poster.src = first.src;
+      frameIndex = 0;
+      stage.classList.remove('is-loading');
+      stage.classList.add('is-ready');
+      buildTicks();
+      measure();
+      renderFrame(shown);
+      schedule();
+      preloadFrameBatches(1);
+    };
+    first.onerror = () => failToStatic('The mobile sequence could not be loaded, so a single still frame is shown instead.');
+    first.src = frameUrl(0);
   }
 
   function startVideoMode() {
@@ -250,6 +319,8 @@
       video.querySelectorAll('source').forEach((src) => src.removeAttribute('src'));
       video.preload = "none";
     } catch (err) { /* ignore */ }
+  } else if (mode === 'frames') {
+    startFrameMode();
   } else {
     startVideoMode();
   }
@@ -274,6 +345,6 @@
     get ready() { return ready; },
     get direction() { return dir; },
     get frame() { return clamp(Math.round(shown * (totalFrames() - 1)), 0, totalFrames() - 1); },
-    get currentTime() { return video ? video.currentTime : 0; }
+    get currentTime() { return mode === 'frames' ? shown * duration : (video ? video.currentTime : 0); }
   };
 })();

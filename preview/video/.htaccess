@@ -29,3 +29,5 @@ DirectoryIndex index.html
 </IfModule>
 
 AddType video/webm .webm
+
+AddType image/webp .webp
