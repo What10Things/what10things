@@ -1,0 +1,130 @@
+name: Mainbuyer2 second runner bootstrap
+
+on:
+  push:
+    branches: [runner-bootstrap-20260907]
+    paths:
+      - '.github/workflows/mainbuyer-second-runner-bootstrap.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  bootstrap:
+    runs-on: [self-hosted, Linux, ARM64]
+    timeout-minutes: 15
+    steps:
+      - name: Verify Mainbuyer2 host
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          echo "Host: $(hostname)"
+          echo "User: $(whoami)"
+          echo "Arch: $(uname -m)"
+          echo "CPUs: $(nproc)"
+          systemctl status actions.runner.What10Things-mainbuyer.mainbuyer-server2.service --no-pager >/dev/null
+          test "$(whoami)" = ubuntu
+          sudo -n true
+
+      - name: Install and register second MainBuyer runner
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          umask 077
+          export PATH="$HOME/.local/bin:$PATH"
+          unset GH_TOKEN || true
+          unset GITHUB_TOKEN || true
+
+          TARGET_REPO='What10Things/mainbuyer'
+          TARGET_URL='https://github.com/What10Things/mainbuyer'
+          RUNNER_NAME='mainbuyer2-02'
+          INSTALL_DIR="$HOME/actions-runner-mainbuyer2-02"
+          SERVICE='actions.runner.What10Things-mainbuyer.mainbuyer2-02.service'
+
+          gh auth status >/dev/null
+
+          if systemctl list-unit-files --no-legend "$SERVICE" 2>/dev/null | grep -q "^$SERVICE"; then
+            echo "Second runner service already exists; ensuring it is running."
+            sudo -n systemctl enable --now "$SERVICE"
+            systemctl is-active --quiet "$SERVICE"
+            exit 0
+          fi
+
+          if [ -e "$INSTALL_DIR/.runner" ]; then
+            echo "A runner configuration already exists in $INSTALL_DIR without its expected service; refusing to overwrite it."
+            exit 2
+          fi
+
+          current_dir=''
+          while IFS= read -r cfg; do
+            [ -f "$cfg" ] || continue
+            if python3 - "$cfg" <<'PY'
+import json,sys
+try:
+    d=json.load(open(sys.argv[1]))
+except Exception:
+    raise SystemExit(1)
+raise SystemExit(0 if d.get('agentName') == 'mainbuyer-server2' else 1)
+PY
+            then
+              current_dir="$(dirname "$cfg")"
+              break
+            fi
+          done < <(find "$HOME" -maxdepth 4 -type f -name .runner 2>/dev/null)
+
+          if [ -z "$current_dir" ] || [ ! -x "$current_dir/bin/Runner.Listener" ]; then
+            echo 'Could not locate the existing MainBuyer runner installation.'
+            exit 3
+          fi
+
+          version="$($current_dir/bin/Runner.Listener --version | tail -n1 | tr -d '\r')"
+          test -n "$version"
+          echo "Using GitHub Actions runner version $version"
+
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+          archive="$tmp/actions-runner.tar.gz"
+          curl --fail --silent --show-error --location \
+            "https://github.com/actions/runner/releases/download/v${version}/actions-runner-linux-arm64-${version}.tar.gz" \
+            -o "$archive"
+
+          mkdir -p "$INSTALL_DIR"
+          tar -xzf "$archive" -C "$INSTALL_DIR"
+          chown -R ubuntu:ubuntu "$INSTALL_DIR"
+
+          token="$(gh api --method POST "repos/${TARGET_REPO}/actions/runners/registration-token" --jq .token)"
+          test -n "$token"
+
+          cd "$INSTALL_DIR"
+          ./config.sh --unattended \
+            --url "$TARGET_URL" \
+            --token "$token" \
+            --name "$RUNNER_NAME" \
+            --labels 'oracle-mainbuyer,mainbuyer2,parallel' \
+            --work '_work' \
+            --replace
+          token=''
+
+          sudo -n ./svc.sh install ubuntu
+          sudo -n ./svc.sh start
+          sudo -n systemctl enable "$SERVICE"
+          systemctl is-active --quiet "$SERVICE"
+          systemctl is-enabled --quiet "$SERVICE"
+
+          echo 'SECOND_MAINBUYER_RUNNER_INSTALLED=1'
+          echo "Service: $SERVICE"
+
+      - name: Verify both MainBuyer runner services
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          for svc in \
+            actions.runner.What10Things-mainbuyer.mainbuyer-server2.service \
+            actions.runner.What10Things-mainbuyer.mainbuyer2-02.service
+          do
+            echo "$svc active=$(systemctl is-active "$svc") enabled=$(systemctl is-enabled "$svc")"
+            systemctl is-active --quiet "$svc"
+            systemctl is-enabled --quiet "$svc"
+          done
+          ps -eo pid,user,cmd | grep -E '[R]unner\.Listener' || true
+          echo 'SECOND_MAINBUYER_RUNNER_READY=1'
