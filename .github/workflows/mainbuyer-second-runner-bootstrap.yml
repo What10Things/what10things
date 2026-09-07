@@ -40,6 +40,7 @@ jobs:
           RUNNER_NAME='mainbuyer2-02'
           INSTALL_DIR="$HOME/actions-runner-mainbuyer2-02"
           SERVICE='actions.runner.What10Things-mainbuyer.mainbuyer2-02.service'
+          VERSION='2.337.0'
 
           gh auth status >/dev/null
 
@@ -55,31 +56,15 @@ jobs:
             exit 2
           fi
 
-          current_dir=''
-          while IFS= read -r cfg; do
-            [ -f "$cfg" ] || continue
-            if python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); raise SystemExit(0 if d.get("agentName") == "mainbuyer-server2" else 1)' "$cfg" 2>/dev/null; then
-              current_dir="$(dirname "$cfg")"
-              break
-            fi
-          done < <(find "$HOME" -maxdepth 4 -type f -name .runner 2>/dev/null)
-
-          if [ -z "$current_dir" ] || [ ! -x "$current_dir/bin/Runner.Listener" ]; then
-            echo 'Could not locate the existing MainBuyer runner installation.'
-            exit 3
-          fi
-
-          version="$($current_dir/bin/Runner.Listener --version | tail -n1 | tr -d '\r')"
-          test -n "$version"
-          echo "Using GitHub Actions runner version $version"
-
+          echo "Using GitHub Actions runner version $VERSION"
           tmp="$(mktemp -d)"
           trap 'rm -rf "$tmp"' EXIT
           archive="$tmp/actions-runner.tar.gz"
           curl --fail --silent --show-error --location \
-            "https://github.com/actions/runner/releases/download/v${version}/actions-runner-linux-arm64-${version}.tar.gz" \
+            "https://github.com/actions/runner/releases/download/v${VERSION}/actions-runner-linux-arm64-${VERSION}.tar.gz" \
             -o "$archive"
 
+          rm -rf "$INSTALL_DIR"
           mkdir -p "$INSTALL_DIR"
           tar -xzf "$archive" -C "$INSTALL_DIR"
           chown -R ubuntu:ubuntu "$INSTALL_DIR"
