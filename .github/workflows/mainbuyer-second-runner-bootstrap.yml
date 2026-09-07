@@ -58,15 +58,7 @@ jobs:
           current_dir=''
           while IFS= read -r cfg; do
             [ -f "$cfg" ] || continue
-            if python3 - "$cfg" <<'PY'
-import json,sys
-try:
-    d=json.load(open(sys.argv[1]))
-except Exception:
-    raise SystemExit(1)
-raise SystemExit(0 if d.get('agentName') == 'mainbuyer-server2' else 1)
-PY
-            then
+            if python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); raise SystemExit(0 if d.get("agentName") == "mainbuyer-server2" else 1)' "$cfg" 2>/dev/null; then
               current_dir="$(dirname "$cfg")"
               break
             fi
