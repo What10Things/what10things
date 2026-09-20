@@ -14,7 +14,7 @@ class GenericTravelGateTests(unittest.TestCase):
 
     def run_candidate(self,title,subject,category='travel'):
         js='const x=JSON.parse(process.argv[1]);process.stdout.write(JSON.stringify(new Function("$json",x.code)({candidate:x.c})));'
-        data={'code':self.code,'c':{'id':106,'title':title,'subject':subject,'category':category}}
+        data={'code':self.code,'c':{'id':106,'attempts':1,'title':title,'subject':subject,'category':category}}
         return json.loads(subprocess.check_output(['node','-e',js,json.dumps(data)],text=True))[0]['json']
 
     def test_specific_places_repair_generic_subject_labels(self):
@@ -40,3 +40,4 @@ class GenericTravelGateTests(unittest.TestCase):
         gate=self.flow['connections']['Generic travel category?']['main']
         self.assertEqual(gate[0][0]['node'],'Publish or retry candidate')
         self.assertEqual(gate[1][0]['node'],'Search evidence with Bing RSS')
+

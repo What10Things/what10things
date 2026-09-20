@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "workflow": "automation/n8n/W10-R01-evidence-research.json",
+  "source_sha256": "6fefc0d63088847463e4801d763b058ef4e6999e51bf331a6c24599ba8e47fd6",
+  "status": "optimised",
+  "baseline": "Hourly evidence worker repeatedly reclaims a failed destination after its lease expires.",
+  "problem_or_opportunity": "Observed long and official-suffixed Mount Fuji queries return unrelated dictionary results. Quoted destination alone returns relevant sources. Thrown research errors never reach durable candidate result.",
+  "change_summary": "Quoted subject search; rank preferred sources before existing eight-source bound; bounded durable retry/failed branch before writer; maximum three research attempts without reset; reject non-success fetch bodies; portable strict hostname extraction.",
+  "expected_benefit": "Relevant source acquisition without additional services; failures no longer repeat indefinitely or consume writer calls on missing evidence.",
+  "validation": "Eight Node VM regression cases; source probe run 35496781917; independent NCA review before promotion.",
+  "deferred": "Ten facts and citation presence are structural checks, not complete semantic fact verification. No exhausted candidates reset."
+}
