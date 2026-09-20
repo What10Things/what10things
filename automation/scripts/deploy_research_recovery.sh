@@ -8,7 +8,7 @@ ID=W10R01EvidenceResearch
 exec 9>"$HOME/.urbansky-live-stack-mainbuyer2.lock"
 flock -n 9 || exit 75
 # Do not interrupt running executions with the required n8n restart.
-RUNNING="$(docker exec mainbuyer-automation-postgres-1 sh -c 'psql -X -At -U "$POSTGRES_USER" -d "$POSTGRES_DB" -v ON_ERROR_STOP=1' <<'SQL'
+RUNNING="$(docker exec -i mainbuyer-automation-postgres-1 sh -c 'psql -X -At -U "$POSTGRES_USER" -d "$POSTGRES_DB" -v ON_ERROR_STOP=1' <<'SQL'
 SELECT COUNT(*) FROM execution_entity WHERE status IN ('running','new');
 SQL
 )"
