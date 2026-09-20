@@ -44,3 +44,17 @@ Media endpoints:
 ## Persistence
 
 The live Passenger application stores the knowledge graph in `runtime/knowledge.db` using Python's built-in SQLite. The deployment workflow explicitly excludes the runtime database, so application deployments do not overwrite generated content.
+
+## YouTube and podcast lane
+
+The media system now has a deterministic derivative planner under
+`automation/youtube/`. One published ten-fact topic can become a normal
+YouTube explainer, ten Shorts, and—when the category is suitable—a calm
+90–150 minute bedtime/sleep video plus podcast audio.
+
+This lane is zero-incremental-cost by default. Paid media generation is
+explicitly forbidden. The first controlled acceptance target is an
+unlisted/private pilot assembled with local/offline TTS, licensed/public-domain
+imagery and FFmpeg. Public upload remains a separate idempotent publishing job
+and requires What10Things YouTube OAuth.
+
