@@ -93,6 +93,15 @@ jobs:
             --output deploy/night-atlas/rss.xml
           cp automation/night_atlas/index.html deploy/night-atlas/index.html
           python automation/tests/test_night_atlas_feed.py
+
+          mkdir -p deploy/what10things-audio
+          python automation/what10things_audio/make_cover.py --output deploy/what10things-audio/cover.png
+          python automation/night_atlas/build_feed.py \
+            --show automation/what10things_audio/show.json \
+            --episodes automation/what10things_audio/episodes.json \
+            --output deploy/what10things-audio/rss.xml
+          cp automation/what10things_audio/index.html deploy/what10things-audio/index.html
+
           python - <<'PY'
           from pathlib import Path
           import xml.etree.ElementTree as ET
@@ -103,6 +112,12 @@ jobs:
           root = ET.parse(feed).getroot()
           assert root.findtext("./channel/title") == "Night Atlas"
           assert root.find("./channel/{http://www.itunes.com/dtds/podcast-1.0.dtd}image").attrib["href"].endswith("/night-atlas/cover.png")
+          w10_feed = Path("deploy/what10things-audio/rss.xml")
+          w10_cover = Path("deploy/what10things-audio/cover.png")
+          assert w10_feed.is_file() and w10_feed.stat().st_size > 500
+          assert w10_cover.is_file() and w10_cover.stat().st_size > 10_000
+          w10_root = ET.parse(w10_feed).getroot()
+          assert w10_root.findtext("./channel/title") == "What10Things Audio"
           PY
 
       - name: Install and validate Flask application
@@ -167,7 +182,9 @@ jobs:
               && check_text "/guides/air-fryer-buying-guide" "Start with usable capacity" \
               && check_text "/travel/rome" "Rome" \
               && check_text "/night-atlas/" "Night Atlas" \
-              && check_text "/night-atlas/rss.xml" "<title>Night Atlas</title>"; then
+              && check_text "/night-atlas/rss.xml" "<title>Night Atlas</title>" \
+              && check_text "/what10things-audio/" "What10Things Audio" \
+              && check_text "/what10things-audio/rss.xml" "<title>What10Things Audio</title>"; then
               echo "What10Things knowledge platform is live on Passenger."
               exit 0
             fi
