@@ -22,7 +22,7 @@ SHOW = {
     "language": "en-gb",
     "author": "Night Atlas",
     "owner_name": "Night Atlas",
-    "owner_email": "admin@what10things.com",
+    "owner_email": "Bill_san@yahoo.com",
     "category": "Health & Fitness",
     "subcategory": "Mental Health",
     "image_url": "https://what10things.co.uk/night-atlas/cover.png",
