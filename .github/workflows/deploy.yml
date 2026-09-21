@@ -82,6 +82,29 @@ jobs:
           cache: pip
           cache-dependency-path: deploy/requirements.txt
 
+      - name: Build and validate Night Atlas podcast feed
+        shell: bash
+        run: |
+          mkdir -p deploy/night-atlas
+          python automation/night_atlas/make_cover.py --output deploy/night-atlas/cover.png
+          python automation/night_atlas/build_feed.py \
+            --show automation/night_atlas/show.json \
+            --episodes automation/night_atlas/episodes.json \
+            --output deploy/night-atlas/rss.xml
+          cp automation/night_atlas/index.html deploy/night-atlas/index.html
+          python automation/tests/test_night_atlas_feed.py
+          python - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          feed = Path("deploy/night-atlas/rss.xml")
+          cover = Path("deploy/night-atlas/cover.png")
+          assert feed.is_file() and feed.stat().st_size > 500
+          assert cover.is_file() and cover.stat().st_size > 10_000
+          root = ET.parse(feed).getroot()
+          assert root.findtext("./channel/title") == "Night Atlas"
+          assert root.find("./channel/{http://www.itunes.com/dtds/podcast-1.0.dtd}image").attrib["href"].endswith("/night-atlas/cover.png")
+          PY
+
       - name: Install and validate Flask application
         shell: bash
         run: |
@@ -142,7 +165,9 @@ jobs:
               && check_text "/privacy" "17421062" \
               && check_text "/affiliate-disclosure" "registered in England and Wales" \
               && check_text "/guides/air-fryer-buying-guide" "Start with usable capacity" \
-              && check_text "/travel/rome" "Rome"; then
+              && check_text "/travel/rome" "Rome" \
+              && check_text "/night-atlas/" "Night Atlas" \
+              && check_text "/night-atlas/rss.xml" "<title>Night Atlas</title>"; then
               echo "What10Things knowledge platform is live on Passenger."
               exit 0
             fi
