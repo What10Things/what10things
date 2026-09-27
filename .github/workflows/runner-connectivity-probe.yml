@@ -1,0 +1,23 @@
+name: Runner Connectivity Probe
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/runner-connectivity-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: [self-hosted, Linux, ARM64]
+    timeout-minutes: 5
+    steps:
+      - name: Report runner
+        shell: bash
+        run: |
+          echo "RUNNER_NAME=$RUNNER_NAME"
+          echo "HOST=$(hostname)"
+          echo "ARCH=$(uname -m)"
