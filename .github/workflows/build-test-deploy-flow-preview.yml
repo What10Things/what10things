@@ -1,0 +1,118 @@
+name: Build Test Deploy Flow Preview
+
+on:
+  push:
+    branches:
+      - design/what10things-3d-preview
+    paths:
+      - 'preview/site/**'
+      - '.github/workflows/build-test-deploy-flow-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: what10things-flow-preview
+  cancel-in-progress: true
+
+jobs:
+  build-test-deploy:
+    runs-on: [self-hosted, Linux, mainbuyer-server2]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stage generated Flow image
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="$HOME/agents/flow-browser-automation/artifacts/extracted/what10things-flow-test.png"
+          test -s "$SRC"
+          cp "$SRC" preview/site/what10things-flow-test.png
+          file preview/site/what10things-flow-test.png
+          test "$(stat -c%s preview/site/what10things-flow-test.png)" -gt 100000
+
+      - name: Build and static validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s preview/site/index.html
+          test -s preview/site/style.css
+          test -s preview/site/app.js
+          grep -q 'W10_KNOWLEDGE_CONSTELLATIONS_PREVIEW' preview/site/index.html
+          grep -q 'noindex,nofollow,noarchive' preview/site/index.html
+          grep -q 'what10things-flow-test.png' preview/site/index.html
+          grep -q 'generated-art' preview/site/style.css
+          grep -q 'prefers-reduced-motion' preview/site/style.css
+          node --check preview/site/app.js
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          class P(HTMLParser): pass
+          P().feed(Path('preview/site/index.html').read_text())
+          print('HTML parse OK')
+          PY
+
+      - name: Deploy isolated preview
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: mainbuyer.com
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./preview/site/
+          server-dir: ./w10-preview/
+          state-name: .ftp-deploy-w10-flow-preview-state.json
+          dangerous-clean-slate: false
+
+      - name: Verify public assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 12); do
+            body=$(curl -fsSL --max-time 25 -H 'Cache-Control: no-cache' "https://what10things.co.uk/w10-preview/?v=${GITHUB_SHA}" || true)
+            if printf '%s' "$body" | grep -q 'what10things-flow-test.png'; then
+              printf '%s' "$body" | grep -q 'noindex,nofollow,noarchive'
+              curl -fsSI --max-time 25 -H 'Cache-Control: no-cache' "https://what10things.co.uk/w10-preview/what10things-flow-test.png?v=${GITHUB_SHA}" | grep -Ei 'HTTP/|content-type|content-length'
+              echo 'PUBLIC_PREVIEW_OK=https://what10things.co.uk/w10-preview/'
+              exit 0
+            fi
+            sleep 5
+          done
+          exit 1
+
+      - name: Browser QA mobile and desktop
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/node24/bin:$HOME/.local/bin:$PATH"
+          ROOT="$HOME/agents/flow-browser-automation"
+          cd "$ROOT"
+          node - <<'JS'
+          const { chromium } = require('playwright');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            for (const [width,height] of [[390,844],[1440,1000]]) {
+              const page=await browser.newPage({viewport:{width,height}});
+              const errors=[];
+              page.on('console',m=>{if(m.type()==='error') errors.push(m.text())});
+              page.on('pageerror',e=>errors.push(e.message));
+              await page.goto('https://what10things.co.uk/w10-preview/?qa='+Date.now(),{waitUntil:'domcontentloaded',timeout:30000});
+              await page.waitForTimeout(1000);
+              const result=await page.evaluate(()=>({
+                marker:document.documentElement.innerHTML.includes('W10_KNOWLEDGE_CONSTELLATIONS_PREVIEW'),
+                noindex:(document.querySelector('meta[name="robots"]')?.content||'').includes('noindex'),
+                canvas:document.querySelectorAll('canvas').length,
+                art:document.querySelector('.generated-art')?.complete===true,
+                artWidth:document.querySelector('.generated-art')?.naturalWidth||0,
+                overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth+1
+              }));
+              console.log(width,result,errors);
+              if(!result.marker||!result.noindex||result.canvas!==1||!result.art||result.artWidth<1000||result.overflow||errors.length) process.exit(2);
+              await page.close();
+            }
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS

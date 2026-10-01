@@ -1,0 +1,94 @@
+name: Deploy Flow Preview Hosted
+
+on:
+  push:
+    branches:
+      - design/what10things-3d-preview
+    paths:
+      - '.github/workflows/deploy-flow-preview-hosted.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Retrieve generated Flow image
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://labs.google/fx/api/trpc/media.getMediaUrlRedirect?name=97ebc02b-e09c-44e1-b72a-5bf12e43cb7d'
+          curl -fL --retry 2 --max-time 45 "$url" -o preview/site/what10things-flow-test.png
+          test "$(stat -c%s preview/site/what10things-flow-test.png)" -gt 100000
+          file preview/site/what10things-flow-test.png
+
+      - name: Build and validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s preview/site/index.html
+          test -s preview/site/style.css
+          test -s preview/site/app.js
+          grep -q 'W10_KNOWLEDGE_CONSTELLATIONS_PREVIEW' preview/site/index.html
+          grep -q 'noindex,nofollow,noarchive' preview/site/index.html
+          grep -q 'what10things-flow-test.png' preview/site/index.html
+          grep -q 'generated-art' preview/site/style.css
+          node --check preview/site/app.js
+
+      - name: Deploy isolated preview
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: mainbuyer.com
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./preview/site/
+          server-dir: ./w10-preview/
+          state-name: .ftp-deploy-w10-flow-hosted-state.json
+          dangerous-clean-slate: false
+
+      - name: Verify live preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 12); do
+            body=$(curl -fsSL --max-time 25 -H 'Cache-Control: no-cache' "https://what10things.co.uk/w10-preview/?v=${GITHUB_SHA}" || true)
+            if printf '%s' "$body" | grep -q 'what10things-flow-test.png'; then
+              printf '%s' "$body" | grep -q 'noindex,nofollow,noarchive'
+              curl -fsSL --max-time 25 "https://what10things.co.uk/w10-preview/what10things-flow-test.png?v=${GITHUB_SHA}" -o /tmp/live-art
+              test "$(stat -c%s /tmp/live-art)" -gt 100000
+              echo 'LIVE_PREVIEW=https://what10things.co.uk/w10-preview/'
+              exit 0
+            fi
+            sleep 5
+          done
+          exit 1
+
+      - name: Browser QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/w10qa && cd /tmp/w10qa
+          npm init -y >/dev/null
+          npm install --silent playwright
+          npx playwright install --with-deps chromium >/dev/null
+          node - <<'JS'
+          const { chromium }=require('playwright');
+          (async()=>{
+            const b=await chromium.launch({headless:true});
+            for(const [w,h] of [[390,844],[1440,1000]]){
+              const p=await b.newPage({viewport:{width:w,height:h}}); const errors=[];
+              p.on('console',m=>{if(m.type()==='error')errors.push(m.text())}); p.on('pageerror',e=>errors.push(e.message));
+              await p.goto('https://what10things.co.uk/w10-preview/?qa='+Date.now(),{waitUntil:'domcontentloaded',timeout:30000}); await p.waitForTimeout(800);
+              const x=await p.evaluate(()=>({marker:document.documentElement.innerHTML.includes('W10_KNOWLEDGE_CONSTELLATIONS_PREVIEW'),noindex:(document.querySelector('meta[name="robots"]')?.content||'').includes('noindex'),canvas:document.querySelectorAll('canvas').length,art:!!document.querySelector('.generated-art')?.complete,artWidth:document.querySelector('.generated-art')?.naturalWidth||0,overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth+1}));
+              console.log(w,x,errors); if(!x.marker||!x.noindex||x.canvas!==1||!x.art||x.artWidth<1000||x.overflow||errors.length)process.exit(2); await p.close();
+            }
+            await b.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
