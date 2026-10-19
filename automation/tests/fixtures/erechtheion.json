@@ -1,0 +1,237 @@
+{
+  "ok": true,
+  "topic": {
+    "id": 582,
+    "slug": "erechtheion",
+    "title": "Erechtheion",
+    "category": "world",
+    "summary": "This explainer covers practical tips for Microsoft Office applications based on user forums and experience articles, including activation keys, component management, troubleshooting, page numbering in OpenOffice, version identification, and PowerPoint shape operations.",
+    "intro": "The following points are derived from community forums and technical experience articles addressing common Microsoft Office and OpenOffice tasks. They provide step-by-step guidance for activation, customization, troubleshooting, and feature usage across Office 365, Office 2013-2019, and OpenOffice Writer.",
+    "reading_time": "8 min",
+    "status": "published",
+    "quality_score": 0.8,
+    "created_at": "2026-10-19T10:30:01Z",
+    "updated_at": "2026-10-19T12:31:16Z",
+    "trigger": {
+      "source": "graph_expansion",
+      "query": "Erechtheion",
+      "signal_id": null
+    },
+    "generation": {
+      "workflow": "W10-R01 Evidence Research",
+      "execution": "254515",
+      "source_count": 6,
+      "intent": "general_facts",
+      "destination": "",
+      "evidence_provider": "bing_rss+jina_reader",
+      "ai_provider": "freellmapi",
+      "ai_model": "nvidia/nemotron-3-ultra-550b-a55b"
+    },
+    "items": [
+      {
+        "position": 1,
+        "fact_key": "fact-6076f75c9f0ad2c0678d",
+        "title": "Office 365 activation key requests appear in Spanish-language forums",
+        "body": "Users on Spanish tech forums such as es.ccm.net post requests for Office 365 serial numbers or activation keys, indicating a common need for licensing assistance. The forum thread shows a user asking for a key and a moderator responding, though the resolution is not detailed in the snippet.",
+        "confidence": 0.8,
+        "sources": [
+          {
+            "url": "https://es.ccm.net/forum/affich-1842715-serial-o-clave-de-activacion-office-365",
+            "title": "Serial o clave de activación Office 365 [Resuelto] - CCM",
+            "publisher": "es.ccm.net",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T12:31:16Z"
+          }
+        ]
+      },
+      {
+        "position": 2,
+        "fact_key": "fact-4a951c82828005572f20",
+        "title": "Unwanted Office applications can be removed via Windows Control Panel",
+        "body": "A Baidu experience article explains how to uninstall specific Office components by opening Control Panel > Programs > Programs and Features, right-clicking the Office entry, selecting Change, then choosing Add or Remove Features and setting unwanted apps to Not Available.",
+        "confidence": 0.85,
+        "sources": [
+          {
+            "url": "https://jingyan.baidu.com/article/36d6ed1f784e841bcf48830c.html",
+            "title": "微软office中有大量办公软件如何删除其中的几个-百度经验",
+            "publisher": "jingyan.baidu.com",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T12:31:16Z"
+          }
+        ]
+      },
+      {
+        "position": 3,
+        "fact_key": "fact-57602f667bd23a866d3d",
+        "title": "Office programs may fail to open due to background processes",
+        "body": "One troubleshooting step for Office apps not responding is to open Task Manager, check the Processes and Details tabs for running Office components, and end those tasks before restarting the application.",
+        "confidence": 0.8,
+        "sources": [
+          {
+            "url": "https://jingyan.baidu.com/article/0aa223751bc41e88cc0d6424.html",
+            "title": "五招搞定“Office 程序打开没有响应”的问题 - 百度经验",
+            "publisher": "jingyan.baidu.com",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T12:31:16Z"
+          }
+        ]
+      },
+      {
+        "position": 4,
+        "fact_key": "fact-d9cb747cf7905494b75b",
+        "title": "Safe Mode can isolate third-party add-in conflicts in Office",
+        "body": "Holding Ctrl while double-clicking an Office app launches Safe Mode, which disables add-ins. If the app works in Safe Mode, users can then disable add-ins one by one via File > Options > Add-ins to identify the culprit.",
+        "confidence": 0.85,
+        "sources": [
+          {
+            "url": "https://jingyan.baidu.com/article/0aa223751bc41e88cc0d6424.html",
+            "title": "五招搞定“Office 程序打开没有响应”的问题 - 百度经验",
+            "publisher": "jingyan.baidu.com",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T12:31:16Z"
+          }
+        ]
+      },
+      {
+        "position": 5,
+        "fact_key": "fact-6ab16bcdcda2c4785e75",
+        "title": "Windows updates can resolve Office startup issues",
+        "body": "Checking for and installing the latest Windows updates via Settings > Update & Security > Windows Update may fix Office opening problems caused by system-level bugs or missing patches.",
+        "confidence": 0.75,
+        "sources": [
+          {
+            "url": "https://jingyan.baidu.com/article/0aa223751bc41e88cc0d6424.html",
+            "title": "五招搞定“Office 程序打开没有响应”的问题 - 百度经验",
+            "publisher": "jingyan.baidu.com",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T12:31:16Z"
+          }
+        ]
+      },
+      {
+        "position": 6,
+        "fact_key": "fact-d5ca2cdd72442a7b5d60",
+        "title": "Reinstalling Office is a last-resort fix for persistent issues",
+        "body": "If other methods fail, uninstalling Office completely, restarting the computer, then downloading and installing a fresh copy from Microsoft’s official site can resolve deep-seated corruption or configuration errors.",
+        "confidence": 0.75,
+        "sources": [
+          {
+            "url": "https://jingyan.baidu.com/article/0aa223751bc41e88cc0d6424.html",
+            "title": "五招搞定“Office 程序打开没有响应”的问题 - 百度经验",
+            "publisher": "jingyan.baidu.com",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T12:31:16Z"
+          }
+        ]
+      },
+      {
+        "position": 7,
+        "fact_key": "fact-8e1275c22d5c52c54378",
+        "title": "Page numbers in OpenOffice Writer can start after a cover page",
+        "body": "A Spanish-language guide details how to insert page numbers in OpenOffice Writer, including options to skip numbering on the first page (cover) by using the page style settings and inserting a manual break with a new page style.",
+        "confidence": 0.8,
+        "sources": [
+          {
+            "url": "https://es.ccm.net/aplicaciones-e-internet/ofimatica/4360-como-numerar-paginas-en-openoffice-writer/",
+            "title": "Cómo numerar páginas en OpenOffice Writer: con y sin portada",
+            "publisher": "es.ccm.net",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T12:31:16Z"
+          }
+        ]
+      },
+      {
+        "position": 8,
+        "fact_key": "fact-3cb1c72ad4b247f65d6d",
+        "title": "Office 365 version can be identified via the About dialog in Outlook",
+        "body": "Opening Outlook and navigating to File > Office Account > About Outlook reveals a version number. The first digits indicate the major version: 15.0 for Office 2013, 16.0.xxxx for Office 2016, and 16.0.xxxxx (five digits after 16.0) for Office 2019.",
+        "confidence": 0.9,
+        "sources": [
+          {
+            "url": "https://jingyan.baidu.com/article/e5c39bf5b84ee078d76033fd.html",
+            "title": "如何查看Office365版本是2013、2016或2019？ - 百度经验",
+            "publisher": "jingyan.baidu.com",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T12:31:16Z"
+          }
+        ]
+      },
+      {
+        "position": 9,
+        "fact_key": "fact-ffea074e0f2973bc4dfd",
+        "title": "PowerPoint’s Merge Shapes tool combines or subtracts shapes",
+        "body": "In PowerPoint (Office 365), selecting two shapes and using the Shape Format > Merge Shapes menu provides options like Union, Combine, Fragment, Intersect, and Subtract, allowing complex custom graphics creation.",
+        "confidence": 0.85,
+        "sources": [
+          {
+            "url": "https://jingyan.baidu.com/article/e2284b2b1dafaba3e6118dfd.html",
+            "title": "ppt形状剪除在哪里 - 百度经验",
+            "publisher": "jingyan.baidu.com",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T12:31:16Z"
+          }
+        ]
+      },
+      {
+        "position": 10,
+        "fact_key": "fact-cd84c1ae0efac9db159d",
+        "title": "The Subtract option in Merge Shapes removes overlapping areas",
+        "body": "When two shapes are selected, choosing Subtract from the Merge Shapes gallery removes the overlapping portion of the second shape from the first, useful for creating cutout effects.",
+        "confidence": 0.8,
+        "sources": [
+          {
+            "url": "https://jingyan.baidu.com/article/e2284b2b1dafaba3e6118dfd.html",
+            "title": "ppt形状剪除在哪里 - 百度经验",
+            "publisher": "jingyan.baidu.com",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T12:31:16Z"
+          }
+        ]
+      }
+    ],
+    "related_topics": [
+      {
+        "to_slug": "microsoft-office-365",
+        "to_title": "Microsoft Office 365",
+        "relation": "core_topic",
+        "score": 0.95,
+        "status": "candidate"
+      },
+      {
+        "to_slug": "office-troubleshooting",
+        "to_title": "Office Troubleshooting",
+        "relation": "core_topic",
+        "score": 0.9,
+        "status": "candidate"
+      },
+      {
+        "to_slug": "powerpoint-shape-operations",
+        "to_title": "PowerPoint Shape Operations",
+        "relation": "core_topic",
+        "score": 0.9,
+        "status": "candidate"
+      },
+      {
+        "to_slug": "office-version-identification",
+        "to_title": "Office Version Identification",
+        "relation": "core_topic",
+        "score": 0.85,
+        "status": "candidate"
+      },
+      {
+        "to_slug": "openoffice-writer",
+        "to_title": "OpenOffice Writer",
+        "relation": "core_topic",
+        "score": 0.85,
+        "status": "candidate"
+      },
+      {
+        "to_slug": "spanish-tech-forums",
+        "to_title": "Spanish Tech Forums (es.ccm.net)",
+        "relation": "source_platform",
+        "score": 0.75,
+        "status": "candidate"
+      }
+    ]
+  }
+}

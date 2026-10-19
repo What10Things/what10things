@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'flask-overlay/**'
+      - 'flask-source/**'
       - '.github/workflows/deploy.yml'
       - '.github/workflows/validate.yml'
       - 'automation/**'
@@ -55,6 +56,7 @@ jobs:
           cat flask-overlay/part-* | base64 --decode > "${RUNNER_TEMP}/what10things-knowledge-overlay.zip"
           echo "eb13d90d422dfbc74f48461cfefb40b54629ced80e4d037cc8a94fa84021cc67  ${RUNNER_TEMP}/what10things-knowledge-overlay.zip" | sha256sum --check --strict
           unzip -q -o "${RUNNER_TEMP}/what10things-knowledge-overlay.zip" -d test_app
+          cp flask-source/*.py test_app/
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -68,3 +70,9 @@ jobs:
         run: |
           python -m compileall -q test_app
           PYTHONPATH=test_app python test_app/validate.py
+          PYTHONPATH=test_app python automation/tests/test_content_quality.py
+          python automation/tests/test_subject_relevance.py
+          python automation/tests/test_research_recovery.py
+          python -m unittest automation.tests.test_generic_travel_gate
+          python automation/tests/test_deployment_guard.py
+          python automation/tests/test_research_deployment_boundaries.py
