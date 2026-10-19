@@ -1,0 +1,1325 @@
+{
+  "captured_at": "2026-10-19",
+  "topics": [
+    {
+      "slug": "erechtheion",
+      "title": "Erechtheion",
+      "summary": "This explainer covers practical tips for Microsoft Office applications based on user forums and experience articles, including activation keys, component management, troubleshooting, page numbering in OpenOffice, version identification, and PowerPoint shape operations.",
+      "intro": "The following points are derived from community forums and technical experience articles addressing common Microsoft Office and OpenOffice tasks. They provide step-by-step guidance for activation, customization, troubleshooting, and feature usage across Office 365, Office 2013-2019, and OpenOffice Writer.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Erechtheion",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "acropolis-athens",
+      "title": "Acropolis of Athens",
+      "summary": "The supplied evidence consists solely of dictionary definitions for the word \"ancient\" and a general article on ancient history. No source provides specific information about the Acropolis of Athens, its structures, history, or visitor details. Therefore, a factual explainer about the Acropolis cannot be produced from this evidence.",
+      "intro": "The candidate topic is the Acropolis of Athens, but the six provided sources are dictionary entries (Cambridge UK, Cambridge US, Collins, Free Dictionary, Dictionary.com) and a Wikipedia article on ancient history. None mention the Acropolis, the Parthenon, Athens, or any related archaeological or travel information. Following the instruction to use only supplied evidence and never invent facts, the items below reflect what the evidence actually covers: the meaning and scope of the term \"ancient\".",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "ancient citadel",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "fira-santorini",
+      "title": "Fira, Santorini",
+      "summary": "An examination of the supplied sources shows that they contain no information about Fira, Santorini. All documents relate to installing or using classic Outlook on Windows, and none mention the island, its geography, history, tourism, or any travel‑related details.",
+      "intro": "The following fact‑check looks at whether the provided evidence includes any details about Fira, the capital of Santorini. Because the source material is limited to Outlook installation guides, each claim below notes the absence of relevant information and cites the full set of sources as the basis for that conclusion.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Fira, Santorini",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "ammoudi-bay",
+      "title": "Ammoudi Bay",
+      "summary": "A overview of what the supplied evidence does and does not reveal about Ammoudi Bay in Santorini, based solely on the provided sources.",
+      "intro": "The following points are derived exclusively from the supplied evidence, which consists of information about Lidl stores in the United Kingdom. None of the sources mention Ammoudi Bay, Santorini, or any related travel details. Each item states a distinct, verifiable fact about what the evidence lacks regarding this destination.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Ammoudi Bay, Santorini",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "ulster-museum",
+      "title": "Ulster Museum",
+      "summary": "An evidence-based overview of what the supplied sources reveal about the Ulster Museum.",
+      "intro": "When attempting to compile a list of facts about the Ulster Museum from the provided source material, it becomes apparent that none of the six references contain any mention of this institution. The following items each state this absence in slightly different wording, demonstrating that the evidence base does not support any claims about the museum's collections, location, or programmes.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "museum",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "titanic-belfast",
+      "title": "Titanic Belfast",
+      "summary": "The supplied evidence does not contain any information about Titanic Belfast; therefore the following items describe what the evidence lacks regarding this attraction.",
+      "intro": "When attempting to compile factual details about Titanic Belfast from the provided sources, none of the references mention the museum, its history, facilities, or visitor information. This response therefore consists of statements about the absence of such details in the evidence.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "museum",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "design-museum-london",
+      "title": "Design Museum, London – Evidence‑Based Overview",
+      "summary": "A factual overview of what the supplied evidence does and does not reveal about the Design Museum in London, highlighting the lack of direct information and pointing to related museum sources for contextual understanding.",
+      "intro": "When researching the Design Museum in London, the available source material focuses on other prominent UK institutions such as the Natural History Museum, Manchester Museum, the V&A, the Sainsbury Centre, the British Museum and the Science Museum. None of these sources contain specific details about the Design Museum’s collections, exhibitions, history or visitor information. The following items therefore present verifiable claims about the absence of Design Museum‑related content in each piece of evidence, allowing readers to understand what can be confidently stated based solely on the supplied references.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Museum",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "izmir",
+      "title": "İzmir: What the Supplied Evidence Shows",
+      "summary": "An evidence‑based look at İzmir using only the provided sources, which contain no information about the city.",
+      "intro": "This explainer examines the supplied source material to determine what can be said about İzmir. Since none of the sources mention İzmir, each item notes the absence of any reference to the city in the given evidence.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "İzmir",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "british-museum",
+      "title": "British Museum",
+      "summary": "This explainer uses the supplied evidence about the philosophical concept of 'world' to present fourteen distinct, evidence‑backed statements. Each item is drawn solely from the Wikipedia article on 'World' and is written in plain UK English.",
+      "intro": "Although the British Museum is renowned for its global collections, the available source material concerns the abstract notion of a 'world'. The following points therefore explore what philosophers, theologians and religions mean when they refer to the world, using only the provided evidence.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "World history and culture",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "south-kensington",
+      "title": "South Kensington, London",
+      "summary": "This explainer presents a series of evidence‑based statements about the meaning of the term ‘cultural’, drawn from dictionary and encyclopaedic sources. Each statement is a distinct, durable claim that is directly supported by the supplied references.",
+      "intro": "The following items clarify what ‘cultural’ means in English, covering its senses related to ways of life, social behaviour, arts, traditions and related concepts. The information is sourced exclusively from the provided dictionary and encyclopaedia entries.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Cultural district and museum hub",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "the-commandery",
+      "title": "The Commandery: What the Available Sources Reveal (and Don’t Reveal)",
+      "summary": "A review of the supplied evidence shows that none of the sources mention specific details about The Commandery in Worcester. This explainer highlights what can be confidently stated – namely, the absence of information – across a range of typical visitor‑facing attributes.",
+      "intro": "The Commandery is a historic house and museum in Worcester that interprets the city’s role in the English Civil War. However, the six source documents provided in this task contain no direct references to The Commandery. Consequently, the only facts we can assert with confidence are what the sources do *not* tell us about the property.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "historic_house",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "orbit-tower-london",
+      "title": "ArcelorMittal Orbit",
+      "summary": "The supplied evidence does not contain specific details about the ArcelorMittal Orbit sculpture; therefore the explainer notes the absence of information in the provided sources.",
+      "intro": "When researching the ArcelorMittal Orbit, the available source material focuses on general sculpture concepts and does not mention this particular artwork. This explainer highlights that gap by presenting statements about what the sources do not cover.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "sculpture",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "seven-oaks-park-cramlington",
+      "title": "Seven Oaks Park, Cramlington – Evidence-Based Overview",
+      "summary": "A factual summary derived solely from the supplied evidence, highlighting what the sources do and do not contain regarding Seven Oaks Park, Cramlington.",
+      "intro": "The following explainer presents verifiable claims based exclusively on the provided evidence. Since the supplied sources do not reference Seven Oaks Park, Cramlington, each item documents the absence of specific information across the sources.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "park",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "heaton-park",
+      "title": "Heaton Park",
+      "summary": "While the supplied evidence does not contain information about Heaton Park, it does detail parks in British Columbia and Kelowna, highlighting waterfront promenades, beachfront amenities, and the provincial parks system. This explainer clarifies what the evidence does and does not cover regarding Heaton Park.",
+      "intro": "Heaton Park is often described as one of Europe’s largest urban parks, featuring a boating lake, historic buildings and a golf course. The evidence provided in this task, however, focuses on BC Parks and Kelowna’s waterfront and city parks. The following items outline the specific aspects of Heaton Park that are absent from the supplied sources, based solely on what the evidence does (and does not) say.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "park",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "valley-park-cramlington",
+      "title": "Valley Park, Cramlington",
+      "summary": "Although the supplied evidence focuses on Manchester’s parks and gardens, it provides verifiable facts about urban green spaces that can be used to illustrate general park characteristics. The following items are drawn exclusively from the supplied sources.",
+      "intro": "Manchester’s parks and gardens offer a range of experiences, from tranquil retreats to active recreation spaces, supported by good transport links and facilities. The evidence highlights specific parks, amenities and visitor information that illustrate what visitors can expect from well‑maintained urban green spaces.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "park",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "queen-elizabeth-olympic-park-london",
+      "title": "Queen Elizabeth Olympic Park, London",
+      "summary": "A concise guide drawing on official UK local‑authority and heritage sources that describe playground provision, a historic valley park, and a centuries‑old oak park in Cramlington, Northumberland.",
+      "intro": "The following 14 factual highlights are taken solely from publicly available council and heritage‑organisation pages. They cover the number and type of play facilities managed by Cramlington Town Council, the natural and historical features of Valley Park, and the notable ancient oaks of Seven Oaks Park.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "park",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "ulster-museum-belfast",
+      "title": "Ulster Museum",
+      "summary": "This explainer presents verified facts about Liz Harmer, her literary career, and her connection to The Webb Schools, drawing exclusively from the supplied sources.",
+      "intro": "Although the Ulster Museum is the nominal subject, the available evidence concerns the Canadian writer Liz Harmer and her affiliations. The following items summarise what can be confirmed from the provided references.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Museum",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "victoria-and-albert-museum",
+      "title": "Victoria and Albert Museum",
+      "summary": "A concise guide to Belfast's key museums and heritage sites, drawing on official tourism, museum, and visitor sources to highlight what visitors can expect.",
+      "intro": "Belfast offers a rich array of museums that cover art, history, natural science and local traditions. This overview presents fourteen verifiable facts about the city's most notable institutions, using only the supplied evidence.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "art museum",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "nazca-lines",
+      "title": "Nazca Lines",
+      "summary": "An evidence‑based overview of what the supplied sources do and do not tell us about the Nazca Lines.",
+      "intro": "The following points are derived exclusively from the six LinkedIn profiles provided as evidence. None of these profiles contain any information about the Nazca Lines, so each item notes the absence of such details.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Geoglyphs",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "royal-mile-edinburgh",
+      "title": "Royal Mile",
+      "summary": "The supplied evidence does not contain any information about the Royal Mile in Edinburgh; it focuses exclusively on African textiles and loom technologies.",
+      "intro": "The provided sources discuss African textiles, loom types, and social organisation of weaving, but they do not mention the Royal Mile, its history, location, or any associated events.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Royal Mile",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "firth-of-forth",
+      "title": "Firth of Forth",
+      "summary": "The supplied evidence focuses on spiral staircase CAD blocks and does not contain any information about the Firth of Forth waterway. This explainer highlights what the sources do cover and confirms the absence of Firth of Forth details.",
+      "intro": "When researching the Firth of Forth, it is essential to rely on authoritative sources that directly mention the waterway. The evidence provided here consists solely of CAD‑block repositories for spiral staircases, none of which reference the Firth of Forth. The following items clarify what the sources contain and explicitly state that they do not discuss the firth.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Waterway",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "unesco-world-heritage-algiers",
+      "title": "UNESCO World Heritage Sites in Algeria",
+      "summary": "An overview of the UNESCO-listed heritage locations in Algeria, based solely on the supplied evidence sources.",
+      "intro": "Algeria possesses a rich cultural and natural legacy, with several sites recognised by UNESCO for their outstanding universal value. This entry examines what can be confirmed about those sites using only the provided evidence from BBC News, AP News, Wikipedia, Sky News, CNN and Reuters. Because none of those sources contain specific information about Algerian UNESCO sites, the following items reflect the limits of the available data rather than substantive facts about the sites themselves.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "World Heritage Sites located in Algeria",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "algiers",
+      "title": "Algiers",
+      "summary": "This overview presents verifiable facts about the Capital radio network, focusing on its UK-wide operations and the regional Capital Scotland service, all drawn exclusively from the supplied sources.",
+      "intro": "Although the request concerns Algiers, the provided evidence pertains to the Capital radio brand and its Scottish counterpart. The following items therefore detail what can be substantiated from the given material about Capital’s UK presence, its Scottish regional variant, and related transmission details.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Capital city of Algeria",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "algiers-casbah",
+      "title": "Casbah of Algiers",
+      "summary": "The supplied evidence does not contain any information about the Casbah of Algiers, so no verifiable facts can be drawn from it.",
+      "intro": "This article attempts to extract facts about the Casbah of Algiers from the provided sources. However, the sources are exclusively about a modding website and contain no references to the historic quarter, its UNESCO status, architecture, or visitor information.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Historic quarter of Algiers",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "sacred-valley-peru",
+      "title": "Sacred Valley of the Incas",
+      "summary": "The supplied evidence does not contain any specific information about the Sacred Valley of the Incas; therefore the following items describe what the evidence does not mention regarding various aspects of the valley.",
+      "intro": "While the Sacred Valley is a well‑known region near Machu Picchu, the provided source material focuses on definitions of ‘region’ and English administrative divisions, offering no details about the valley itself.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "region",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "inkarail-trail-peru",
+      "title": "Inca Trail to Machu Picchu",
+      "summary": "Although the Inca Trail is a renowned trek to Machu Picchu, the supplied evidence concerns Trek bicycles. This overview presents fourteen verifiable facts about Trek’s product range, retail services, electric technology and associated benefits, drawn exclusively from the provided sources.",
+      "intro": "The following items are based solely on the supplied evidence about Trek Bikes. Each statement is directly supported by one or more of the cited sources, ensuring factual reliability without external speculation.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "trek",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "archaeological-institute-of-america",
+      "title": "Archaeological Institute of America",
+      "summary": "An overview of the term ‘professional’, covering its core meanings, historical roots, associated qualities and typical uses in everyday language.",
+      "intro": "The word ‘professional’ appears frequently in work‑related contexts, but its precise sense can vary. This explainer draws on dictionary and encyclopaedic sources to clarify what it means to be professional, where the idea originates and how it is applied across different occupations.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Professional organisation",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "butrint-albania",
+      "title": "Butrint",
+      "summary": "A collection of verified statements about the meaning of the term 'ancient' drawn exclusively from the supplied dictionary sources.",
+      "intro": "While the supplied evidence does not contain specific information about the archaeological site of Butrint, it does provide authoritative definitions of the word 'ancient'. The following items present distinct, durable claims about that term, each directly supported by one or more of the provided sources.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Ancient City",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "skanderbeg-square-tirana",
+      "title": "Skanderbeg Square, Tirana",
+      "summary": "This explainer examines the meaning and usage of the term 'public' as presented in a range of authoritative sources, including dictionary definitions, academic descriptions, and organisational missions.",
+      "intro": "The word 'public' appears in various contexts, from general language definitions to specific applications in public relations, business, and public services. The following items draw exclusively on the supplied evidence to illustrate these different senses.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Public square",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "trafalgar-square-london",
+      "title": "Trafalgar Square",
+      "summary": "The provided source material does not contain any information about Trafalgar Square, its landmarks, history, or cultural significance.",
+      "intro": "When researching Trafalgar Square using the supplied evidence, no details about the square itself are present. The following points highlight what the evidence does not cover regarding this London public space.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "public_space",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "buckingham-palace-london",
+      "title": "Buckingham Palace",
+      "summary": "An evidence‑based overview of what the supplied sources do not tell us about Buckingham Palace, highlighting the limits of the available information.",
+      "intro": "When researching Buckingham Palace using only the provided source material, we find that the documents contain no specific details about the palace. This article presents fourteen distinct statements, each noting a particular aspect of Buckingham Palace that is absent from the evidence, thereby illustrating what cannot be concluded from the given sources.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "building",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "saint-petersburg-russia",
+      "title": "Saint Petersburg",
+      "summary": "The supplied evidence does not contain specific details about Saint Petersburg. This explainer highlights what the provided sources omit regarding the city's founding, geography, cultural status, architecture, history, and notable features.",
+      "intro": "When researching Saint Petersburg using only the supplied evidence, one finds that the sources focus broadly on Russia and lack any mention of the city’s particular attributes. The following items clarify which aspects of Saint Petersburg are absent from the given material.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Russia",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "kabul-silk-road-heritage",
+      "title": "Kabul Silk Road Heritage",
+      "summary": "This explainer uses the provided sources to clarify the meaning of 'historical', distinguish it from 'historic', and present a series of verified facts about Castleford’s early medieval and later heritage as recorded in the Domesday Book and local histories.",
+      "intro": "When discussing places and events that belong to the past, the term 'historical' is often employed. The supplied dictionary entries explain its precise usage and how it differs from 'historic'. Meanwhile, the Castleford‑focused materials offer concrete examples of how the word can be applied to real‑world records: from Domesday Book entries for Glasshoughton to mentions of battles, mills, and churches in the town’s timeline. By drawing exclusively on these sources, the explainer presents a set of distinct, evidence‑based claims that illustrate what makes a fact historical.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Historical Trade Route",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "hindu-kush-afghanistan",
+      "title": "Insufficient evidence to produce explainer for Hindu Kush mountain range, Afghanistan",
+      "summary": "The supplied source material contains no information about the Hindu Kush mountain range; therefore no factual claims about its geography, climate, culture, or significance can be made.",
+      "intro": "When preparing an evidence‑based explainer, every statement must be directly supported by the provided sources. The six sources supplied for this task concern only The Barber Shop Group’s locations in the United Kingdom and contain no reference to the Hindu Kush mountain range, its elevation, climate, cultural role, or any related topic. Consequently, the only accurate statements that can be made are that the sources lack any data on these subjects.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Mountain range",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "national-monument-jakarta",
+      "title": "National Monument (Monas)",
+      "summary": "None of the supplied sources mention the National Monument (Monas) in Jakarta, Indonesia.",
+      "intro": "The following items highlight that the provided evidence does not contain any information about Monas, based on a review of each source.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "National Monument",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "persian-garden-design",
+      "title": "Persian Garden Design",
+      "summary": "An evidence‑based overview of what the supplied sources do and do not tell us about Persian garden design, highlighting the lack of specific references in the provided UK‑focused garden design material.",
+      "intro": "When exploring the principles of Persian garden design, it is important to rely on authoritative sources. The six sources supplied for this task focus on contemporary UK garden advice and contain no explicit mention of Persian gardens or their characteristic features such as the chahar bagh layout, water channels, or pavilions. The following items summarise what each source covers and what it omits regarding Persian garden design.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "garden-design",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "bala-hissar-kabul",
+      "title": "Bala Hissar (Kabul)",
+      "summary": "An overview of what the supplied sources do and do not say about Bala Hissar, based solely on the provided evidence.",
+      "intro": "The following explainer examines the available source material for any mention of Bala Hissar. None of the supplied references contain information about this Kabul fortress, so the items below describe what the sources lack rather than what they affirm.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Historic Fortress",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "dundee-mills-observatory",
+      "title": "Mills Observatory",
+      "summary": "A review of the supplied evidence shows no verifiable information about Mills Observatory, the UK’s first purpose‑built public observatory gifted to Dundee in 1935.",
+      "intro": "When tasked with compiling facts about Mills Observatory from the provided sources, a careful examination of all six documents reveals that none mention the observatory, its history, its location, or any related details. Consequently, no substantive claims can be made about Mills Observatory based solely on the supplied evidence.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Mills Observatory",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "dundee-mcmanus",
+      "title": "The McManus Art Gallery & Museum",
+      "summary": "The definite article 'the' is a fundamental part of English grammar, serving to specify nouns that are already known to the listener or reader. It is the most frequently used word in the language and has a unique role compared with the indefinite articles 'a' and 'an'. Understanding its uses helps learners communicate with clarity and precision.",
+      "intro": "The word 'the' appears more often than any other in English, yet its grammatical function is subtle and essential. As the sole definite article, it signals that a noun refers to something specific, identifiable from prior mention, shared context, or general knowledge. Unlike 'a' or 'an', which introduce new or non‑specific entities, 'the' points to something already established in the discourse. This article explores the origins, frequency, pronunciation, syntactic flexibility, and pragmatic functions of 'the', drawing on authoritative linguistic references and learning resources. Each point is grounded in the supplied evidence, offering a clear, evidence‑based overview for students and enthusiasts of English grammar.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "The McManus",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "kabul-city-afghanistan",
+      "title": "Kabul, Afghanistan",
+      "summary": "An evidence‑based overview of what the supplied sources do and do not reveal about Kabul, using only the provided Dundee‑focused material.",
+      "intro": "The following explainer examines the Kabul‑related information that can be drawn from the six supplied sources. Because the sources concern Dundee, Scotland, they contain no direct facts about Kabul. Each item therefore states a verifiable limitation of the evidence, citing the specific source that lacks any mention of Kabul or its attractions.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "city",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "unesco-world-heritage-afghanistan",
+      "title": "World Heritage Sites in Afghanistan",
+      "summary": "An evidence‑based overview of what the supplied sources do not state about Afghanistan’s UNESCO World Heritage Sites, highlighting the absence of specific site information in the provided material.",
+      "intro": "The following passages examine the supplied evidence concerning heritage assets. None of the sources reference Afghanistan or its World Heritage properties, so the items below clarify what cannot be affirmed from the given data.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "heritage",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "herbert-art-gallery-museum",
+      "title": "Herbert Art Gallery & Museum: What the Available Sources Reveal (and Don't Reveal)",
+      "summary": "A review of the six supplied sources shows what they cover about UK art resources and confirms that none mention the Herbert Art Gallery & Museum, so no verifiable facts about it can be drawn from the evidence.",
+      "intro": "The following items summarise the content of each provided source and explicitly note the absence of any reference to the Herbert Art Gallery & Museum. All statements are grounded solely in the supplied material.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "art and nature",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "coventry-transport-museum",
+      "title": "Coventry Transport Museum",
+      "summary": "An overview of what the supplied evidence does and does not reveal about the Coventry Transport Museum, highlighting the absence of specific details in the provided sources.",
+      "intro": "The Coventry Transport Museum is a well‑known attraction in Coventry, showcasing historic vehicles and transport innovations. However, the evidence supplied for this explainer focuses on Newport’s bus services, general transport definitions, and related Welsh transport information, and contains no direct references to the museum itself. The following items clarify what can and cannot be asserted about the museum based solely on the available evidence.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "transport",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "chester-cheshire",
+      "title": "Chester",
+      "summary": "The supplied evidence does not contain specific details about Chester; therefore the following points reflect the lack of Chester‑specific information in the provided sources.",
+      "intro": "An evidence-backed introduction to city, built from retrievable sources.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "city",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "country",
+      "title": "England",
+      "summary": "The supplied evidence does not contain specific details about England; it only provides general definitions and lists of countries.",
+      "intro": "This overview relies exclusively on the provided sources, which discuss the concept of a country but do not mention England. Consequently, each item notes the absence of particular information about England within the evidence.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "country",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "kotatua-jakarta",
+      "title": "Kota Tua, Jakarta",
+      "summary": "An overview of what the supplied sources do and do not reveal about Jakarta’s historic district, Kota Tua, based exclusively on the provided evidence.",
+      "intro": "The following points are derived solely from the supplied source material. Because the sources focus on London and English heritage, they contain no direct information about Kota Tua. Each item notes a specific aspect of Kota Tua that is absent from the evidence, thereby highlighting the limits of the current data.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "historic district",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "jakarta-chinatown",
+      "title": "Jakarta Chinatown",
+      "summary": "Although the supplied sources do not contain specific information about Jakarta’s Chinatown, they provide a wealth of detail about Chinatowns elsewhere and the general concept of such enclaves. This guide synthesises those verifiable facts while noting the lack of Jakarta‑specific data.",
+      "intro": "When researching Jakarta Chinatown, the available evidence does not mention the district directly. However, the sources describe the cultural, culinary and cinematic aspects of Chinatowns in Manchester, London, Bournemouth and New York, as well as the 1974 film *Chinatown* and the encyclopedic definition of Chinatowns worldwide. The following items combine the verified detail from those sources with the explicit statement that no Jakarta‑specific information is present in the supplied material.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "chinatown",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "hawaiian-islands",
+      "title": "Hawaiian Islands",
+      "summary": "An overview of what constitutes an archipelago, illustrated with global examples and a look at the Archipelago gaming randomizer, all drawn from the supplied reference material.",
+      "intro": "The term archipelago describes a collection of islands, and the evidence provides clear definitions, notable real‑world examples, and details about a software project that shares the name. This explainer distils those facts into fourteen concise points.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Archipelago",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "trans-siberian-railway",
+      "title": "Trans-Siberian Railway",
+      "summary": "An overview of the ChargePlace Scotland electric‑vehicle charging network, covering its scale, ownership model, tariff approach, user‑facing services and performance reporting, all drawn from the supplied official sources.",
+      "intro": "ChargePlace Scotland is the national public EV charging network funded by the Scottish Government and operated through a partnership of over 400 charge‑point hosts. The following points explain how the network is structured, how users access it, how tariffs are managed and how performance is monitored, based exclusively on the provided evidence.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Railway",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "diana-memorial-island-althorp",
+      "title": "Diana Memorial Island at Althorp",
+      "summary": "An overview of Snapchat’s Cameos feature, its discontinuation, replacement by My Selfie, and related functionalities, based on the supplied sources.",
+      "intro": "Snapchat’s Cameos allowed users to animate their selfies in short clips for chat. This explainer details what Cameos were, how they were retired, what replaced them, and how users can still create similar content.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Diana Memorial Island",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "uk-income-tax-rates",
+      "title": "UK Income Tax Rates",
+      "summary": "An analysis of the supplied evidence shows that none of the provided sources contain any information about UK income tax rates, allowances, or bands.",
+      "intro": "The goal of this explainer is to present factual information about UK income tax rates using only the supplied evidence. After reviewing all six sources, it is clear that they focus exclusively on bed and breakfast accommodations in various UK locations and do not mention taxation, personal allowances, tax bands, or any related fiscal details.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "taxation",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "sir-david-attenborough-biography",
+      "title": "Sir David Attenborough: A Life on Our Planet",
+      "summary": "A factual overview of Sir David Attenborough's life and work based solely on the supplied evidence, which contains no information about him.",
+      "intro": "The following entries examine what can be asserted about Sir David Attenborough using only the provided sources. Since none of the sources mention Attenborough, each entry states that the supplied evidence lacks details on the specified aspect of his life or career.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "history-culture",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "history",
+      "title": "History",
+      "summary": "The supplied sources describe how to sign in to Microsoft Outlook and related services, covering account creation, password recovery, security features and the benefits of a Microsoft account.",
+      "intro": "Although the candidate topic is history, the available evidence focuses on Microsoft account sign‑in procedures. The following points summarise the factual information that can be drawn directly from those sources.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Subject",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "travel",
+      "title": "Travel",
+      "summary": "This explainer looks at the meaning of activity, using dictionary entries from Cambridge, Collins and Wiktionary, as well as Google’s My Activity service, to explain how activity is defined, tracked and used in English.",
+      "intro": "Activity is a common term that appears in travel guides, everyday conversation and digital services. By consulting authoritative dictionaries and the official Google My Activity page, we can clarify what activity refers to, how it is recorded online, and how the word functions in different contexts.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Activity",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "st-marks-basilica-venice",
+      "title": "St Mark's Basilica",
+      "summary": "A set of observations about what the supplied evidence does not reveal regarding St Mark's Basilica, highlighting the lack of relevant information in the provided sources.",
+      "intro": "The following points illustrate the absence of details about St Mark's Basilica within the supplied material, which pertains to a pub in West Sussex and contains no reference to the basilica.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Religious architecture",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "chamonix-france",
+      "title": "Chamonix, France",
+      "summary": "An overview of what the supplied evidence does and does not reveal about Chamonix, France, highlighting the absence of specific information in the provided sources.",
+      "intro": "When researching Chamonix, France, it is essential to rely solely on the evidence supplied. The following items examine each of the six source documents and confirm that none of them mention Chamonix, its geography, culture, or tourism offerings. This meta‑analysis demonstrates the limits of the current evidence base and signals where additional research would be needed.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "town",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "zurich-switzerland",
+      "title": "Zurich, Switzerland",
+      "summary": "York is a historic cathedral city in northern England renowned for its Roman foundations, Viking heritage, and well‑preserved medieval architecture. Situated at the confluence of the Rivers Ouse and Foss, it combines ancient walls, a striking minster, and a vibrant festival scene, making it a compact yet significant destination for visitors interested in layered British history.",
+      "intro": "Although often overlooked in favour of larger metropolises, York offers a dense tapestry of history that spans Roman legions, Viking settlers, and medieval craftsmen. Its compact centre houses internationally recognised landmarks, all set within a walkable urban landscape that continues to host lively cultural events throughout the year.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "city",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "monte-bianco-italy-france",
+      "title": "Mont Blanc, Italy-France",
+      "summary": "The supplied evidence does not contain specific information about Mont Blanc; it focuses on Welsh mountains and general mountain definitions. Consequently, the following items describe what the evidence lacks regarding Mont Blanc, each supported by the absence of detail in the provided sources.",
+      "intro": "An evidence-backed introduction to mountain, built from retrievable sources.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "mountain",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "westminster-abbey",
+      "title": "Westminster Abbey: Evidence Check",
+      "summary": "A review of the supplied sources shows no verifiable information about Westminster Abbey; all items reflect this absence of evidence.",
+      "intro": "The following fourteen items each state that none of the provided source materials mention Westminster Abbey. Because the evidence does not contain any reference to the abbey, its history, architecture, or role in royal ceremonies, no factual claims about the site can be drawn from the supplied data. Each item cites all six sources to demonstrate that the absence of mention is consistent across the entire evidence set.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "royal coronation church",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "pulteney-bridge-bath",
+      "title": "Pulteney Bridge, Bath",
+      "summary": "The supplied evidence does not contain specific information about Pulteney Bridge; the following points highlight what the sources do not state regarding this landmark.",
+      "intro": "Based on the provided source material, no direct facts about Pulteney Bridge, Bath are available. The items below therefore note absent details that the evidence does not mention.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "landmark",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "royal-crescent-bath",
+      "title": "Royal Crescent, Bath",
+      "summary": "An overview of what the supplied sources do and do not say about the Royal Crescent in Bath, highlighting the absence of specific details in the provided architecture references.",
+      "intro": "The Royal Crescent is a celebrated example of Georgian architecture in Bath, England. The following items examine the evidence that is available in the supplied sources and note where information about this landmark is missing.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "architecture",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "giondistrict",
+      "title": "Gion District",
+      "summary": "The supplied sources do not contain information about Gion District. The evidence provided relates to several St Columba’s schools and their term dates pages, with no verifiable facts about the Kyoto neighbourhood.",
+      "intro": "No evidence-backed information about Gion District is available in the supplied sources. The material provided concerns St Columba’s schools in Scotland and England and their term dates and contact information.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Traditional neighborhood",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "senlac-hill-battlefield-east-sussex",
+      "title": "10 Things You Should Know About Senlac Hill Battlefield",
+      "summary": "A review of the supplied evidence shows that none of the provided sources mention Senlac Hill Battlefield, so no verifiable facts about the site can be extracted from this material.",
+      "intro": "When researching a historical site, it is essential to rely on verifiable information from authoritative sources. The six sources supplied for this task focus on London’s history, heritage organisations, and general definitions, and they do not contain any reference to the Senlac Hill Battlefield or the 1066 Battle of Hastings. Consequently, any attempt to detail the battlefield would require information outside the given evidence.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "historical battlefield",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "hastings-battlefield-east-sussex",
+      "title": "Hastings Battlefield",
+      "summary": "The Battlefield franchise is a long-running series of military first-person shooters developed by DICE and published by Electronic Arts, spanning over two decades and multiple platforms.",
+      "intro": "Since its debut in 2002, the Battlefield series has defined large-scale multiplayer warfare in gaming. This guide covers the franchise's history, key titles, development studios, technology, and community features.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "battlefield",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "battle-east-sussex",
+      "title": "Battle, East Sussex: Evidence Check",
+      "summary": "An analysis of the supplied sources shows that none contain specific information about the town of Battle, East Sussex. This explainer highlights what the evidence does not cover, adhering strictly to the provided material.",
+      "intro": "When researching a topic, it is essential to verify what the available sources actually state. The following points are drawn solely from the supplied evidence, which does not mention Battle, East Sussex, or any of its notable features.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "town",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "tower-of-london",
+      "title": "Tower of London - Evidence Review",
+      "summary": "The provided evidence consists solely of tax and employment regulation articles from AccountingWEB covering topics such as VAT options, casual worker registration, and self-assessment backdating. None of these sources mention the Tower of London, its history, architecture, or visitor facilities. The entire corpus pertains to modern administrative and fiscal matters in the United Kingdom, with no connection to the medieval fortress and palace complex situated in the City of London. Consequently, no substantive claims about the Tower of London can be derived from the supplied documentation.",
+      "intro": "This review examines the relationship between the supplied evidence and the Tower of London topic. After thorough analysis, it is clear that the evidence domain (tax compliance, VAT, employment registration) is entirely disconnected from the subject matter (a historic fortress and palace in London). The following items document this absence of supporting evidence.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "landmark",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "liverpool-street-station",
+      "title": "Liverpool Street Station",
+      "summary": "The supplied sources describe what constitutes a landmark, detail property‑data and estate‑agency services offered by Landmark Information Group, outline retail offerings from Landmark Stores, and explain services provided by Landmark Estate Agency Services. Together they illustrate how the term 'landmark' is used in both navigational and commercial contexts.",
+      "intro": "Although the candidate topic is Liverpool Street Station, the available evidence does not contain specific information about that station. Instead, the sources provide factual details about the concept of a landmark and related business services. This article presents those verifiable facts, each directly supported by at least one of the supplied sources, to meet the requirement of evidence‑based content.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "landmark",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "nicholas-winton",
+      "title": "Nicholas Winton",
+      "summary": "A concise overview of Nicholas Winton’s humanitarian efforts, based solely on the supplied evidence which does not mention him.",
+      "intro": "The following items highlight that the provided source material contains no reference to Nicholas Winton or his role in the Kindertransport.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "historical_person",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "prague",
+      "title": "Prague",
+      "summary": "The supplied sources describe the City of London’s governance, status and visitor offer, and the Mayor of London’s administration. No evidence about Prague is provided in the evidence set.",
+      "intro": "The evidence available covers the City of London as a local authority and business district, its landmarks and visitor information, and the Mayor of London and London Assembly. The following points are drawn directly from those sources.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "city",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "bath-unesco-world-heritage-site",
+      "title": "Bath UNESCO World Heritage Site",
+      "summary": "The supplied sources describe English heritage organisations, listing services and public festivals, but do not provide specific evidence about Bath UNESCO World Heritage Site. The material covers Visit Heritage, English Heritage, Historic England, the National Heritage List for England and Heritage Open Days, alongside MyHeritage family history services.",
+      "intro": "The evidence set focuses on heritage organisations and resources in England rather than Bath itself. It outlines how visitors can plan trips, access listed places, join membership schemes and take part in free heritage festivals.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Heritage",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "bath-city-guide",
+      "title": "Bath City Guide",
+      "summary": "This guide notes that the supplied evidence does not contain any specific information about Bath. Each item states that a particular source lacks mention of a particular Bath‑related topic, based on a direct reading of the source material.",
+      "intro": "When compiling a city guide for Bath, factual claims must be drawn only from the provided evidence. The six supplied sources cover general travel services, advice and flight search tools, but none reference Bath’s attractions, history or amenities. Consequently, the following items describe what the evidence does *not* say about Bath, using the absence of information as a verifiable, source‑supported claim.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Travel",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "the-circus-bath",
+      "title": "The Circus, Bath",
+      "summary": "This explainer presents 14 evidence‑based facts about Facebook account management, drawn from the supplied sources. It covers video profiles, account recovery, deactivation versus deletion, privacy settings, and troubleshooting common issues on new devices.",
+      "intro": "Facebook remains a central part of daily communication, yet many users are unaware of its lesser‑known features and recovery options. The following facts, all supported by the provided evidence, help users make the most of the platform while avoiding common pitfalls.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Landmark",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "royal-shakespeare-theatre",
+      "title": "Royal Shakespeare Theatre",
+      "summary": "An evidence-based overview of theatre practice and Welsh arts venues drawn from the supplied sources, covering the definition of theatre, the role of live performance, and the profile of Aberystwyth Arts Centre, ATG ticketing and Arad Goch.",
+      "intro": "The following points summarise what the provided sources state about theatre as a form and about selected UK arts organisations. No information about the Royal Shakespeare Theatre is present in the supplied evidence.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Theatre",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "isambard-kingdom-brunel-bristol",
+      "title": "Isambard Kingdom Brunel",
+      "summary": "A concise, evidence‑based overview of what an engineer is, the main pathways into the profession, typical duties, major disciplines and the professional registration landscape in the UK.",
+      "intro": "Engineering is a broad, problem‑solving profession that applies scientific and mathematical principles to design, build and maintain structures, machines and systems. The sources below outline how people become engineers, the core competencies required, the main specialisms, and the professional titles (CEng/IEng) recognised in the UK.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "engineer",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "wallace-monument",
+      "title": "National Wallace Monument",
+      "summary": "An overview of what constitutes a monument, with examples from the Monument in London and the Monument Bank brand, drawn from authoritative definitions and official sites.",
+      "intro": "Monuments are structures built to commemorate people, events or heritage. This explainer uses dictionary definitions, Wikipedia and official sites to outline the meaning of monument, notable examples and related modern uses of the name.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "monument",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "kinkaku-ji-temple",
+      "title": "Kinkaku-ji Temple - Evidence Review",
+      "summary": "The provided evidence consists solely of promotional content for The Wheel Specialist alloy wheel repair services across multiple UK locations. None of the sources contain any information about Kinkaku-ji Temple, Kyoto, or Japanese cultural heritage sites. Therefore, no verifiable facts about Kinkaku-ji can be extracted from the supplied material.",
+      "intro": "Based on the supplied evidence, there is no verifiable information about Kinkaku-ji Temple. The evidence focuses exclusively on automotive alloy wheel repair and refurbishment services operated by The Wheel Specialist across various UK locations. This makes it impossible to generate accurate 'What10Things' explainers about the temple itself from the given sources.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "landmark",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "lakedistrict-national-park",
+      "title": "Lake District National Park",
+      "summary": "This explainer examines the definition, usage, synonyms, antonyms, and legal implications of the term 'protected' drawing on dictionary, thesaurus, crossword, government and online service sources.",
+      "intro": "The word 'protected' appears in a variety of contexts, from legal safeguards and anti‑discrimination law to everyday language and online services. By consulting dictionary entries, thesaurus listings, a crossword clue database, UK government guidance and a description of a secure note‑taking tool, we can outline the core meanings and applications of the term.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "protected-area",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "cumbria",
+      "title": "Unable to generate Cumbria facts due to insufficient evidence",
+      "summary": "The supplied evidence does not contain any specific information about Cumbria, so no verifiable claims can be made.",
+      "intro": "When preparing a factual overview, all statements must be directly supported by the provided sources. The current evidence set includes only general definitions of regions and dictionary entries, with no mention of Cumbria’s geography, history, culture, or attractions. Consequently, the only accurate statements that can be made concern the absence of such information.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "region",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "white-cliffs-of-dover",
+      "title": "White Cliffs of Dover",
+      "summary": "A collection of factual explanations about the term 'natural' drawn exclusively from dictionary and journal sources provided in the evidence.",
+      "intro": "Although the White Cliffs of Dover are a renowned natural landmark, the supplied evidence does not contain specific information about them. Instead, the evidence offers authoritative definitions and descriptions of the word 'natural' from Cambridge Dictionary, Merriam-Webster, and the Nature journal. The following items present distinct, verifiable claims about the meaning, usage, pronunciation, and contextual applications of 'natural' as directly supported by those sources.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "natural coastline",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "keswick-town",
+      "title": "Keswick",
+      "summary": "An evidence‑based overview of what the supplied sources do and do not reveal about Keswick, focusing on the absence of Keswick‑specific information in the provided financial‑market pages.",
+      "intro": "The following explainer examines the six supplied source documents, all of which concern financial markets, stock prices and related news. None of these sources contain any reference to Keswick, its geography, history or tourism. Each item below states a distinct, verifiable observation about the lack of Keswick‑related content in one or more of the sources, together with a confidence rating reflecting the certainty of that observation.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "market town",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "snowdonia-eryri",
+      "title": "Eryri (Snowdonia) National Park",
+      "summary": "This explainer covers key facts about major UK national services including the National Lottery, National Rail, The National newspaper, National Express coaches, and National Tyres, based on official websites and current service information.",
+      "intro": "The supplied evidence details several UK-wide national services rather than Eryri National Park. The following points summarise what the sources actually document: lottery funding and games, rail travel planning, a Scottish news outlet, coach routes, and tyre retail.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "national-park",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "long-distance-trails-uk",
+      "title": "UK Long-Distance Trails",
+      "summary": "The supplied evidence does not contain any information about the Pennine Way or other UK long-distance footpaths, so no factual claims about these trails can be drawn from the provided sources.",
+      "intro": "When researching UK long-distance trails such as the Pennine Way, one would expect to find details about route length, highlights, and practical advice. However, the six source excerpts available here consist only of generic travel‑site notices and promotional snippets, with no mention of any specific trail, hiking itinerary, or related information.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "travel",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "london-water-supply",
+      "title": "London's Water Supply",
+      "summary": "The supplied evidence does not contain information about London's water supply or the River Thames as a drinking water source. Instead, the sources describe United Utilities, which serves the North West of England, and utility switching services such as Utility Warehouse and BSG Utilities. No source mentions Thames Water, London's actual water supplier, or London-specific infrastructure.",
+      "intro": "This explainer was requested for London's water supply, but the provided evidence covers only North West England's water provider United Utilities and national utility switching brands. Because no source references London, the River Thames, or Thames Water, the items below reflect what the evidence actually supports: regional water services in the North West and UK utility bundling options.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "utilities",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "wordsworth-museum-grasmere",
+      "title": "Wordsworth Museum, Grasmere",
+      "summary": "The supplied evidence does not contain information about Wordsworth Museum, Grasmere. The available sources describe the British Museum website and the Royal Navy Museums Naval Aviation at RNAS Yeovilton, including the Fleet Air Arm Museum collection, access arrangements and visitor facilities.",
+      "intro": "The evidence provided covers the British Museum online presence and the Royal Navy Museums Naval Aviation site at Yeovilton. No source material about Wordsworth Museum, Grasmere is present, so the items below reflect only the museums and facilities documented in the supplied sources.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "museum",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "shikinen-sengu-ritual",
+      "title": "Shikinen Sengu",
+      "summary": "An overview of the term ritual and the Rituals brand as described in the supplied sources, with no source material provided for Shikinen Sengu.",
+      "intro": "The supplied evidence covers general definitions of ritual and commercial brand messaging for Rituals. No source material about Shikinen Sengu is present in the evidence set.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "ritual",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "greater-london",
+      "title": "Greater London: Overview Based on Provided Sources",
+      "summary": "The supplied evidence does not contain any information about Greater London. All six sources are Microsoft Q&A pages concerning technical support topics, and none mention the region’s geography, demographics, history, or attractions.",
+      "intro": "Greater London is a ceremonial county and region in England, but the provided sources do not discuss it. The following items highlight the absence of relevant details in the supplied material, citing the lack of coverage across all six Microsoft Q&A pages.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "region",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "borough-market-london",
+      "title": "Borough Market",
+      "summary": "Summary not available due to lack of sourced evidence about Borough Market.",
+      "intro": "Due to insufficient sourced evidence, this explainer cannot provide verified facts about Borough Market.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "historic food market",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "local-dining-establishments",
+      "title": "Dining Venues in Bradford",
+      "summary": "This explainer compiles verified dining information from multiple authoritative UK travel and food sources. While the candidate references Bradford, the provided evidence exclusively covers London's food and drink scene. The following 14 items are sourced from reputable UK destinations and guides, focusing on London's current dining landscape.",
+      "intro": "Based on verified travel and food industry sources, this collection highlights London's vibrant culinary offerings. Items are drawn from official tourism platforms, major food publications, and curated guides. Note that the evidence base pertains to London rather than Bradford, as requested by the search context.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Food & Drink",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "delhi-population",
+      "title": "Delhi Population Comparison",
+      "summary": "This explainer outlines the meaning of demographic terms and presents key United Kingdom population statistics drawn from authoritative sources. It shows how demographic concepts are applied to real‑world data.",
+      "intro": "Understanding demographics is essential for interpreting population size, structure, and change. The following items define core terminology, explain the components of demographic study, and provide recent UK figures that illustrate how these concepts are measured in practice.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Demographic Statistics",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "tokyo-population",
+      "title": "Tokyo Population Comparison",
+      "summary": "The supplied evidence does not contain specific population figures for Tokyo, so this explainer clarifies what can be concluded from the available demographic definitions.",
+      "intro": "When seeking to compare Tokyo's population with other cities, reliable sources are required. The current evidence set provides only general definitions of demographic terms, without numeric data for Tokyo.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Demographic Statistics",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "capital-cities",
+      "title": "Capital Cities",
+      "summary": "The provided evidence does not contain specific information about capital cities as primary administrative seats of government or their symbolic significance. The sources primarily address the broad concept of politics, definitions of political terminology, and news aggregation platforms. While they establish the importance of political systems and governance, none directly discuss the designation, function, or cultural symbolism of capital cities worldwide.",
+      "intro": "This explanation covers the topic of capital cities based solely on the provided evidence. Although the sources establish the broader context of political systems and governance, they do not detail the specific characteristics of capital cities as defined in the candidate description.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Political Geography",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "national-capitals",
+      "title": "Evidence-Assisted Analysis of Provided Sources",
+      "summary": "The following compilation draws exclusively from the supplied evidence, which primarily covers dining establishments, language definitions, transportation equipment, expatriate communities, and cultural venues. While the candidate title references national capitals, the actual evidence does not contain information on this topic. Instead, it provides detailed accounts of specific businesses, organizations, and locations across the UK and internationally.",
+      "intro": "This report synthesizes the 14 items extracted from the provided evidence base. Each item is sourced directly from the cited URLs and is presented with verified confidence levels based on the available documentation. The collection spans multiple domains including hospitality, linguistics, logistics, and cultural entertainment.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "International geography",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "thames-head-kemble",
+      "title": "Thames Head, Kemble",
+      "summary": "An evidence‑based overview of what the supplied sources do and do not say about the Thames Head source near Kemble, Gloucestershire.",
+      "intro": "The following points are derived exclusively from the provided ASDA‑related web pages. None of those sources contain any direct information about Thames Head, Kemble; each item therefore notes a specific aspect that is absent from the evidence.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "river-source",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "glastonbury-festival",
+      "title": "Glastonbury Festival - Greenfield Music Icon",
+      "summary": "Key facts about Facebook account security, friend management, and platform features drawn from user support forums and technology news sources.",
+      "intro": "The following items are derived exclusively from supplied evidence about Facebook account blocking, friend list management, platform integrations, and technical issues.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Festival",
+        "signal_id": null
+      },
+      "classification": "confirmed_prose_failure"
+    },
+    {
+      "slug": "acropolis-of-lindos",
+      "title": "Acropolis of Athens",
+      "summary": "The Acropolis of Athens is an ancient citadel and UNESCO World Heritage Site that dominates the city's skyline. It contains iconic 5th-century BC monuments such as the Parthenon, Erechtheion, Propylaia and Temple of Athena Nike, built under Perikles. The site has a history spanning over 3,300 years, from Mycenaean fortress to religious sanctuary and symbol of democracy. The adjacent Acropolis Museum displays artefacts from the site.",
+      "intro": "Perched on a rocky hill above Athens, the Acropolis is one of the world's most famous archaeological sites. Its classical monuments represent the pinnacle of ancient Greek architecture and art, and the site has been a centre of religion, politics and culture for millennia. Today it attracts millions of visitors who come to explore its temples, learn about its history at the Acropolis Museum, and enjoy panoramic views of the modern city.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Acropolis of Lindos",
+        "signal_id": null
+      },
+      "classification": "confirmed_trigger_substitution"
+    },
+    {
+      "slug": "mosi-oa-tunya-national-park",
+      "title": "OpenClip for Safari - Browser Extension Guide",
+      "summary": "An overview of OpenClip for Safari, a browser extension developed by Kyle Johnson that enables users to watch social media videos directly in their web browsers without creating accounts or downloading additional apps.",
+      "intro": "OpenClip for Safari is a browser extension designed to simplify video consumption by allowing direct playback of shared social media videos. It addresses common friction points around privacy, convenience, and accessibility for users seeking quick access to curated content.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Mosi-oa-Tunya National Park",
+        "signal_id": null
+      },
+      "classification": "confirmed_trigger_substitution"
+    },
+    {
+      "slug": "livingstone-island",
+      "title": "UK Property Market Overview",
+      "summary": "An analysis of the UK property market highlighting major platforms, key features, and trends in the sector.",
+      "intro": "The UK property market is dominated by several leading online portals that connect buyers, sellers, and investors. This explanation draws on evidence from major property websites to outline the current state of the industry, including new builds, valuation tools, and mortgage support.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Livingstone Island",
+        "signal_id": null
+      },
+      "classification": "confirmed_trigger_substitution"
+    },
+    {
+      "slug": "london-museum-docklands",
+      "title": "Waterfront Dining and Living in London and Suffolk",
+      "summary": "An exploration of waterfront venues and residential developments in London and Suffolk, including The Waterfront pub in Battersea, The Waterfront restaurant in Kessingland, and the Hurlingham Waterfront residences.",
+      "intro": "Waterfront living and dining offer unique experiences, whether by the River Thames in London or the coast of Suffolk. This guide explores highly rated venues and residential developments that define the best of waterside culture.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Waterfront museum complex",
+        "signal_id": null
+      },
+      "classification": "confirmed_trigger_substitution"
+    },
+    {
+      "slug": "a-significant-religious-site-in-algiers-with-layered-historical-use",
+      "title": "The Letter A",
+      "summary": "Fourteen concise facts about the letter A, covering its historical origins, alphabetic role, phonetic variations, accented forms, and educational uses, all drawn from authoritative linguistic and reference sources.",
+      "intro": "The letter A holds a privileged position as the first character of many alphabets and serves as a gateway to understanding writing systems, pronunciation, and orthographic conventions across languages. The following points outline its development, sound values, diacritical adaptations, and cultural presence, each verified by reliable references.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "A significant religious site in Algiers with layered historical use",
+        "signal_id": null
+      },
+      "classification": "confirmed_trigger_substitution"
+    },
+    {
+      "slug": "cotswold-way",
+      "title": "Long",
+      "summary": "An evidence-backed overview of the long dash symbol and the English word long, covering Unicode identification, keyboard access, dictionary definitions and usage notes drawn from the supplied sources.",
+      "intro": "This explainer collects durable facts about the long dash character and the meaning and use of the word long as documented in the provided references.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Long-distance walking trail",
+        "signal_id": null
+      },
+      "classification": "confirmed_trigger_substitution"
+    },
+    {
+      "slug": "coventry-archives-covid-city-council",
+      "title": "Top 10 UK Construction Estimating Services",
+      "summary": "A concise guide to the most popular and reliable construction estimating platforms in the UK, highlighting key features, pricing, and user support.",
+      "intro": "Accurate cost estimation is essential for any construction project, from small extensions to large commercial developments. The UK offers a range of specialised services that provide detailed, up‑to‑date estimates, live material pricing, and comprehensive support. This guide reviews the top ten platforms, summarising their strengths and the evidence that backs their claims.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Municipal records office",
+        "signal_id": null
+      },
+      "classification": "confirmed_trigger_substitution"
+    },
+    {
+      "slug": "ss-great-britain-bristol",
+      "title": "Walsall in history",
+      "summary": "An overview of Walsall’s origins, medieval development and industrial growth drawn from local archive sources, covering place-name origins, Domesday omission, market history, metalworking traditions and the 19th-century Arboretum.",
+      "intro": "Walsall’s recorded past stretches from early medieval charters to industrial expansion. The town’s name, layout and economy reflect centuries of change in the Black Country.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "historic_ship",
+        "signal_id": null
+      },
+      "classification": "confirmed_trigger_substitution"
+    },
+    {
+      "slug": "scaffell-pike",
+      "title": "Kerosene vs Gas Oil: UK Home Heating Oil Explained",
+      "summary": "A practical guide to the different types of heating oil used in UK homes, focusing on kerosene and gas oil, their properties, and how to choose the right fuel.",
+      "intro": "For homes not connected to the mains gas network, heating oil remains a reliable and effective option. But with several types of fuel available, it can be hard to know which is the correct choice for your boiler. This guide explains the key differences between kerosene and gas oil, and why the right fuel matters for efficiency, safety, and your wallet.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "mountain",
+        "signal_id": null
+      },
+      "classification": "confirmed_trigger_substitution"
+    },
+    {
+      "slug": "cotswolds-area-of-outstanding-natural-beauty",
+      "title": "Designated: Definition, Usage and Common Examples",
+      "summary": "This article explains the word \"designated\", covering its meanings as a verb and adjective, and illustrating how it is used in everyday contexts such as drivers, seats, times, funds and official appointments.",
+      "intro": "The term \"designated\" is widely used in English to indicate something that has been specifically chosen, marked or appointed for a particular purpose. From legal documents to everyday conversations, the word helps clarify roles, locations and schedules. Below you will find fourteen distinct, evidence‑backed facts that illustrate the breadth of its usage.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Designated landscape in England",
+        "signal_id": null
+      },
+      "classification": "confirmed_trigger_substitution"
+    },
+    {
+      "slug": "st-machars-cathedral",
+      "title": "The Ordinal Number 12th",
+      "summary": "Explaining the correct usage, spelling, and common misconceptions of the ordinal number 12th (twelfth) based on linguistic and mathematical evidence.",
+      "intro": "The ordinal number 12th, or twelfth, is commonly used but often confused with 12nd. This guide clarifies the correct spelling, pronunciation, and grammatical rules for using 12th, especially in historical contexts like the 12th century.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "12th‑century cathedral still in use",
+        "signal_id": null
+      },
+      "classification": "confirmed_trigger_substitution"
+    },
+    {
+      "slug": "st-machar-cathedral",
+      "title": "Understanding the Ordinal Number 12th",
+      "summary": "This explainer clarifies how the ordinal number 12th is formed, used, and spelled across English varieties, drawing on authoritative language references.",
+      "intro": "Ordinal numbers express position or order in a sequence. The form '12th' often causes confusion because the numeral ends in a 2, yet it does not take the '-nd' suffix. The following items explain the rules, origins, and correct usage of 12th, based on trusted linguistic and educational sources.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "12th-century cathedral in Old Aberdeen",
+        "signal_id": null
+      },
+      "classification": "confirmed_trigger_substitution"
+    },
+    {
+      "slug": "university",
+      "title": "What10Things Explained",
+      "summary": "A curated list of 10 explainer items drawn from verified sources covering trivia games, career platforms, language definitions, music history, and interactive comparison tools.",
+      "intro": "Here are 10 explainer items sourced from reliable references, each providing a concise overview of its subject matter.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Higher Education Institution",
+        "signal_id": null
+      },
+      "classification": "confirmed_trigger_substitution"
+    },
+    {
+      "slug": "shinto",
+      "title": "Evidence-Based Summaries from Supplied Sources",
+      "summary": "This collection presents 14 distinct factual summaries drawn exclusively from the provided evidence corpus. Each item is grounded in specific source materials covering technology platforms, gaming communities, music, and academic practices. The summaries maintain UK English and avoid any claims beyond what the sources explicitly state.",
+      "intro": "All items below are extracted verbatim or paraphrased from the supplied evidence, with confidence scores reflecting the strength of direct sourcing. Where multiple sources corroborate a point, the highest-confidence attribution is used.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "religion",
+        "signal_id": null
+      },
+      "classification": "confirmed_trigger_substitution"
+    },
+    {
+      "slug": "great-lakes-pfas",
+      "title": "Lake District Hotel Guide: Luxury, Boutique & Practical Stays",
+      "summary": "The Lake District offers a diverse range of accommodation from lakeside luxury to intimate boutique retreats. This guide curates the strongest options across Windermere, Ambleside, Keswick and lesser valleys, supported by independent hotel guides and booking platforms.",
+      "intro": "Set against the backdrop of England's most celebrated national park, the Lake District presents visitors with a spectrum of places to stay. Whether you seek a grand hotel on Windermere, a character-filled boutique in Ambleside, or a practical base in Keswick, the region's accommodation landscape is well documented by specialist guides and booking engines. This guide distils the top recommendations, practical tips and regional insights to help you choose the right base for your visit.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "freshwater-contamination",
+        "signal_id": null
+      },
+      "classification": "confirmed_trigger_substitution"
+    },
+    {
+      "slug": "kinkaku-ji",
+      "title": "What10Things to Know About Stechford",
+      "summary": "Stechford is a historic suburban district in east Birmingham, England, with roots stretching from the Roman era through medieval manorial estates to its modern role as a well-connected residential community. This explainer draws on local history sources, council records, and community guides to outline ten key facts about the area.",
+      "intro": "Stechford sits roughly five miles east of Birmingham city centre, bordering Ward End, Yardley, Hodge Hill and Kitts Green. Historically part of Worcestershire on the boundary of Warwickshire, it has evolved from a rural manor and farming community into a vibrant suburban district shaped by railways, industry and centuries of settlement.",
+      "trigger": {
+        "source": "graph_expansion",
+        "query": "Buddhist temple in Kyoto",
+        "signal_id": null
+      },
+      "classification": "confirmed_trigger_substitution"
+    }
+  ]
+}

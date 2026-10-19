@@ -1,0 +1,1156 @@
+{
+  "ok": true,
+  "topic": {
+    "id": 542,
+    "slug": "acropolis-athens",
+    "title": "Acropolis of Athens",
+    "category": "world",
+    "summary": "The supplied evidence consists solely of dictionary definitions for the word \"ancient\" and a general article on ancient history. No source provides specific information about the Acropolis of Athens, its structures, history, or visitor details. Therefore, a factual explainer about the Acropolis cannot be produced from this evidence.",
+    "intro": "The candidate topic is the Acropolis of Athens, but the six provided sources are dictionary entries (Cambridge UK, Cambridge US, Collins, Free Dictionary, Dictionary.com) and a Wikipedia article on ancient history. None mention the Acropolis, the Parthenon, Athens, or any related archaeological or travel information. Following the instruction to use only supplied evidence and never invent facts, the items below reflect what the evidence actually covers: the meaning and scope of the term \"ancient\".",
+    "reading_time": "0 min",
+    "status": "published",
+    "quality_score": 0.86,
+    "created_at": "2026-10-17T05:30:28Z",
+    "updated_at": "2026-10-19T08:30:46Z",
+    "trigger": {
+      "source": "graph_expansion",
+      "query": "ancient citadel",
+      "signal_id": null
+    },
+    "generation": {
+      "workflow": "W10-R01 Evidence Research",
+      "execution": "253749",
+      "source_count": 6,
+      "intent": "general_facts",
+      "destination": "",
+      "evidence_provider": "bing_rss+jina_reader",
+      "ai_provider": "freellmapi",
+      "ai_model": "nvidia/nemotron-3-ultra-550b-a55b"
+    },
+    "items": [
+      {
+        "position": 1,
+        "fact_key": "fact-21f6ab42ca9522dcb2fe",
+        "title": "Dictionary definition of 'ancient' (Cambridge UK)",
+        "body": "The Cambridge UK dictionary defines \"ancient\" as an adjective meaning of or from a long time ago, having lasted for a very long time, or very old. It is used to refer to periods far in the past. The entry includes UK and US pronunciation audio. This definition is general and not specific to any site.",
+        "confidence": 0.9,
+        "sources": [
+          {
+            "url": "https://dictionary.cambridge.org/dictionary/english/ancient",
+            "title": "ANCIENT | English meaning - Cambridge Dictionary",
+            "publisher": "dictionary.cambridge.org",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T08:30:46Z"
+          }
+        ]
+      },
+      {
+        "position": 2,
+        "fact_key": "fact-c2959837637279a8e31e",
+        "title": "Dictionary definition of 'ancient' (Cambridge US)",
+        "body": "The Cambridge US dictionary provides the same core meanings: of or from a long time ago, having lasted for a very long time, and very old. It also includes audio pronunciations for both US and UK English. The entry is identical in substance to the UK version.",
+        "confidence": 0.9,
+        "sources": [
+          {
+            "url": "https://dictionary.cambridge.org/us/dictionary/english/ancient",
+            "title": "ANCIENT | definition in the Cambridge English Dictionary",
+            "publisher": "dictionary.cambridge.org",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T08:30:46Z"
+          }
+        ]
+      },
+      {
+        "position": 3,
+        "fact_key": "fact-345fbc4e0db128c6fab0",
+        "title": "Collins Dictionary entry for 'ancient'",
+        "body": "Collins English Dictionary lists nine meanings for \"ancient\", including dating from very long ago, very old or aged, and of the far past, especially before the collapse of the Western Roman Empire. The entry notes usage in phrases like \"ancient history\" and \"ancient cultures\".",
+        "confidence": 0.88,
+        "sources": [
+          {
+            "url": "https://www.collinsdictionary.com/dictionary/english/ancient",
+            "title": "ANCIENT definition and meaning | Collins English Dictionary",
+            "publisher": "collinsdictionary.com",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T08:30:46Z"
+          }
+        ]
+      },
+      {
+        "position": 4,
+        "fact_key": "fact-a44e72de61c52e52210a",
+        "title": "Dictionary.com definition and synonyms for 'ancient'",
+        "body": "Dictionary.com defines \"ancient\" as of or in time long past, especially before the end of the Western Roman Empire in AD 476. It provides synonyms such as early, immemorial, age-old, vintage, retro, and antonyms like recent, modern, new. It also notes noun uses referring to people of antiquity.",
+        "confidence": 0.88,
+        "sources": [
+          {
+            "url": "https://www.dictionary.com/browse/ancient",
+            "title": "ANCIENT Definition & Meaning | Dictionary.com",
+            "publisher": "dictionary.com",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T08:30:46Z"
+          }
+        ]
+      },
+      {
+        "position": 5,
+        "fact_key": "fact-588a1f52ebfd0f6fec19",
+        "title": "The Free Dictionary definition of 'ancient'",
+        "body": "The Free Dictionary defines \"ancient\" as relating to times long past, especially before the fall of the Western Roman Empire. It lists synonyms at \"old\" and notes the term applies to ancient cultures. The page includes pronunciation and translation features.",
+        "confidence": 0.85,
+        "sources": [
+          {
+            "url": "https://www.thefreedictionary.com/ancient",
+            "title": "Ancient - definition of ancient by The Free Dictionary",
+            "publisher": "thefreedictionary.com",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T08:30:46Z"
+          }
+        ]
+      },
+      {
+        "position": 6,
+        "fact_key": "fact-465f0f8d14d24f3286ad",
+        "title": "Wikipedia overview of ancient history as a time period",
+        "body": "Wikipedia describes ancient history as the period from the beginning of writing and recorded human history through late antiquity, spanning roughly 5,000 years starting with Sumerian cuneiform script. The article includes images of well-known ancient artwork and sculptures from various civilisations.",
+        "confidence": 0.9,
+        "sources": [
+          {
+            "url": "https://en.wikipedia.org/wiki/Ancient_history",
+            "title": "Ancient history - Wikipedia",
+            "publisher": "en.wikipedia.org",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T08:30:46Z"
+          }
+        ]
+      },
+      {
+        "position": 7,
+        "fact_key": "fact-b8760aafd271f6a87466",
+        "title": "Usage of 'ancient' to describe historical periods",
+        "body": "Multiple dictionary sources agree that \"ancient\" is commonly used to refer to the period before the fall of the Western Roman Empire (AD 476). This usage appears in Collins, Dictionary.com, and The Free Dictionary, indicating a conventional historical boundary for the term.",
+        "confidence": 0.85,
+        "sources": [
+          {
+            "url": "https://www.collinsdictionary.com/dictionary/english/ancient",
+            "title": "ANCIENT definition and meaning | Collins English Dictionary",
+            "publisher": "collinsdictionary.com",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T08:30:46Z"
+          },
+          {
+            "url": "https://www.dictionary.com/browse/ancient",
+            "title": "ANCIENT Definition & Meaning | Dictionary.com",
+            "publisher": "dictionary.com",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T08:30:46Z"
+          },
+          {
+            "url": "https://www.thefreedictionary.com/ancient",
+            "title": "Ancient - definition of ancient by The Free Dictionary",
+            "publisher": "thefreedictionary.com",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T08:30:46Z"
+          }
+        ]
+      },
+      {
+        "position": 8,
+        "fact_key": "fact-8ece29815bbab61def2a",
+        "title": "Synonyms and antonyms for 'ancient'",
+        "body": "Dictionary.com provides a rich set of synonyms including early, immemorial, age-old, vintage, retro, old-time, old-fashioned, olden, and antique. Antonyms listed are recent, modern, new. These lexical relations help clarify the word's semantic range in English.",
+        "confidence": 0.85,
+        "sources": [
+          {
+            "url": "https://www.dictionary.com/browse/ancient",
+            "title": "ANCIENT Definition & Meaning | Dictionary.com",
+            "publisher": "dictionary.com",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T08:30:46Z"
+          }
+        ]
+      },
+      {
+        "position": 9,
+        "fact_key": "fact-8791285254d591701436",
+        "title": "Pronunciation variants for 'ancient'",
+        "body": "Both Cambridge UK and Cambridge US entries include audio pronunciations for UK and US English. The UK pronunciation is /ˈeɪn.ʃənt/ and the US is /ˈeɪn.ʃənt/, showing minimal variation. The Free Dictionary and Dictionary.com also provide pronunciation guides.",
+        "confidence": 0.88,
+        "sources": [
+          {
+            "url": "https://dictionary.cambridge.org/dictionary/english/ancient",
+            "title": "ANCIENT | English meaning - Cambridge Dictionary",
+            "publisher": "dictionary.cambridge.org",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T08:30:46Z"
+          },
+          {
+            "url": "https://dictionary.cambridge.org/us/dictionary/english/ancient",
+            "title": "ANCIENT | definition in the Cambridge English Dictionary",
+            "publisher": "dictionary.cambridge.org",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T08:30:46Z"
+          },
+          {
+            "url": "https://www.thefreedictionary.com/ancient",
+            "title": "Ancient - definition of ancient by The Free Dictionary",
+            "publisher": "thefreedictionary.com",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T08:30:46Z"
+          }
+        ]
+      },
+      {
+        "position": 10,
+        "fact_key": "fact-caec582e4fa5aa7f0d2c",
+        "title": "Grammatical category of 'ancient'",
+        "body": "All dictionary sources classify \"ancient\" primarily as an adjective. Dictionary.com also notes noun senses: a person who lived in ancient times, a classical writer of antiquity, or a very old person. The plural \"ancients\" refers to civilized peoples of antiquity such as Greeks, Romans, Hebrews, and Egyptians.",
+        "confidence": 0.88,
+        "sources": [
+          {
+            "url": "https://www.collinsdictionary.com/dictionary/english/ancient",
+            "title": "ANCIENT definition and meaning | Collins English Dictionary",
+            "publisher": "collinsdictionary.com",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T08:30:46Z"
+          },
+          {
+            "url": "https://dictionary.cambridge.org/dictionary/english/ancient",
+            "title": "ANCIENT | English meaning - Cambridge Dictionary",
+            "publisher": "dictionary.cambridge.org",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T08:30:46Z"
+          },
+          {
+            "url": "https://dictionary.cambridge.org/us/dictionary/english/ancient",
+            "title": "ANCIENT | definition in the Cambridge English Dictionary",
+            "publisher": "dictionary.cambridge.org",
+            "source_type": "independent",
+            "checked_at": "2026-10-19T08:30:46Z"
+          }
+        ]
+      }
+    ],
+    "related_topics": []
+  },
+  "related_lead_captures": {
+    "source": "https://what10things.co.uk/api/topics?limit=500",
+    "captured_date": "2026-10-19",
+    "topics": [
+      {
+        "slug": "ulster-museum",
+        "title": "Ulster Museum",
+        "summary": "An evidence-based overview of what the supplied sources reveal about the Ulster Museum.",
+        "intro": "When attempting to compile a list of facts about the Ulster Museum from the provided source material, it becomes apparent that none of the six references contain any mention of this institution. The following items each state this absence in slightly different wording, demonstrating that the evidence base does not support any claims about the museum's collections, location, or programmes."
+      },
+      {
+        "slug": "design-museum-london",
+        "title": "Design Museum, London – Evidence‑Based Overview",
+        "summary": "A factual overview of what the supplied evidence does and does not reveal about the Design Museum in London, highlighting the lack of direct information and pointing to related museum sources for contextual understanding.",
+        "intro": "When researching the Design Museum in London, the available source material focuses on other prominent UK institutions such as the Natural History Museum, Manchester Museum, the V&A, the Sainsbury Centre, the British Museum and the Science Museum. None of these sources contain specific details about the Design Museum’s collections, exhibitions, history or visitor information. The following items therefore present verifiable claims about the absence of Design Museum‑related content in each piece of evidence, allowing readers to understand what can be confidently stated based solely on the supplied references."
+      },
+      {
+        "slug": "british-museum",
+        "title": "British Museum",
+        "summary": "This explainer uses the supplied evidence about the philosophical concept of 'world' to present fourteen distinct, evidence‑backed statements. Each item is drawn solely from the Wikipedia article on 'World' and is written in plain UK English.",
+        "intro": "Although the British Museum is renowned for its global collections, the available source material concerns the abstract notion of a 'world'. The following points therefore explore what philosophers, theologians and religions mean when they refer to the world, using only the provided evidence."
+      },
+      {
+        "slug": "the-commandery",
+        "title": "The Commandery: What the Available Sources Reveal (and Don’t Reveal)",
+        "summary": "A review of the supplied evidence shows that none of the sources mention specific details about The Commandery in Worcester. This explainer highlights what can be confidently stated – namely, the absence of information – across a range of typical visitor‑facing attributes.",
+        "intro": "The Commandery is a historic house and museum in Worcester that interprets the city’s role in the English Civil War. However, the six source documents provided in this task contain no direct references to The Commandery. Consequently, the only facts we can assert with confidence are what the sources do *not* tell us about the property."
+      },
+      {
+        "slug": "ulster-museum-belfast",
+        "title": "Ulster Museum",
+        "summary": "This explainer presents verified facts about Liz Harmer, her literary career, and her connection to The Webb Schools, drawing exclusively from the supplied sources.",
+        "intro": "Although the Ulster Museum is the nominal subject, the available evidence concerns the Canadian writer Liz Harmer and her affiliations. The following items summarise what can be confirmed from the provided references."
+      },
+      {
+        "slug": "nazca-lines",
+        "title": "Nazca Lines",
+        "summary": "An evidence‑based overview of what the supplied sources do and do not tell us about the Nazca Lines.",
+        "intro": "The following points are derived exclusively from the six LinkedIn profiles provided as evidence. None of these profiles contain any information about the Nazca Lines, so each item notes the absence of such details."
+      },
+      {
+        "slug": "unesco-world-heritage-algiers",
+        "title": "UNESCO World Heritage Sites in Algeria",
+        "summary": "An overview of the UNESCO-listed heritage locations in Algeria, based solely on the supplied evidence sources.",
+        "intro": "Algeria possesses a rich cultural and natural legacy, with several sites recognised by UNESCO for their outstanding universal value. This entry examines what can be confirmed about those sites using only the provided evidence from BBC News, AP News, Wikipedia, Sky News, CNN and Reuters. Because none of those sources contain specific information about Algerian UNESCO sites, the following items reflect the limits of the available data rather than substantive facts about the sites themselves."
+      },
+      {
+        "slug": "herbert-art-gallery-museum",
+        "title": "Herbert Art Gallery & Museum: What the Available Sources Reveal (and Don't Reveal)",
+        "summary": "A review of the six supplied sources shows what they cover about UK art resources and confirms that none mention the Herbert Art Gallery & Museum, so no verifiable facts about it can be drawn from the evidence.",
+        "intro": "The following items summarise the content of each provided source and explicitly note the absence of any reference to the Herbert Art Gallery & Museum. All statements are grounded solely in the supplied material."
+      },
+      {
+        "slug": "kinkaku-ji-temple",
+        "title": "Kinkaku-ji Temple - Evidence Review",
+        "summary": "The provided evidence consists solely of promotional content for The Wheel Specialist alloy wheel repair services across multiple UK locations. None of the sources contain any information about Kinkaku-ji Temple, Kyoto, or Japanese cultural heritage sites. Therefore, no verifiable facts about Kinkaku-ji can be extracted from the supplied material.",
+        "intro": "Based on the supplied evidence, there is no verifiable information about Kinkaku-ji Temple. The evidence focuses exclusively on automotive alloy wheel repair and refurbishment services operated by The Wheel Specialist across various UK locations. This makes it impossible to generate accurate 'What10Things' explainers about the temple itself from the given sources."
+      },
+      {
+        "slug": "keswick-town",
+        "title": "Keswick",
+        "summary": "An evidence‑based overview of what the supplied sources do and do not reveal about Keswick, focusing on the absence of Keswick‑specific information in the provided financial‑market pages.",
+        "intro": "The following explainer examines the six supplied source documents, all of which concern financial markets, stock prices and related news. None of these sources contain any reference to Keswick, its geography, history or tourism. Each item below states a distinct, verifiable observation about the lack of Keswick‑related content in one or more of the sources, together with a confidence rating reflecting the certainty of that observation."
+      },
+      {
+        "slug": "snowdonia-eryri",
+        "title": "Eryri (Snowdonia) National Park",
+        "summary": "This explainer covers key facts about major UK national services including the National Lottery, National Rail, The National newspaper, National Express coaches, and National Tyres, based on official websites and current service information.",
+        "intro": "The supplied evidence details several UK-wide national services rather than Eryri National Park. The following points summarise what the sources actually document: lottery funding and games, rail travel planning, a Scottish news outlet, coach routes, and tyre retail."
+      },
+      {
+        "slug": "thames-head-kemble",
+        "title": "Thames Head, Kemble",
+        "summary": "An evidence‑based overview of what the supplied sources do and do not say about the Thames Head source near Kemble, Gloucestershire.",
+        "intro": "The following points are derived exclusively from the provided ASDA‑related web pages. None of those sources contain any direct information about Thames Head, Kemble; each item therefore notes a specific aspect that is absent from the evidence."
+      }
+    ]
+  },
+  "legacy_topic_controls": [
+    {
+      "source": "https://what10things.co.uk/api/topics/cotswold-hills",
+      "captured_date": "2026-10-19",
+      "topic": {
+        "id": 217,
+        "slug": "cotswold-hills",
+        "title": "Cotswold Hills",
+        "category": "world",
+        "summary": "The Cotswolds is an Area of Outstanding Natural Beauty in England designated in August 1966 and now presented as a National Landscape. It is protected under the Countryside and Rights of Way Act 2000 for the conservation and enhancement of natural beauty, with Natural England holding designation and advice duties.",
+        "intro": "The Cotswolds AONB is one of 34 protected landscapes in England. Designated in the mid-1960s, it is managed as a National Landscape following the 2023 rebranding, while retaining its statutory AONB status.",
+        "reading_time": "4",
+        "status": "published",
+        "quality_score": 0.88,
+        "created_at": "2026-09-30T17:30:31Z",
+        "updated_at": "2026-09-30T23:29:27Z",
+        "trigger": {
+          "source": "graph_expansion",
+          "query": "Area of Outstanding Natural Beauty",
+          "signal_id": null
+        },
+        "generation": {
+          "workflow": "W10-R01 Evidence Research",
+          "execution": "182293",
+          "source_count": 6,
+          "intent": "general_facts",
+          "destination": "",
+          "evidence_provider": "bing_rss+jina_reader",
+          "ai_provider": "freellmapi",
+          "ai_model": "meta/muse-glimmer-30b"
+        },
+        "items": [
+          {
+            "position": 1,
+            "fact_key": "fact-cfb07cb65d61ba358b52",
+            "title": "Designation date August 1966",
+            "body": "The Cotswolds entry in the Natural England Areas of Outstanding Natural Beauty dataset records an August 1966 designation date. The listing identifies the area as Cotswolds with the designation month and year shown as Aug-66. This places the Cotswolds among the earlier AONB designations in England. The dataset is maintained by Natural England and provides the official designation chronology for English AONBs.",
+            "confidence": 0.88,
+            "sources": [
+              {
+                "url": "https://naturalengland-defra.opendata.arcgis.com/datasets/Defra::areas-of-outstanding-natural-beauty-england/explore",
+                "title": "Areas of Outstanding Natural Beauty (England) - ArcGIS",
+                "publisher": "naturalengland-defra.opendata.arcgis.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-30T23:29:27Z"
+              }
+            ]
+          },
+          {
+            "position": 2,
+            "fact_key": "fact-765cc823f219a6499dc3",
+            "title": "Recorded area size",
+            "body": "The ArcGIS open dataset for Areas of Outstanding Natural Beauty England lists the Cotswolds with a figure of 2,041.09. The entry appears alongside the designation date and the management website link. The figure is presented in the dataset’s area column for the Cotswolds AONB. The dataset is published by Natural England via Defra.",
+            "confidence": 0.82,
+            "sources": [
+              {
+                "url": "https://naturalengland-defra.opendata.arcgis.com/datasets/Defra::areas-of-outstanding-natural-beauty-england/explore",
+                "title": "Areas of Outstanding Natural Beauty (England) - ArcGIS",
+                "publisher": "naturalengland-defra.opendata.arcgis.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-30T23:29:27Z"
+              }
+            ]
+          },
+          {
+            "position": 3,
+            "fact_key": "fact-a09323b087080915435b",
+            "title": "Management website",
+            "body": "The Natural England dataset links the Cotswolds AONB to https://www.cotswolds-nl.org.uk/. The URL is shown in the same row as the designation date and area figure for the Cotswolds. The site is the recognised online presence for the Cotswolds National Landscape management.",
+            "confidence": 0.9,
+            "sources": [
+              {
+                "url": "https://naturalengland-defra.opendata.arcgis.com/datasets/Defra::areas-of-outstanding-natural-beauty-england/explore",
+                "title": "Areas of Outstanding Natural Beauty (England) - ArcGIS",
+                "publisher": "naturalengland-defra.opendata.arcgis.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-30T23:29:27Z"
+              }
+            ]
+          },
+          {
+            "position": 4,
+            "fact_key": "fact-a9ef46f73f69f591e2f8",
+            "title": "One of 34 AONBs in England",
+            "body": "Government guidance states there are 34 AONBs in England. The Cotswolds is listed among the AONBs in the Natural England spatial dataset. Planning guidance also notes 34 National Landscapes in England, reflecting the same count after rebranding. The Cotswolds therefore forms one of the 34 protected landscapes.",
+            "confidence": 0.9,
+            "sources": [
+              {
+                "url": "https://www.gov.uk/guidance/areas-of-outstanding-natural-beauty-aonbs-designation-and-management",
+                "title": "Areas of outstanding natural beauty (AONBs): designation and management",
+                "publisher": "gov.uk",
+                "source_type": "independent",
+                "checked_at": "2026-09-30T23:29:27Z"
+              },
+              {
+                "url": "https://naturalengland-defra.opendata.arcgis.com/datasets/Defra::areas-of-outstanding-natural-beauty-england/explore",
+                "title": "Areas of Outstanding Natural Beauty (England) - ArcGIS",
+                "publisher": "naturalengland-defra.opendata.arcgis.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-30T23:29:27Z"
+              },
+              {
+                "url": "https://www.planninggeek.co.uk/conservation/aonb/",
+                "title": "National Landscapes (AONBs) & planning",
+                "publisher": "planninggeek.co.uk",
+                "source_type": "independent",
+                "checked_at": "2026-09-30T23:29:27Z"
+              }
+            ]
+          },
+          {
+            "position": 5,
+            "fact_key": "fact-f5d6271b750090bf2255",
+            "title": "Protected under Countryside and Rights of Way Act 2000",
+            "body": "An area of outstanding natural beauty is land protected by the Countryside and Rights of Way Act 2000. The Act sets out roles and responsibilities for managing AONBs. Natural England’s powers to designate and vary AONB boundaries derive from the same Act. The Cotswolds AONB is therefore protected under this legislation.",
+            "confidence": 0.92,
+            "sources": [
+              {
+                "url": "https://www.gov.uk/guidance/areas-of-outstanding-natural-beauty-aonbs-designation-and-management",
+                "title": "Areas of outstanding natural beauty (AONBs): designation and management",
+                "publisher": "gov.uk",
+                "source_type": "independent",
+                "checked_at": "2026-09-30T23:29:27Z"
+              },
+              {
+                "url": "https://www.data.gov.uk/dataset/8e3ae3b9-a827-47f1-b025-f08527a4e84e/areas-of-outstanding-natural-beauty-england1",
+                "title": "Areas of Outstanding Natural Beauty (England) - National Data Library",
+                "publisher": "data.gov.uk",
+                "source_type": "official",
+                "checked_at": "2026-09-30T23:29:27Z"
+              }
+            ]
+          },
+          {
+            "position": 6,
+            "fact_key": "fact-5895adaad0dc682796a0",
+            "title": "Purpose is conservation and enhancement of natural beauty",
+            "body": "The statutory purpose of an AONB is to conserve and enhance its natural beauty. Guidance notes the CROW Act protects land to conserve and enhance natural beauty. Planning guidance repeats that the purpose of designation is conservation and enhancement of natural beauty. This applies to the Cotswolds as an AONB.",
+            "confidence": 0.9,
+            "sources": [
+              {
+                "url": "https://www.gov.uk/guidance/areas-of-outstanding-natural-beauty-aonbs-designation-and-management",
+                "title": "Areas of outstanding natural beauty (AONBs): designation and management",
+                "publisher": "gov.uk",
+                "source_type": "independent",
+                "checked_at": "2026-09-30T23:29:27Z"
+              },
+              {
+                "url": "https://www.planninggeek.co.uk/conservation/aonb/",
+                "title": "National Landscapes (AONBs) & planning",
+                "publisher": "planninggeek.co.uk",
+                "source_type": "independent",
+                "checked_at": "2026-09-30T23:29:27Z"
+              }
+            ]
+          },
+          {
+            "position": 7,
+            "fact_key": "fact-8dd7b4fca666f78ddeaf",
+            "title": "Natural England designation powers",
+            "body": "Under the CROW Act Natural England can make orders to designate AONBs or vary boundaries of existing ones. The power applies to England only. Natural England also has a duty to give advice on developments in an AONB and to consider conservation and enhancement in its work. These powers cover the Cotswolds.",
+            "confidence": 0.88,
+            "sources": [
+              {
+                "url": "https://www.gov.uk/guidance/areas-of-outstanding-natural-beauty-aonbs-designation-and-management",
+                "title": "Areas of outstanding natural beauty (AONBs): designation and management",
+                "publisher": "gov.uk",
+                "source_type": "independent",
+                "checked_at": "2026-09-30T23:29:27Z"
+              },
+              {
+                "url": "https://www.data.gov.uk/dataset/8e3ae3b9-a827-47f1-b025-f08527a4e84e/areas-of-outstanding-natural-beauty-england1",
+                "title": "Areas of Outstanding Natural Beauty (England) - National Data Library",
+                "publisher": "data.gov.uk",
+                "source_type": "official",
+                "checked_at": "2026-09-30T23:29:27Z"
+              }
+            ]
+          },
+          {
+            "position": 8,
+            "fact_key": "fact-2a4af5cbc2e486dbbd93",
+            "title": "Rebranded as National Landscape in 2023",
+            "body": "AONBs in England and Wales adopted the National Landscapes name in 2023 following a review. Wikipedia notes the current name was adopted in 2023 and rebranding is in process. Planning guidance confirms the National Landscapes name was introduced in England in November 2023. The Cotswolds is now presented as a National Landscape.",
+            "confidence": 0.87,
+            "sources": [
+              {
+                "url": "https://en.wikipedia.org/wiki/National_Landscape",
+                "title": "National Landscape - Wikipedia",
+                "publisher": "en.wikipedia.org",
+                "source_type": "independent",
+                "checked_at": "2026-09-30T23:29:27Z"
+              },
+              {
+                "url": "https://planningconstraints.com/blog/how-to-check-aonb",
+                "title": "How to Find Out If You're in an Area of Outstanding Natural Beauty",
+                "publisher": "planningconstraints.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-30T23:29:27Z"
+              },
+              {
+                "url": "https://www.planninggeek.co.uk/conservation/aonb/",
+                "title": "National Landscapes (AONBs) & planning",
+                "publisher": "planninggeek.co.uk",
+                "source_type": "independent",
+                "checked_at": "2026-09-30T23:29:27Z"
+              }
+            ]
+          },
+          {
+            "position": 9,
+            "fact_key": "fact-80197b83e6cf1d2e8e05",
+            "title": "Legal term remains Area of Outstanding Natural Beauty",
+            "body": "Although the public name changed, the legal designation remains Area of Outstanding Natural Beauty. Wikipedia states the name area of outstanding natural beauty is still the designated legal term. Planning guidance notes the statutory designation used in legislation remains AONB. The Cotswolds retains this legal status.",
+            "confidence": 0.9,
+            "sources": [
+              {
+                "url": "https://en.wikipedia.org/wiki/National_Landscape",
+                "title": "National Landscape - Wikipedia",
+                "publisher": "en.wikipedia.org",
+                "source_type": "independent",
+                "checked_at": "2026-09-30T23:29:27Z"
+              },
+              {
+                "url": "https://www.planninggeek.co.uk/conservation/aonb/",
+                "title": "National Landscapes (AONBs) & planning",
+                "publisher": "planninggeek.co.uk",
+                "source_type": "independent",
+                "checked_at": "2026-09-30T23:29:27Z"
+              }
+            ]
+          },
+          {
+            "position": 10,
+            "fact_key": "fact-a03622885c46d57b496e",
+            "title": "Covers about 15% of England",
+            "body": "Planning guidance notes there are 34 AONBs in England covering about 15% of the land area. The figure is given in the context of AONBs including well-known landscapes such as the Cotswolds. The Cotswolds contributes to this national coverage.",
+            "confidence": 0.8,
+            "sources": [
+              {
+                "url": "https://planningconstraints.com/blog/how-to-check-aonb",
+                "title": "How to Find Out If You're in an Area of Outstanding Natural Beauty",
+                "publisher": "planningconstraints.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-30T23:29:27Z"
+              }
+            ]
+          }
+        ],
+        "related_topics": [
+          {
+            "to_slug": "chilterns-aonb",
+            "to_title": "Chilterns",
+            "relation": "similar protected landscape",
+            "score": 0.82,
+            "status": "candidate"
+          },
+          {
+            "to_slug": "north-wessex-downs-aonb",
+            "to_title": "North Wessex Downs",
+            "relation": "similar protected landscape",
+            "score": 0.8,
+            "status": "candidate"
+          },
+          {
+            "to_slug": "mendip-hills-aonb",
+            "to_title": "Mendip Hills",
+            "relation": "similar protected landscape",
+            "score": 0.78,
+            "status": "candidate"
+          }
+        ]
+      }
+    },
+    {
+      "source": "https://what10things.co.uk/api/topics/cotswolds-travel",
+      "captured_date": "2026-10-19",
+      "topic": {
+        "id": 162,
+        "slug": "cotswolds-travel",
+        "title": "Cotswold Region Tourism",
+        "category": "world",
+        "summary": "The Cotswolds is a National Landscape in south-central England covering nearly 800 square miles across six counties, known for honey-coloured stone villages, rolling hills, and historic market towns.",
+        "intro": "Designated an Area of Outstanding Natural Beauty in 1966 (now a National Landscape), the Cotswolds attracts millions of visitors yearly with its Jurassic limestone geology, medieval wool-trade heritage, and quintessentially English countryside.",
+        "reading_time": "6",
+        "status": "published",
+        "quality_score": 0.88,
+        "created_at": "2026-09-27T22:31:36Z",
+        "updated_at": "2026-09-27T22:31:36Z",
+        "trigger": {
+          "source": "graph_expansion",
+          "query": "Cotswolds",
+          "signal_id": null
+        },
+        "generation": {
+          "workflow": "W10-R01 Evidence Research",
+          "execution": "170627",
+          "source_count": 6,
+          "intent": "general_facts",
+          "destination": "",
+          "evidence_provider": "bing_rss+jina_reader",
+          "ai_provider": "openrouter",
+          "ai_model": "inclusionai/ling-3.0-flash-sante:free"
+        },
+        "items": [
+          {
+            "position": 1,
+            "fact_key": "fact-76e475117ab3e9ec9975",
+            "title": "Area and Size",
+            "body": "The Cotswolds covers nearly 800 square miles (2,038 km²) of south-central England, making it the largest designated landscape area in England and Wales. The region stretches across a broad swathe of countryside centred on the Cotswold escarpment, a ridge of Jurassic limestone hills.",
+            "confidence": 0.95,
+            "sources": [
+              {
+                "url": "https://www.cotswolds.com/",
+                "title": "Visit Cotswolds | The Official Cotswolds Tourism Guide",
+                "publisher": "cotswolds.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              },
+              {
+                "url": "https://www.cotswoldstourism.org/cotswolds-travel-guide/",
+                "title": "The Complete Cotswolds Travel Guide (2026) | Cotswolds Tourism",
+                "publisher": "cotswoldstourism.org",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              },
+              {
+                "url": "https://en.m.wikipedia.org/wiki/Cotswolds",
+                "title": "Cotswolds - Wikipedia",
+                "publisher": "en.m.wikipedia.org",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              }
+            ]
+          },
+          {
+            "position": 2,
+            "fact_key": "fact-715a98503797c64e16ae",
+            "title": "National Landscape Designation",
+            "body": "Originally designated an Area of Outstanding Natural Beauty in 1966, the Cotswolds is now classified as a National Landscape. This status protects the region's distinctive character — golden stone villages, rolling hills, and ancient meadows — from inappropriate development.",
+            "confidence": 0.95,
+            "sources": [
+              {
+                "url": "https://www.cotswoldstourism.org/cotswolds-travel-guide/",
+                "title": "The Complete Cotswolds Travel Guide (2026) | Cotswolds Tourism",
+                "publisher": "cotswoldstourism.org",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              },
+              {
+                "url": "https://en.m.wikipedia.org/wiki/Cotswolds",
+                "title": "Cotswolds - Wikipedia",
+                "publisher": "en.m.wikipedia.org",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              },
+              {
+                "url": "https://www.thecotswoldsguide.com/where-are-the-cotswolds",
+                "title": "Where are the Cotswolds? | Cotswolds Guide",
+                "publisher": "thecotswoldsguide.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              }
+            ]
+          },
+          {
+            "position": 3,
+            "fact_key": "fact-07b51313d2e83207ca02",
+            "title": "Six Counties",
+            "body": "The Cotswolds spans six English counties: Gloucestershire, Oxfordshire, Warwickshire, Wiltshire, Worcestershire, and Somerset. The heart of the region lies in Gloucestershire and Oxfordshire, with the northern edge reaching Warwickshire and the southern edge touching Somerset.",
+            "confidence": 0.95,
+            "sources": [
+              {
+                "url": "https://www.cotswoldstourism.org/cotswolds-travel-guide/",
+                "title": "The Complete Cotswolds Travel Guide (2026) | Cotswolds Tourism",
+                "publisher": "cotswoldstourism.org",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              },
+              {
+                "url": "https://www.thecotswoldsguide.com/where-are-the-cotswolds",
+                "title": "Where are the Cotswolds? | Cotswolds Guide",
+                "publisher": "thecotswoldsguide.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              },
+              {
+                "url": "https://www.visitbritain.com/en/destinations/england/cotswolds",
+                "title": "Cotswolds Attractions & Places to Visit | VisitBritain",
+                "publisher": "visitbritain.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              }
+            ]
+          },
+          {
+            "position": 4,
+            "fact_key": "fact-ab20a412a50bcc02c235",
+            "title": "Jurassic Limestone Geology",
+            "body": "The region's distinctive golden stone comes from Jurassic oolitic limestone, quarried since Roman times. This geology creates the Cotswolds' trademark warm yellow buildings, dry-stone walls, gently folded valleys, and springy wildflower meadows that define the landscape.",
+            "confidence": 0.95,
+            "sources": [
+              {
+                "url": "https://www.cotswoldinsider.com/post/what-where-cotswolds-travel-guide",
+                "title": "What and Where is the Cotswolds? A Clear Map, Best Towns & First-Time Tips",
+                "publisher": "cotswoldinsider.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              },
+              {
+                "url": "https://www.cotswoldstourism.org/cotswolds-travel-guide/",
+                "title": "The Complete Cotswolds Travel Guide (2026) | Cotswolds Tourism",
+                "publisher": "cotswoldstourism.org",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              },
+              {
+                "url": "https://en.m.wikipedia.org/wiki/Cotswolds",
+                "title": "Cotswolds - Wikipedia",
+                "publisher": "en.m.wikipedia.org",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              }
+            ]
+          },
+          {
+            "position": 5,
+            "fact_key": "fact-4647c1857c593a038198",
+            "title": "Cotswold Way Trail",
+            "body": "The 102-mile Cotswold Way is a popular long-distance walking trail running from Chipping Campden to Bath. It passes through some of the region's most scenic spots, including classic villages and historic market towns, offering walkers a comprehensive Cotswolds experience.",
+            "confidence": 0.9,
+            "sources": [
+              {
+                "url": "https://www.cotswoldstourism.org/cotswolds-travel-guide/",
+                "title": "The Complete Cotswolds Travel Guide (2026) | Cotswolds Tourism",
+                "publisher": "cotswoldstourism.org",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              },
+              {
+                "url": "https://www.thecotswoldsguide.com/where-are-the-cotswolds",
+                "title": "Where are the Cotswolds? | Cotswolds Guide",
+                "publisher": "thecotswoldsguide.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              }
+            ]
+          },
+          {
+            "position": 6,
+            "fact_key": "fact-a5fcddeaf0598460284a",
+            "title": "Name Etymology",
+            "body": "The name 'Cotswolds' derives from Old English: 'cot' meaning sheep enclosure and 'wold' meaning rolling hillsides. This reflects the region's origins as a pastoral area where sheep farming generated medieval wealth that funded the grand churches and manor houses still standing today.",
+            "confidence": 0.9,
+            "sources": [
+              {
+                "url": "https://www.cotswoldinsider.com/post/what-where-cotswolds-travel-guide",
+                "title": "What and Where is the Cotswolds? A Clear Map, Best Towns & First-Time Tips",
+                "publisher": "cotswoldinsider.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              },
+              {
+                "url": "https://en.m.wikipedia.org/wiki/Cotswolds",
+                "title": "Cotswolds - Wikipedia",
+                "publisher": "en.m.wikipedia.org",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              }
+            ]
+          },
+          {
+            "position": 7,
+            "fact_key": "fact-c002efe9aa9d36355b7a",
+            "title": "Famous Villages",
+            "body": "Iconic Cotswolds villages include Bourton-on-the-Water (called the 'Venice of the Cotswolds' for its stone bridges over the River Windrush), Bibury with its 17th-century Arlington Row weavers' cottages, Castle Combe, and Lacock, which have featured in period dramas and films.",
+            "confidence": 0.9,
+            "sources": [
+              {
+                "url": "https://www.cotswoldstourism.org/cotswolds-travel-guide/",
+                "title": "The Complete Cotswolds Travel Guide (2026) | Cotswolds Tourism",
+                "publisher": "cotswoldstourism.org",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              },
+              {
+                "url": "https://www.thecotswoldsguide.com/where-are-the-cotswolds",
+                "title": "Where are the Cotswolds? | Cotswolds Guide",
+                "publisher": "thecotswoldsguide.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              }
+            ]
+          },
+          {
+            "position": 8,
+            "fact_key": "fact-f8b22a5d933546d8544f",
+            "title": "Location Relative to Cities",
+            "body": "The Cotswolds sits in south-central England between Oxford to the east, Cheltenham and Gloucester to the west, Stratford-upon-Avon to the north, and Bath to the south. This central position makes it accessible for day trips and longer stays from multiple major cities.",
+            "confidence": 0.9,
+            "sources": [
+              {
+                "url": "https://www.cotswoldstourism.org/cotswolds-travel-guide/",
+                "title": "The Complete Cotswolds Travel Guide (2026) | Cotswolds Tourism",
+                "publisher": "cotswoldstourism.org",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              },
+              {
+                "url": "https://www.thecotswoldsguide.com/where-are-the-cotswolds",
+                "title": "Where are the Cotswolds? | Cotswolds Guide",
+                "publisher": "thecotswoldsguide.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              }
+            ]
+          },
+          {
+            "position": 9,
+            "fact_key": "fact-e5cf9991ff107c48493f",
+            "title": "Market Towns",
+            "body": "Key market towns include Cheltenham, Cirencester, Stow-on-the-Wold, Burford, Tewkesbury, Stroud, and Witney. These towns blend historic architecture with modern amenities, offering shopping, dining, and cultural events while retaining their traditional Cotswold character.",
+            "confidence": 0.85,
+            "sources": [
+              {
+                "url": "https://www.cotswolds.com/",
+                "title": "Visit Cotswolds | The Official Cotswolds Tourism Guide",
+                "publisher": "cotswolds.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              },
+              {
+                "url": "https://www.cotswoldstourism.org/cotswolds-travel-guide/",
+                "title": "The Complete Cotswolds Travel Guide (2026) | Cotswolds Tourism",
+                "publisher": "cotswoldstourism.org",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              },
+              {
+                "url": "https://www.thecotswoldsguide.com/where-are-the-cotswolds",
+                "title": "Where are the Cotswolds? | Cotswolds Guide",
+                "publisher": "thecotswoldsguide.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              }
+            ]
+          },
+          {
+            "position": 10,
+            "fact_key": "fact-f340891144a22b0d76e4",
+            "title": "Food and Drink Scene",
+            "body": "The Cotswolds' rural landscape provides a rich harvest of local produce, including cheeses, meats, and drinks featured prominently in gastro pubs, old inns, cafes, and fine dining restaurants. The region also boasts Michelin-starred restaurants tucked into converted coaching inns.",
+            "confidence": 0.85,
+            "sources": [
+              {
+                "url": "https://www.cotswolds.com/",
+                "title": "Visit Cotswolds | The Official Cotswolds Tourism Guide",
+                "publisher": "cotswolds.com",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              },
+              {
+                "url": "https://www.cotswoldstourism.org/cotswolds-travel-guide/",
+                "title": "The Complete Cotswolds Travel Guide (2026) | Cotswolds Tourism",
+                "publisher": "cotswoldstourism.org",
+                "source_type": "independent",
+                "checked_at": "2026-09-27T22:31:36Z"
+              }
+            ]
+          }
+        ],
+        "related_topics": [
+          {
+            "to_slug": "bourton-on-the-water",
+            "to_title": "Bourton-on-the-Water",
+            "relation": "village",
+            "score": 0.9,
+            "status": "candidate"
+          },
+          {
+            "to_slug": "bibury",
+            "to_title": "Bibury",
+            "relation": "village",
+            "score": 0.88,
+            "status": "candidate"
+          },
+          {
+            "to_slug": "cotswold-way",
+            "to_title": "Cotswold Way",
+            "relation": "trail",
+            "score": 0.87,
+            "status": "candidate"
+          },
+          {
+            "to_slug": "bath",
+            "to_title": "Bath",
+            "relation": "city",
+            "score": 0.85,
+            "status": "candidate"
+          },
+          {
+            "to_slug": "stratford-upon-avon",
+            "to_title": "Stratford-upon-Avon",
+            "relation": "town",
+            "score": 0.83,
+            "status": "candidate"
+          },
+          {
+            "to_slug": "blenheim-palace",
+            "to_title": "Blenheim Palace",
+            "relation": "landmark",
+            "score": 0.82,
+            "status": "candidate"
+          }
+        ]
+      }
+    },
+    {
+      "source": "https://what10things.co.uk/api/topics/indonesian-archipelago",
+      "captured_date": "2026-10-19",
+      "topic": {
+        "id": 407,
+        "slug": "indonesian-archipelago",
+        "title": "Indonesian Archipelago: Key Facts",
+        "category": "world",
+        "summary": "Fourteen concise, evidence‑based insights cover Indonesia’s language, geography, economy, culture and social practices, drawn exclusively from authoritative sources such as Wikipedia, Britannica and specialist guides.",
+        "intro": "Stretching across thousands of islands, Indonesia is the world’s largest archipelagic state. This guide presents fourteen distinct, verifiable claims about its national symbols, linguistic landscape, economic centre, ecological position and everyday customs, each backed by the supplied references.",
+        "reading_time": "6",
+        "status": "published",
+        "quality_score": 0.84,
+        "created_at": "2026-10-10T08:29:49Z",
+        "updated_at": "2026-10-10T08:29:49Z",
+        "trigger": {
+          "source": "graph_expansion",
+          "query": "Indonesian Archipelago",
+          "signal_id": null
+        },
+        "generation": {
+          "workflow": "W10-R01 Evidence Research",
+          "execution": "217798",
+          "source_count": 6,
+          "intent": "general_facts",
+          "destination": "",
+          "evidence_provider": "bing_rss+jina_reader",
+          "ai_provider": "freellmapi",
+          "ai_model": "nvidia/nemotron-3-super-120b-a12b"
+        },
+        "items": [
+          {
+            "position": 1,
+            "fact_key": "fact-64bba85443048b616302",
+            "title": "National Motto",
+            "body": "Indonesia’s national motto is “Bhinneka Tunggal Ika”, an Old Javanese phrase meaning “Unity in Diversity”. The motto appears on the state emblem and reflects the country’s official ideology of Pancasila, which promotes social harmony among its many ethnic and linguistic groups. This principle is highlighted in the Indonesian Wikipedia entry as a core element of national identity.",
+            "confidence": 0.88,
+            "sources": [
+              {
+                "url": "https://en.wikipedia.org/wiki/Indonesia",
+                "title": "Indonesia - Wikipedia",
+                "publisher": "en.wikipedia.org",
+                "source_type": "independent",
+                "checked_at": "2026-10-10T08:29:49Z"
+              }
+            ]
+          },
+          {
+            "position": 2,
+            "fact_key": "fact-befbee596d9ad82a5a08",
+            "title": "Official Language",
+            "body": "The official language of Indonesia is Indonesian, a standardised form of Malay. It serves as the lingua franca for government, education and media nationwide. The language’s status is affirmed in both the English and Indonesian Wikipedia articles, which list Indonesian as the sole official language while acknowledging the existence of over seven hundred indigenous languages spoken across the archipelago.",
+            "confidence": 0.9,
+            "sources": [
+              {
+                "url": "https://en.wikipedia.org/wiki/Indonesia",
+                "title": "Indonesia - Wikipedia",
+                "publisher": "en.wikipedia.org",
+                "source_type": "independent",
+                "checked_at": "2026-10-10T08:29:49Z"
+              },
+              {
+                "url": "https://id.wikipedia.org/wiki/Indonesia",
+                "title": "Indonesia - Wikipedia bahasa Indonesia, ensiklopedia bebas",
+                "publisher": "id.wikipedia.org",
+                "source_type": "independent",
+                "checked_at": "2026-10-10T08:29:49Z"
+              }
+            ]
+          },
+          {
+            "position": 3,
+            "fact_key": "fact-f7c7eed4ca25c5e7ace1",
+            "title": "Capital City",
+            "body": "Jakarta is both the capital and the largest city of Indonesia. Located on the northwest coast of Java, it functions as the political, economic and cultural centre of the nation. This detail is provided in the infobox of the English Wikipedia article, which lists Jakarta under “Capital and largest city” with its geographic coordinates.",
+            "confidence": 0.92,
+            "sources": [
+              {
+                "url": "https://en.wikipedia.org/wiki/Indonesia",
+                "title": "Indonesia - Wikipedia",
+                "publisher": "en.wikipedia.org",
+                "source_type": "independent",
+                "checked_at": "2026-10-10T08:29:49Z"
+              }
+            ]
+          },
+          {
+            "position": 4,
+            "fact_key": "fact-ad1fcd1b7fe9c2652a4b",
+            "title": "Indigenous Language Count",
+            "body": "Indonesia recognises 718 indigenous languages, reflecting its extraordinary linguistic diversity. This figure is cited in the English Wikipedia entry under “Indigenous languages”, noting the vast array of local tongues spoken alongside the national language. The count underscores the country’s status as one of the most multilingual nations on Earth.",
+            "confidence": 0.86,
+            "sources": [
+              {
+                "url": "https://en.wikipedia.org/wiki/Indonesia",
+                "title": "Indonesia - Wikipedia",
+                "publisher": "en.wikipedia.org",
+                "source_type": "independent",
+                "checked_at": "2026-10-10T08:29:49Z"
+              }
+            ]
+          },
+          {
+            "position": 5,
+            "fact_key": "fact-4f5b1e237da4605294ff",
+            "title": "Economic Profile",
+            "body": "Indonesia possesses the largest economy in Southeast Asia, with services and industry contributing the majority of output. Economic activity is heavily concentrated on the island of Java, which hosts the nation’s main business hubs and industrial zones. This assessment appears in the English Wikipedia article, which links Indonesia’s economic strength to its regional dominance and geographic concentration.",
+            "confidence": 0.88,
+            "sources": [
+              {
+                "url": "https://en.wikipedia.org/wiki/Indonesia",
+                "title": "Indonesia - Wikipedia",
+                "publisher": "en.wikipedia.org",
+                "source_type": "independent",
+                "checked_at": "2026-10-10T08:29:49Z"
+              }
+            ]
+          },
+          {
+            "position": 6,
+            "fact_key": "fact-11188290a3c38bf901bf",
+            "title": "Tectonic and Ecological Position",
+            "body": "The Indonesian archipelago sits at a major juncture of Earth’s tectonic plates, spans two distinct faunal realms, and has historically acted as a cultural nexus between Oceania and mainland Asia. This description is supplied by the Britannica entry, which highlights the archipelago’s geological uniqueness and its long‑standing role in facilitating exchanges of peoples, flora and fauna across the region.",
+            "confidence": 0.85,
+            "sources": [
+              {
+                "url": "https://www.britannica.com/place/Indonesia",
+                "title": "Indonesia | History, Flag, Map, Capital, Language, Religion, & Facts ...",
+                "publisher": "britannica.com",
+                "source_type": "independent",
+                "checked_at": "2026-10-10T08:29:49Z"
+              }
+            ]
+          },
+          {
+            "position": 7,
+            "fact_key": "fact-44d470276918c1f4a221",
+            "title": "Lingua Franca Function",
+            "body": "Bahasa Indonesia acts as a unifying lingua franca across Indonesia’s thousands of islands, enabling communication among speakers of over seven hundred local languages. The World Language Library notes that Indonesian connects the country’s diverse populations, serving as a vital tool for national cohesion and everyday interaction in both urban and rural settings.",
+            "confidence": 0.87,
+            "sources": [
+              {
+                "url": "https://worldlanguagelibrary.org/language/Indonesian",
+                "title": "Learn Indonesian Online (Bahasa Indonesia)",
+                "publisher": "worldlanguagelibrary.org",
+                "source_type": "independent",
+                "checked_at": "2026-10-10T08:29:49Z"
+              }
+            ]
+          },
+          {
+            "position": 8,
+            "fact_key": "fact-e1d4d88e1d75d85da1f9",
+            "title": "Language Structure",
+            "body": "Indonesian grammar is relatively simple: it lacks verb conjugations, gendered nouns and complex tenses. This structural simplicity makes the language accessible to learners and contributes to its role as a lingua franca. The World Language Library emphasises these features as key reasons why Indonesian is considered easy to acquire compared with many other Asian languages.",
+            "confidence": 0.86,
+            "sources": [
+              {
+                "url": "https://worldlanguagelibrary.org/language/Indonesian",
+                "title": "Learn Indonesian Online (Bahasa Indonesia)",
+                "publisher": "worldlanguagelibrary.org",
+                "source_type": "independent",
+                "checked_at": "2026-10-10T08:29:49Z"
+              }
+            ]
+          },
+          {
+            "position": 9,
+            "fact_key": "fact-fdb1e8159151c1218d64",
+            "title": "Vocabulary Influences",
+            "body": "The Indonesian lexicon has absorbed loanwords from Dutch, Sanskrit, Arabic, Chinese, Portuguese and English, reflecting centuries of trade, colonisation and cultural contact. These influences are detailed in the World Language Library, which traces how historical interactions with European powers and Asian traders have enriched the language’s vocabulary.",
+            "confidence": 0.84,
+            "sources": [
+              {
+                "url": "https://worldlanguagelibrary.org/language/Indonesian",
+                "title": "Learn Indonesian Online (Bahasa Indonesia)",
+                "publisher": "worldlanguagelibrary.org",
+                "source_type": "independent",
+                "checked_at": "2026-10-10T08:29:49Z"
+              }
+            ]
+          },
+          {
+            "position": 10,
+            "fact_key": "fact-eb31627e5f71379111f2",
+            "title": "Speaker Base",
+            "body": "Approximately 270 million people speak Indonesian, including the vast majority of Indonesia’s population and expatriate communities in neighbouring Malaysia, Brunei and Singapore. The World Language Library provides this figure, noting that the language’s reach extends beyond national borders due to migration and regional ties.",
+            "confidence": 0.85,
+            "sources": [
+              {
+                "url": "https://worldlanguagelibrary.org/language/Indonesian",
+                "title": "Learn Indonesian Online (Bahasa Indonesia)",
+                "publisher": "worldlanguagelibrary.org",
+                "source_type": "independent",
+                "checked_at": "2026-10-10T08:29:49Z"
+              }
+            ]
+          }
+        ],
+        "related_topics": [
+          {
+            "to_slug": "jakarta",
+            "to_title": "Jakarta",
+            "relation": "capital_of",
+            "score": 0.95,
+            "status": "candidate"
+          },
+          {
+            "to_slug": "java",
+            "to_title": "Java",
+            "relation": "economic_centre_of",
+            "score": 0.9,
+            "status": "candidate"
+          },
+          {
+            "to_slug": "indonesian-seas",
+            "to_title": "Indonesian Seas",
+            "relation": "part_of",
+            "score": 0.85,
+            "status": "candidate"
+          }
+        ]
+      }
+    }
+  ]
+}

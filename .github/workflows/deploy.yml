@@ -60,6 +60,7 @@ jobs:
           cat flask-overlay/part-* | base64 --decode > "${RUNNER_TEMP}/what10things-knowledge-overlay.zip"
           echo "eb13d90d422dfbc74f48461cfefb40b54629ced80e4d037cc8a94fa84021cc67  ${RUNNER_TEMP}/what10things-knowledge-overlay.zip" | sha256sum --check --strict
           unzip -q -o "${RUNNER_TEMP}/what10things-knowledge-overlay.zip" -d deploy
+          cp flask-source/*.py deploy/
           find deploy -type d -name '__pycache__' -prune -exec rm -rf {} +
           find deploy -type f -name '*.pyc' -delete
           rm -f deploy/runtime/knowledge.db deploy/runtime/knowledge.db-shm deploy/runtime/knowledge.db-wal
@@ -126,6 +127,12 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r deploy/requirements.txt
           PYTHONPATH=deploy python deploy/validate.py
+          PYTHONPATH=deploy python automation/tests/test_content_quality.py
+          python automation/tests/test_subject_relevance.py
+          python automation/tests/test_research_recovery.py
+          python -m unittest automation.tests.test_generic_travel_gate
+          python automation/tests/test_deployment_guard.py
+          python automation/tests/test_research_deployment_boundaries.py
 
       - name: Deploy to the What10Things document and Passenger root
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
@@ -167,7 +174,7 @@ jobs:
 
           check_json_ok() {
             path="$1"
-            fetch_route "${path}" | python3 -c 'import json,sys; data=json.load(sys.stdin); assert data.get("ok") is True'
+            fetch_route "${path}" | python3 -c 'import json,sys; data=json.load(sys.stdin); assert data.get("ok") is True; assert data.get("knowledge",{}).get("content_quality_gate") == "2026-10-19-subject-evidence-v2"'
           }
 
           for attempt in $(seq 1 20); do
