@@ -32,7 +32,7 @@ $canonical = site_url($canonicalPath);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/site.css?v=20261115-modern-web">
+    <link rel="stylesheet" href="/assets/css/site.css?v=1.0.0">
     <script defer src="/assets/js/site.js?v=1.0.0"></script>
 </head>
 <body class="<?= e($bodyClass) ?>">

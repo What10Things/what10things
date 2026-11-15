@@ -93,9 +93,27 @@ def footer() -> str:
     return '''<footer class="site-footer"><div class="shell site-footer__top"><div><a class="brand brand--footer" href="/" aria-label="What 10 Things home"><svg class="brand__mark" viewBox="0 0 48 48" aria-hidden="true"><rect x="3" y="3" width="42" height="42" rx="11"></rect><path d="M14 14h7v20h-7zM27 14h7v20h-7z"></path><path class="brand__slash" d="M10 25h28"></path></svg><span class="brand__text"><strong>What</strong><b>10</b><strong>Things</strong></span></a><p>Ten clear things. Sources where they matter.</p></div><div class="site-footer__links"><div><h2>Explore</h2><a href="/topics">Knowledge topics</a><a href="/guides">Seed guides</a><a href="/travel">Travel</a></div><div><h2>About</h2><a href="/about">About us</a><a href="/methodology">Methodology</a><a href="/contact">Contact</a><a href="/affiliate-disclosure">Affiliate disclosure</a></div><div><h2>Legal</h2><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/sitemap.xml">Sitemap</a></div></div></div><div class="shell site-footer__bottom"><div><p>© 2026 Urban Sky Web Ltd. What 10 Things is a trading name of Urban Sky Web Ltd. Practical information, not personal professional advice.</p><p><strong>What10Things.co.uk is operated by Urban Sky Web Ltd.</strong></p><p>Urban Sky Web Ltd is registered in England and Wales. Company number: 17421062. Registered office: 14/2E Docklands Business Centre, 10–16 Tiller Road, London, E14 8PX.</p></div><a href="#main-content">Back to top ↑</a></div></footer>'''
 
 
+# The production asset bundle is immutable here; keep frontend overrides in the
+# source files that the existing deployment overlays onto that bundle.
+TEXT_CONTRAST_CSS = """
+:root { --coral-text: #c03d36; }
+.brand__text b,
+.hero h1 em,
+.numbered-guides__item > a > span,
+.guide-progress a span,
+.guide-thing__number span,
+.destination-card__index,
+.search-results span,
+.method-list article > span,
+.contact-grid span,
+.not-found__number { color: var(--coral-text); }
+.brand--footer .brand__text b { color: var(--coral); }
+"""
+
+
 def page(title: str, description: str, body: str, *, active: str = "", body_class: str = "") -> Response:
     canonical = "https://what10things.co.uk" + request.path
-    doc = f'''<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{esc(title)}</title><meta name="description" content="{esc(description)}"><meta name="theme-color" content="#101c2c"><meta name="color-scheme" content="light"><link rel="canonical" href="{esc(canonical)}"><link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml"><link rel="manifest" href="/manifest.webmanifest"><meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(description)}"><meta property="og:url" content="{esc(canonical)}"><meta property="og:image" content="https://what10things.co.uk/assets/img/social-card.svg"><meta name="twitter:card" content="summary_large_image"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/assets/css/site.css?v=3.0.0"><script defer src="/assets/js/site.js?v=3.0.0"></script></head><body class="{esc(body_class)}">{header(active)}<main id="main-content">{body}</main>{footer()}</body></html>'''
+    doc = f'''<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{esc(title)}</title><meta name="description" content="{esc(description)}"><meta name="theme-color" content="#101c2c"><meta name="color-scheme" content="light"><link rel="canonical" href="{esc(canonical)}"><link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml"><link rel="manifest" href="/manifest.webmanifest"><meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(description)}"><meta property="og:url" content="{esc(canonical)}"><meta property="og:image" content="https://what10things.co.uk/assets/img/social-card.svg"><meta name="twitter:card" content="summary_large_image"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/assets/css/site.css?v=3.0.0"><style id="modern-web-text-contrast">{TEXT_CONTRAST_CSS}</style><script defer src="/assets/js/site.js?v=3.0.0"></script></head><body class="{esc(body_class)}">{header(active)}<main id="main-content">{body}</main>{footer()}</body></html>'''
     response = Response(doc, mimetype="text/html")
     response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
     response.headers["Pragma"] = "no-cache"
