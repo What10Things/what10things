@@ -2,6 +2,17 @@
 
 Production source for [what10things.co.uk](https://what10things.co.uk).
 
+## Other Urban Sky Web projects
+
+- [Urban Sky Web Ltd](https://urbanskyweb.co.uk/) — Company website
+- [Mainbuyer](https://mainbuyer.com/) — Product comparisons
+- [MyPHU](https://myphu.com/) — Health information
+- [1V14](https://1v14.com/) — Tools for creators
+- [4TU8](https://4tu8.com/) — Web design for businesses
+- [PremisesPulse](https://premisespulse.com/) — Local-authority change monitoring
+- [EFL by Level](https://englishasaforeignlanguage.com/) — English learning and teaching resources
+- [Exterior Wall Cladding](https://exteriorwallcladding.com/) — Exterior wall cladding information
+
 ## What is included
 
 - Fast, database-free PHP site suitable for GoDaddy shared hosting
